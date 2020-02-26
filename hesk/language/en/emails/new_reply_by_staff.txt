@@ -1,0 +1,13 @@
+Dear %%NAME%%,
+
+We have just replied to your ticket "%%SUBJECT%%".
+
+To read the message, submit a reply and view details, please visit:
+%%TRACK_URL%%
+
+If the above link is not clickable, try copying and pasting it into the address bar of your web browser.
+
+Sincerely,
+
+%%SITE_TITLE%%
+%%SITE_URL%%

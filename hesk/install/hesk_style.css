@@ -1,0 +1,961 @@
+body {
+	background-color: #f3fef4;
+	color: black;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	margin-left:0;
+	margin-right:0;
+	margin-top:0;
+	margin-bottom:0;
+}
+
+table.enclosing {
+	background-color:#FFFFFF;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	width: 960px;
+}
+
+td {
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	text-align: left;
+}
+
+a img {
+	vertical-align: bottom;
+	border : none;
+}
+
+td.white {
+	background-color: #FFFFFF;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;	
+}
+
+td.admin_white {
+	background-color: #FFFFFF;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border: #d1dceb 1px solid;
+	padding: 1px;	
+}
+
+td.admin_gray {
+	background-color: #f5fffa;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border: #d1dceb 1px solid;
+	padding: 1px;
+}
+
+td.notes {
+	background-color: #fffbf2;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	border: #ffe6b8 1px solid;
+}
+
+th.tDetailsHead {
+	background-color: #F7F7F7;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: center;
+}
+
+td.tDetailsBody {
+	background-color: #FFFFFF;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	border: #F7F7F7 1px solid;
+	text-align: center;
+}
+
+.small {
+	font-size: 11px;
+}
+
+.smaller {
+	font-size: 10px;
+}
+
+a {
+	color : Blue;
+	text-decoration : underline;
+}
+
+a:hover {
+	color : Red;
+	text-decoration : none;
+}
+
+a.smaller {
+	font-size: 10px;
+	color : Blue;
+	text-decoration : underline;
+}
+
+a.smaller:hover {
+	font-size: 10px;
+	color : Red;
+	text-decoration : none;
+}
+
+table.white {
+	background-color: #ffffff ;
+	color : #23559C;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	border-collapse: collapse;
+}
+
+table.white th {
+	background-color: #ffffff;
+	color : #23559C;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border: #b2babd 1px solid;
+	border-collapse: collapse;
+	background-image: url(img/tableheader.jpg);
+	background-repeat: no-repeat;
+	background-position: left top;
+}
+
+table.white th a {
+	color : #23559C;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+table.white td {
+	height: 25px;
+	padding-left: 5px;
+}
+
+.noborder {
+border: none;
+}
+
+h3 {
+	color : #74804e;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	margin: 0px;
+}
+
+.important {
+	color: Red;
+}
+
+.medium {
+	color: #FF9900;
+}
+
+input {
+	font-size: 12px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color:#000000;
+}
+
+input.button {
+	font-size: 12px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color:#000000;
+	background-color:#FFFFFF;
+}
+
+select {
+	font-size: 12px;
+	height: 20px;
+}
+
+header a img {border: none; text-decoration: none !important;} 
+
+.open {color : #FF0000;}
+.waitingreply {color : #FF9933;}
+.replied {color : #0000FF;}
+.resolved {color : #008000;}
+.allbutresolved {color : #000000;}
+
+.success {color : #008000;}
+.error {color : #FF0000;}
+.notice {color : #FF9900}
+
+#ok {
+	border: 1px solid #679800;
+}
+
+#error {
+	border: 1px solid #ba3225;
+}
+
+.rate {
+	color: #666666;
+	text-align: right;
+	font-style: italic; 
+}
+
+a.article {
+	color : Black;
+	text-decoration: none;
+	font-size: 11px;
+}
+
+a.article:hover {
+	color : Red;
+	text-decoration : none;
+}
+
+.article_list {
+	font-size: 11px;	
+}
+
+fieldset {
+	margin-bottom: 6px; 
+	border: 1px SOLID #267DDC;
+	padding: 4px;
+	background-color:white;
+	position:relative;
+	display:block;
+	padding: 15px 10px 10px 10px;
+	margin:20px 0px 20px 0px;
+}
+
+legend {
+	background-image: url(img/bluebtn.png);
+	background-repeat: no-repeat;
+	color: #172901;
+	border: 1px solid #267DDC;
+	height: 10px;
+	font-size: 10px;
+	font-weight:bold;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	background-position: left top;
+	display:block;
+	width: auto;
+	padding:5px 5px;
+	position:relative;
+	width:130px;	
+}
+
+/*newly introduced styles (version 2.0)*/
+
+.header {
+	width: 100%;
+	background-color: #74a62b;
+	color : #ffffff;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	text-align: center;
+	background-image: url(img/header.png);
+	background-repeat: repeat-x;
+	height: 57px;
+	padding: 0px;
+	margin: 0px;
+}
+
+.header td {
+text-align: center;
+vertical-align: middle;
+color:#FFFFFF;
+}
+.header a, .header a:link, .header a:active, .header a:visited {
+	color : #ffffff;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	text-align: center;
+}
+.header a:hover {}
+
+.headersm {
+	width: 100%;
+	background-color: #669933;
+	color : #ffffff;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	text-align: left;
+	background-image: url(img/headerbgsm.jpg);
+	background-repeat: repeat-x;
+	height: 25px;
+	padding: 0px;
+	margin: 0px;
+	font-weight:bold;
+	padding-left: 20px;
+}
+
+hr {
+	border: none;
+	border-bottom: 1px dotted #adbac3;
+	width: 100%;
+	padding-top: 10px;
+	margin-bottom: 10px;
+	height: 1px;
+}
+
+.greenbutton {
+	background-image: url(img/greenbtn.jpg);
+	background-repeat: no-repeat;
+	text-align: center;
+	color: #FFFFFF;
+	border: 1px solid #527234;
+	font-size: 10px;
+	font-weight:bold;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	background-position: left top;
+	height: 19px;
+	padding-left: 6px;
+	padding-right: 6px;
+	margin-left: 2px;
+	margin-right: 2px
+}
+
+.greenbuttonover {
+	background-image: url(img/greenbtnover.gif);
+	background-repeat: no-repeat;
+	text-align: center;
+	color: #FFFFFF;
+	border: 1px solid #527234;
+	font-size: 10px;
+	font-weight:bold;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	background-position: left top;
+	height: 19px;
+	padding-left: 6px;
+	padding-right: 6px;
+	margin-left: 2px;
+	margin-right: 2px
+}
+
+.orangebutton {
+	background-image: url(img/orangebtn.jpg);
+	background-repeat: no-repeat;
+	text-align: center;
+	color: #660000;
+	border: 1px solid #bf6628;
+	height: 20px;
+	font-size: 10px;
+	font-weight:bold;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	background-position: left top;
+	padding-left: 6px;
+	padding-right: 6px;
+	margin-left: 2px;
+	margin-right: 2px;
+	text-decoration: none;
+	margin-top: 0px;	
+}
+
+.orangebuttonover {
+	background-image: url(img/orangebtnover.gif);
+	background-repeat: no-repeat;
+	text-align: center;
+	color: #660000;
+	border: 1px solid #bf6628;
+	height: 20px;
+	font-size: 10px;
+	font-weight:bold;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	background-position: left top;
+	padding-left: 6px;
+	padding-right: 6px;
+	margin-left: 2px;
+	margin-right: 2px;
+	text-decoration: none;
+	margin-top: 0px;		
+}
+
+.bluebutton {
+	background-image: url(img/bluebtn.png);
+	background-repeat: no-repeat;
+	text-align: center;
+	color: #660000;
+	border: 1px solid #5b79a3;
+	height: 20px;
+	font-size: 10px;
+	font-weight:bold;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	background-position: left top;
+	padding-left: 6px;
+	padding-right: 6px;
+	margin-left: 2px;
+	text-decoration: none;
+	margin-right: 2px;
+	padding-top: 2px;
+}
+
+
+/*styles for roundcorners tables*/
+
+.roundcornersleft {
+	width: 7px;
+	background-image: url(img/roundcornerslm.jpg);
+	background-repeat: repeat-y;
+	background-position: left;
+}
+.roundcornersright {
+	width: 7px;
+	background-image: url(img/roundcornersrm.jpg);
+	background-repeat: repeat-y;
+	background-position: right;
+}
+.roundcornerstop {
+	height: 7px;
+	background-image: url(img/roundcornerst.jpg);
+	background-repeat: repeat-x;
+	background-position: top;
+}
+.roundcornersbottom {
+	height: 7px;
+	background-image: url(img/roundcornersb.jpg);
+	background-repeat: repeat-x;
+	background-position: bottom;
+}
+.ticketrow {
+	background-color: #f5fffa;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	border: #748aaf 1px dotted;
+	padding: 6px;
+}
+.ticketalt {
+	background-color: #ffffff;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	padding: 6px;
+}
+
+.tickettd {
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;	
+}
+
+.subheaderrow {
+	background-color: #ffffff;
+	color : #23559C;
+	border: #23559C solid 1px;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border-collapse: collapse;
+	background-image: url(img/tableheader.jpg);
+	background-repeat: no-repeat;
+	background-position: left top;
+	height: 25px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 5px;
+	}
+	
+.homepageh3, .section {
+	color: #74804e;
+	font-weight: bold;
+}
+
+/*newly introduced styles (version 2.2)*/	
+
+.large {
+	font-size:14px;
+}
+
+.largebold {
+	font-size:14px;
+	font-weight:bold;
+}
+
+.assignedyou {
+	color: red;
+}
+
+.assignedother {
+	color: green;
+}
+
+div.error {
+	border: 1px solid #cd0a0a; 
+	background: #fef1ec; 
+	color: #cd0a0a;
+	padding: 10px;
+}
+
+div.success {
+	border: 1px solid #18760f; 
+	background: #e9ffdb; 
+	color: #363636;
+	padding: 10px;
+}
+
+div.notice {
+	border: 1px solid #fcefa1; 
+	background: #fff9de; 
+	color: #363636;
+	padding: 10px;
+	vertical-align: middle;
+}
+
+.admin_green {
+	background-color: #e3ffd0;
+	font-weight: bold;
+}
+
+.admin_red {
+	background-color: #fef1ec;
+	font-weight: bold;
+}
+
+.borderBottom {
+	border-bottom: silver 1px dashed;
+}
+
+.borderTop {
+	border-top: silver 1px dashed;
+}
+
+.alignTop {
+	vertical-align: top;
+}
+
+.alignMiddle {
+	vertical-align: middle;
+}
+
+.alignBottom {
+	vertical-align: bottom;
+}
+
+hr.dashed  {
+	border: none 0; 
+	border-top: 1px dashed silver;
+	height: 1px;
+}
+
+/* newly introduced styles (version 2.3) */	
+
+h1 {
+	color : #74804e;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	margin: 0px;
+}
+
+.critical {
+	color: #9400d3;
+	font-weight: bold;
+} 
+
+td.admin_critical {
+	background-color: #fff0ff;
+	color : #000000;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border: 1px solid #ff66ff;
+	padding: 1px;
+}
+
+.isError {
+	color: black;
+	background-color: #fff9f7;
+	border: 1px solid red;
+}
+
+.isNotice {
+	color: black;
+	border: 1px solid orange; 
+	background: #fbf9ee;
+}
+	
+.optionWhiteON{
+	padding:2px;
+	border:1px dotted silver;
+	background-color: #b0e0e6;	
+}
+
+.optionWhiteOFF {
+	padding:2px;
+	border:1px dotted silver;
+	background-color: white;
+}
+
+.optionBlueON {
+	padding:2px;
+	border:1px dotted gray;
+	background-color: #b0e0e6;	
+}
+
+.optionBlueOFF {
+	padding:2px;
+	border:1px dotted gray;
+	background-color: #f5fffa;
+}
+
+.optionWhiteNbON{
+	border: none; 
+	background-color: #b0e0e6;
+	vertical-align: text-bottom;
+}
+
+.optionWhiteNbOFF {
+	border: none;
+	background-color: white;
+	vertical-align: text-bottom;
+}
+
+.kbCatListON {
+	background-color: #fcefa1;
+}
+
+.kbCatListOFF {
+	background-color: white;	
+}
+
+div.progress-container {
+	border: 1px solid #ccc;
+	width: 100px;
+	margin: 2px 5px 2px 0;
+	padding: 1px;
+	float: left;
+	background: white;
+}
+
+div.progress-container > div {
+	background-color: #ACE97C;
+	height: 12px
+}
+
+.black {color: black;}
+.inprogress {color : #006400;}
+.onhold {color : #000000;}
+
+div.online {
+	border: 1px solid #e5e8ff; 
+	background: #ffffff; 
+	color: #000000;
+	padding: 0px;
+	vertical-align: middle;
+}
+
+span.online {
+	font-size: 10px;
+	white-space:nowrap;
+}
+
+/* newly introduced styles (version 2.4) */	
+
+.orangebuttonsec {
+	background-image: url(img/orangebtnsec.jpg);
+	background-repeat: no-repeat;
+	text-align: center;
+	color: #660000;
+	border: 1px solid #bf6628;
+	height: 20px;
+	font-size: 10px;
+	font-weight:normal;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	background-position: left top;
+	padding-left: 6px;
+	padding-right: 6px;
+	margin-left: 2px;
+	margin-right: 2px;
+	text-decoration: none;
+	margin-top: 0px;	
+}
+
+.orangebuttonsecover {
+	background-image: url(img/orangebtnover.gif);
+	background-repeat: no-repeat;
+	text-align: center;
+	color: #660000;
+	border: 1px solid #bf6628;
+	height: 20px;
+	font-size: 10px;
+	font-weight:normal;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	background-position: left top;
+	padding-left: 6px;
+	padding-right: 6px;
+	margin-left: 2px;
+	margin-right: 2px;
+	text-decoration: none;
+	margin-top: 0px;		
+}
+
+td.admin_yellow {
+	background-color: #ffffe0;
+	color : #4a5571;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border: #d1dceb 1px solid;
+	padding: 1px;	
+}
+
+/* New styles in HESK version 2.5 */
+
+.kb_published {
+	color: #009900;
+}
+
+.kb_private {
+	color: #4a5571;
+}
+
+.kb_draft {
+	color: #cc9933;
+}
+
+.searchbutton {
+	cursor:pointer;
+	width:70px;
+	height:27px;
+	text-indent:-999px;
+	text-transform: capitalize;
+	color: transparent;
+	background: url(img/ico-search.png) no-repeat #4d90fe center;
+	border: 1px solid #3079ED;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;	
+}
+
+.searchbutton:hover {
+	background: url(img/ico-search.png) no-repeat center #357AE8;
+	border: 1px solid #2F5BB7;
+}
+
+.searchfield {
+	width:400px;
+	height:21px;
+	font-size:14px;
+	text-indent:2px; 
+	vertical-align: bottom;
+}
+
+.sbsmall {
+	width:50px; 
+	height:22px; 
+	margin-top:2px;
+}
+
+.sfsmall {
+	width:200px; 
+	height:16px; 
+	font-size:12px; 
+	margin-top:2px;
+}
+
+/* New styles in HESK version 2.6 */
+
+div.info {
+	border: 1px solid #9acfea; 
+	background: #d9edf7; 
+	color: #363636;
+	padding: 10px;
+	vertical-align: middle;
+}
+
+div.none {
+	color: #363636;
+	padding: 10px;
+	vertical-align: middle;
+}
+
+/* New styles in HESK version 2.7 */
+
+div.select_category 
+{
+	min-width: 50%;
+	min-height: 300px;
+	display: inline-block;
+	text-align:left;
+	margin-top: 10px;
+}
+
+#select_category {
+	border: 1px solid #111;
+	background: transparent;
+	width: 100%;
+	padding: 5px 35px 5px 5px;
+	font-size: 14px;
+	border: 1px solid #ccc;
+	height: 34px;
+} 
+
+#ul_category {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#ul_category li {
+	border: 1px solid #d1d5d7;
+	border-top: none;
+	border-radius: 2px;
+}
+
+#ul_category li:first-child {
+	border-top: 1px solid #d1d5d7;
+}
+
+#ul_category li a {
+	display: block;
+	font-size: 14px;
+	padding: 0.75em 0.75em;
+	text-decoration: none;
+	transition: all 0.12s ease;
+	word-wrap: break-word;
+}
+ 
+#ul_category li a:hover {
+	color: black;
+	background-color: #e9ffdb;
+}
+
+select.multiple {
+	font-size: 12px;
+	height: auto;
+}
+
+/* New styles in HESK version 2.8 */
+
+#hesk_nav{
+	list-style:none;
+	float:right;
+	/* Bring the nav above everything else--uncomment if needed.
+	position:relative;
+	z-index:5;
+	*/
+	margin: 0px;
+}
+
+#hesk_nav li{
+	float:left;
+	margin-right:4px;
+	position:relative;
+}
+
+#hesk_nav a{
+	display:block;
+	background-color:#ffffff;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	border:1px solid #dcdcdc;
+	cursor:pointer;
+	color:#666666;
+	font-size:12px;
+	padding:4px 10px;
+	text-decoration:none;
+}
+#hesk_nav a:hover{
+	color: red;
+	background:#f6f6f6;
+}
+
+/*--- DROPDOWN ---*/
+#hesk_nav ul{
+	background:#fff; /* Adding a background makes the dropdown work properly in IE7+. Make this as close to your page's background as possible (i.e. white page == white background). */
+	background:rgba(255,255,255,0); /* But! Let's make the background fully transparent where we can, we don't actually want to see it if we can help it... */
+	list-style:none;
+	position:absolute;
+	left:-9999px; /* Hide off-screen when not needed (this is more accessible than display:none;) */
+	z-index:5;
+	padding-left: 0px;
+	padding-top: 2px;
+}
+#hesk_nav ul li{
+	padding-top:1px; /* Introducing a padding between the li and the a give the illusion spaced items */
+	float:none;
+}
+#hesk_nav ul a{
+	white-space:nowrap; /* Stop text wrapping and creating multi-line dropdown items */
+	padding:8px 14px;
+}
+#hesk_nav li:hover ul{ /* Display the dropdown on hover */
+	left:auto; /* Bring back on-screen when needed */
+	text-align:left;
+	right:0;
+	margin-right:-10px;
+}
+#hesk_nav li:hover a{ /* These create persistent hover states, meaning the top-most link stays 'hovered' even when your cursor has moved down the list. */
+	background:#f6f6f6;
+	text-decoration:none;
+}
+
+#hesk_nav li:hover ul a{
+	background:#ffffff;
+	text-decoration:none;
+}
+
+#hesk_nav li:hover ul a{ /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
+	text-decoration:none;
+}
+#hesk_nav li:hover ul li a:hover{ /* Here we define the most explicit hover states--what happens when you hover each individual link. */
+	background:#f6f6f6;
+}
+
+.notification {
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 41, 89, 0.1);
+    padding: 20px 28px 20px 28px;
+    position: relative;
+    display: block;
+    margin-bottom: 24px;
+}
+
+.notification::before {
+    content: "";
+    width: 8px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.notification.red {
+    background-color: #fff5f5;
+}
+
+.notification.red::before {
+    background-color: #e64342;
+}
+
+.notification.orange {
+    background-color: #ffffcc;
+}
+
+.notification.orange::before {
+    background-color: #eeb707;
+}
+
+.notification.green {
+    background-color: #f0fff4;
+}
+
+.notification.green::before {
+    background-color: #38bc7d;
+}
+
+.notification.blue {
+    background-color: #ebf8ff;
+}
+
+.notification.blue::before {
+    background-color: #002d73;
+}
+
+.notification b {
+    font-weight: bold;
+}
+
+.notification i {
+    font-style: italic;
+}

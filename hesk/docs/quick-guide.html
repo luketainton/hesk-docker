@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML; 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<title>HESK quick start guide</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="docs_style.css" />
+</head>
+
+<body>
+<div id="wrapper">
+<div id="main">
+<h1><span class="dest">HESK&trade;</span> PHP Help Desk Software</h1>
+
+<table width="100%">
+<tr>
+<td width="50%" style="text-align:left;vertical-align:top">
+ <ul class="nobullets">
+ <li>Version: 3.0.0 from 17th February 2020</li>
+ <li>Developed by: Klemen Stirn, Mike Koch</li>
+ <li><a href="https://www.hesk.com">Help Desk Software HESK</a></li>
+ <li><a href="https://www.phpjunkyard.com">Free PHP Scripts</a></li>
+ </ul>
+</td>
+<td width="50%" style="text-align:right;vertical-align:top">
+ <ul class="nobullets">
+ <li><a href="index.html">HESK documentation</a></li>
+ <li><a href="step-by-step-guide.html">Step by step guide</a></li>
+ <li><b>Quick guide</b></li>
+ <li><a href="changelog.html">Changelog</a></li>
+ </ul>
+</td>
+</tr>
+</table>
+
+<div class="notice">
+<p><b>Hey, you should probably read this...</b><p>
+<p>HESK version 3 features a brand new user interface. While we consider it stable enough for use it is likely that we didn't spot all the errors across various browsers and devices.</p>
+<p>We encourage you to report any problems and user-experience suggestions to our <a href="https://developers.phpjunkyard.com">support forum</a>.</p>
+</div>
+
+<h2>HESK QUICK START GUIDE</h2>
+
+<ul class="nobullets">
+    <li><a href="#install"><b>Install HESK</b></a></li>
+    <li><a href="#upgrade">Upgrade from old HESK version</a></li>
+    <li><a href="#help">Help &amp; Support</a></li>
+</ul>
+
+<h2 id="install">&raquo; Install HESK</h2>
+
+<ol>
+<li><p>Upload HESK files to your server (https://www.example.com/helpdesk)</p></li>
+<li><p>Open <b>install</b> directory in your browser (https://www.example.com/helpdesk/install)</p></li>
+<li><p>Click <b>INSTALL HESK</b> and follow the steps to check requirements and setup MySQL</p></li>
+<li><p>Delete the <b>install</b> directory.</p></li>
+<li><p>Open <b>admin</b> directory (https://www.example.com/helpdesk/admin)</p></li>
+<li><p>The customer interface is at https://www.example.com/helpdesk</p></li>
+<li>
+<p>Things to do next:</p>
+
+<ul>
+<li><b>Profile</b> - set your name, email, signature, and a new password.</li>
+<li><b>Settings</b> - set website URL, title and get familiar with HESK settings.</li>
+<li><b>Categories</b> - create help desk categories/departments.</li>
+<li><b>Users</b> - create new staff accounts.</li>
+<li><b>Knowledgebase</b> - create knowledgebase (FAQ) categories and articles.</li>
+<li><b>Canned</b> - set reply templates (canned responses).<br />&nbsp;</li>
+</ul>
+
+</li>
+<li><p>Support HESK development by <a href="https://www.hesk.com/buy.php">purchasing a license</a></p></li>
+<li><p>Good luck with using HESK!<br />&nbsp;</p></li>
+</ol>
+
+<h2 id="upgrade">&raquo; Upgrade from old HESK version</h2>
+
+<p><b>Known upgrade issues:</b></p>
+
+<ul>
+<li>HESK language may be reset to English if new text was added.</li>
+<li>Passwords may not work after upgrade from very old versions (<a href="https://www.hesk.com/knowledgebase/?article=22">reset password</a>).</li>
+<li>If you purchased a license you may need to <a href="https://www.hesk.com/license">download a new license</a>.</li>
+</ul>
+
+<p style="font-weight:bold">Upgrade steps:</p>
+
+<ol>
+<li><p><span class="dest" style="font-weight:bold">BACKUP YOUR EXISTING HESK DATABASE AND FILES</span><br />... or don't blame me if something goes wrong.</p></li>
+<li>
+<p>Upload all HESK files to your server <b>EXCEPT</b> these (do NOT upload these files):<br />
+- hesk_settings.inc.php<br />
+- head.txt<br />
+- header.txt<br />
+- footer.txt</p>
+</li>
+<li><p>Open <b>install</b> directory in your browser (https://www.example.com/helpdesk/install)</p></li>
+<li><p>Click <b>UPDATE HESK</b> and follow instructions to update MySQL tables.</p></li>
+<li><p>Delete the <b>install</b> directory.</p></li>
+<li><p>Open the admin panel (https://www.example.com/helpdesk/admin) and log in with your username. If the password doesn't work anymore try <a href="https://www.hesk.com/knowledgebase/?article=22">resetting it</a>.</p></li>
+<li><p>Test HESK to make sure the upgrade was successful and everything works. You may need to modify your Help Desk title and Custom field settings if they are not displaying correctly.</p></li>
+<li>
+<p>If you own a HESK license you might need to <a href="https://www.hesk.com/license">download a new one</a>.</p>
+<p>If not, consider supporting HESK by <a href="https://www.hesk.com/buy.php">purchasing a license</a>.</p></li>
+<li><p>Good luck with using HESK!<br />&nbsp;</p></li>
+</ol>
+
+<h2 id="help">&raquo; Help &amp; Support</h2>
+
+<div class="notice" style="font-size:15px">
+<p style="text-align:center">For comprehensive and up-to-date help and troubleshooting guides please visit:<br />
+<a href="https://www.hesk.com/knowledgebase/"><b>HESK Knowledgebase</b></a></p>
+</div>
+
+<h2 id="translate">&raquo; Translate HESK to your language</h2>
+
+<p>Thanks to our users, who help translate HESK free of charge, multiple languages are available for HESK:</p>
+
+<p><a href="https://www.hesk.com/language/">HESK language packs</a><br />&nbsp;</p>
+
+<h2 id="other">&raquo; More FREE PHP Scripts</h2>
+
+<p>Get more FREE PHP scripts here: <a href="https://www.phpjunkyard.com/">PHP Scripts</a>.</p>
+
+<p>&nbsp;</p>
+
+<p style="text-align:center">&copy; Copyright <a href="https://www.hesk.com">HESK.COM</a> 2005-2020. All rights reserved.</p>
+
+</div>
+</div>
+</body>
+</html>

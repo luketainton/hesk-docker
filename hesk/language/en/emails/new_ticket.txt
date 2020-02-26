@@ -1,0 +1,18 @@
+Dear %%NAME%%,
+
+Your support ticket "%%SUBJECT%%" has been submitted.
+
+We reply to all tickets as soon as possible, within 24 to 48 hours. If we expect your ticket will take additional time, we will update you by sending you an email.
+
+Ticket tracking ID: %%TRACK_ID%%
+
+You can view the status of your ticket here:
+%%TRACK_URL%%
+
+You will receive an email notification when our staff replies to your ticket.
+
+
+Sincerely,
+
+%%SITE_TITLE%%
+%%SITE_URL%%

@@ -1,0 +1,11 @@
+Dear %%NAME%%,
+
+This email contains a list of support tickets submitted with your email address. Number of support tickets found: %%NUM%%
+
+%%LIST_TICKETS%%
+
+
+Sincerely,
+
+%%SITE_TITLE%%
+%%SITE_URL%%

@@ -1,0 +1,625 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Interactive help for Hesk settings</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="help_style.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+
+<!-- next: 78 -->
+
+<h3>Interactive help for Hesk settings</h3>
+
+<p>&nbsp;</p>
+
+<span class="section">&raquo; Help desk settings</span>
+
+<a name="6"></a><p class="title">Help desk title</p>
+<p>Title of your support desk, for example &quot;My company Help Desk&quot;</p>
+
+<a name="7"></a><p class="title">Hesk URL</p>
+<p>URL of the folder where your Hesk will be installed. Do NOT add a trailing / to the URL!<br />
+<span class="correct">CORRECT:</span> http://www.example.com/helpdesk<br />
+<span class="wrong">WRONG:</span> http://www.example.com/helpdesk/ (don't end the URL with a / )</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
+<a name="61"></a><p class="title">Admin folder</p>
+<p>Name of the folder, where admin files are located.</p>
+
+<p>The folder needs to exist within the main HESK folder. On most systems names are CaSe SeNSiTiVe.</p>
+
+<p>Allowed chars (other will be removed): a-z A-Z 0-9 _ -</p>
+
+<p>Default: <i>admin</i></p>
+
+<a name="62"></a><p class="title">Attachments folder</p>
+<p>Name of the folder, where attachments will be stored.</p>
+
+<p>The folder needs to exist within the main HESK folder and be writable by PHP. On most systems names are CaSe SeNSiTiVe.</p>
+
+<p>Allowed chars (other will be removed): a-z A-Z 0-9 _ -</p>
+
+<p>Default: <i>attachments</i></p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="77"></a><p class="title">Cache folder</p>
+<p>Name of the folder where cache and temporary files will be stored.</p>
+
+<p>The folder needs to exist within the main HESK folder and be writable by PHP. On most systems names are CaSe SeNSiTiVe.</p>
+
+<p>Allowed chars (other will be removed): a-z A-Z 0-9 _ -</p>
+
+<p>Default: <i>cache</i></p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="10"></a><p class="title">Listings per page</p>
+<p>The default number of tickets listed per page in admin panel. Use digits only.</p>
+
+<a name="11"></a><p class="title">Print font size</p>
+<p>Font size on the &quot;Printer friendly version&quot; pages of support tickets</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
+<a name="15"></a><p class="title">Autoclose tickets</p>
+<p>If a ticket has no activity <i>from the customer</i> for X days it automatically closes. Set to 0 to disable autoclose.</p>
+
+<a name="58"></a><p class="title">Max open</p>
+<p>A maximum number of open tickets a customer may have. When this limit is reached the customer will not be able to submit new tickets
+until existing ones are resolved. Affects only tickets submitted via online form.</p>
+
+<p>Set to <b>0</b> to disable limiting maximum open tickets.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
+<a name="59"></a><p class="title">Reply order</p>
+<p>Choose whether you want most recent replies to appear at top or at bottom of the ticket page.</p>
+
+<a name="60"></a><p class="title">Reply form</p>
+<p>Choose whether you want the Add a reply form to appear at top or at bottom of the ticket page.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
+<a name="44"></a><p class="title">Allow automatic login</p>
+<p>If set to YES staff will have an option to automatically login to their account every time they open HESK administration panel from their computer.
+If disabled HESK will only be able to remember usernames, not passwords.</p>
+
+<a name="51"></a><p class="title">Auto-assign tickets</p>
+<p>Tickets will automatically be assigned to a staff member when submitted.</p>
+
+<p>Several factors are taken into account when assigning tickets automatically, such as ticket category
+and number of currently open assigned tickets.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="73"></a><p class="title">Require email</p>
+
+<p>Do you require customers to enter their email address when submitting a ticket?</p>
+
+<p>
+OFF = do not require an email address<br />
+ON = require an email address<br />
+</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="70"></a><p class="title">Require owner</p>
+<p>If set to ON tickets will need to be assigned before staff can reply to them.</p>
+
+<p>This helps prevent multiple staff working on the same ticket by mistake as it forces them
+to assign the ticket to themselves before starting to work on it.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="72"></a><p class="title">Require subject</p>
+
+<p>Customers can enter a ticket subject or it can be generated automatically.</p>
+
+<p>
+OFF = do not require a ticket subject<br />
+ON = require a ticket subject<br />
+Hide in customer form = hide &quot;Subject&quot; form field from customer side*
+</p>
+
+<p>* customers will still be able to see the automatically generated subject</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="74"></a><p class="title">Require message</p>
+
+<p>Do your require customers to write a message when submitting a new support ticket?</p>
+
+<p>
+OFF = do not require a message<br />
+ON = message is required<br />
+Hide in customer form = hide &quot;Message&quot; form field from customer side
+</p>
+
+<p>* if a staff members edits a ticket and writes a message, customers will be able to see it</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="67"></a><p class="title">Customer resolve</p>
+<p>Choose whether customers may mark tickets as resolved.</p>
+
+<p>If disabled, ticket will only be resolvable by staff and automatically for inactivity.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="16"></a><p class="title">Reopen tickets</p>
+<p>Set to ON to allow customers to reopen a ticket once it has been closed. When set to OFF once closed the customer will have to open a new ticket.</p>
+
+<a name="17"></a><p class="title">Reply rating</p>
+<p>If set to ON customers will be able to mark staff replies as <i>Helpful</i> or <i>Not helpful</i>. This customer feedback will be used to rate staff.</p>
+
+<a name="45"></a><p class="title">Customer priority</p>
+<p>If set to ON customers will be able to set priority/urgency for their tickets ranging from Low to High. If set to OFF all tickets will be submitted with the default priority (Low) and only staff will be able to change the priority level to a higher one.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
+<a name="49"></a><p class="title">Sequential IDs</p>
+<p>If enabled, all tickets will also show a sequential ID number. This should allow
+easier customer-staff communication about a ticket (saying <i>ticket ID 45</i> rather
+than <i>ticket ID GHS-G5E-A6T8</i>). However, only
+staff will be able to view tickets by sequential numbers.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="66"></a><p class="title">Time worked</p>
+<p>Track time spent working on a ticket.</p>
+
+<p>When enabled, the admin ticket reply form will show a time counter for tracking time spent working on the ticket.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="68"></a><p class="title">SPAM Notice</p>
+<p>When customer submits a new ticket, the success message will include a notice saying
+the customer should check inside the SPAM folder if the confirmation email does not arrive.</p>
+
+<p>The notice will not be show in disabled OR if the <i>Notify customer when: They submit a new support ticket</i> is disabled.</p>
+
+<p>The notice message may be notified in the <a href="https://www.hesk.com/knowledgebase/index.php?article=34" target="_blank">HESK language file</a>.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="14"></a><p class="title">List usernames</p>
+<p>If set to ON staff usernames be listed in a select box on the admin login page and they will only need to type their password in. Recommended setting: OFF (staff will have to type
+both their username and password to login)</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="12"></a><p class="title">Debug mode</p>
+<p>Turns ON/OFF the debug mode. In normal usage debug mode should be turned OFF. Turn ON only if you are having problems and Hesk is not working properly. Don't forget to turn back OFF when Hesk is working normally again.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
+<a name="63"></a><p class="title">Short links</p>
+<p>If turned ON, website links longer than 70 chars will be shortened for display.</p>
+
+<p>For example a link like this:<br />
+http://www.some-long-example.com/sub-folder/another-folder/and-yet-another/this-is-some-long-file-name.html?this_is_a_long_query=and_this_is_a_long_value</p>
+
+<p>Would be displayed as:<br />
+http://www.some-long-example.com/sub-folder/another-fol ... long_value</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="65"></a><p class="title">- - Click to Select - -</p>
+<p>If checked, &quot;- - Click to Select --&quot; will be the default selection
+for ticket category and/or priority when submitting a new ticket.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="71"></a><p class="title">Category select limit</p>
+<p>Used when submitting new tickets.</p>
+
+<p>If the number of help desk categories (departments) is lower or equal to this setting,
+ticket category will be selected by clicking on a link.</p>
+
+<p>If the number of categories is higher than this limit, a drop-down select box will be used instead to
+select a ticket category.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="13"></a><p class="title">Use anti-SPAM image</p>
+<p>Toggles use of the anti-SPAM security image (captcha).</p>
+
+<table border="0">
+<tr>
+<td valign="top"><i>Value</i></td>
+<td><i>Meaning</i></td>
+</tr>
+<tr>
+<td valign="top" style="white-space:nowrap;"><b>OFF</b></td>
+<td>anti-SPAM images disabled</td>
+</tr>
+<tr>
+<td valign="top" style="white-space:nowrap;"><b>ON - Customers</b> &nbsp;</td>
+<td>only customers will be required to solve the image</td>
+</tr>
+<tr>
+<td valign="top" style="white-space:nowrap;"><b>ON - All</b></td>
+<td>both customer and staff will be required to solve it</td>
+</tr>
+</table>
+
+&nbsp;
+
+<table border="0">
+<tr>
+<td colspan="2"><i>Image type</i></td>
+</tr>
+<tr>
+<td valign="top" style="white-space:nowrap;"><b>Simple image</b> &nbsp;</td>
+<td>a very basic image generated by PHP (GD library required)<br /><span class="wrong">A simple image is not effective against advanced robots,
+consider using an anti-SPAM questions or ReCaptcha instead!</span></td>
+</tr>
+<tr>
+<td valign="top" style="white-space:nowrap;"><b>ReCaptcha</b> &nbsp;</td>
+<td>use a free service by Google (<a href="https://www.google.com/recaptcha" target="_blank">requires registration</a>)</td>
+</tr>
+</table>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
+<a name="64"></a><p class="title">ReCaptcha</p>
+<p>ReCaptcha is a free anti-bot service by Google.</p>
+
+<p>To use ReCaptcha you will need to:</p>
+
+<ol>
+<li><a href="https://www.google.com/recaptcha" target="_blank">Register for ReCaptcha</a></li>
+<li>Click <b>Get reCAPTCHA</b></li>
+<li>Enter your website details in the <b>Register a new site</b> form</li>
+<li>Copy the <b>Site key</b> into HESK settings</li>
+<li>Copy the <b>Secret key</b> into HESK settings</li>
+<li>Save HESK settings</li>
+<li>Try submitting a new ticket through the customer interface to verify reCAPTCHA works fine.</li>
+</ol>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="42"></a><p class="title">Use anti-SPAM question</p>
+<p>Toggles use of the anti-SPAM security question. This is a very simple yet quite effective way of combating spammers
+(not if they decide to target your website specifically but it should block all the
+spambots travelling the web).
+The idea is to create a <b>unique</b> question that only humans can answer to. You can
+use HTML code in the question. Answers are not CaSe SeNSiTiVe. Some examples:</p>
+
+<table border="0">
+<tr>
+<td><b>-&gt; Question</b></td>
+<td><b>-&gt; Answer</b></td>
+</tr>
+<tr>
+<td>What color is water?</td>
+<td>Blue</td>
+</tr>
+<tr>
+<td>What is the next number after four? (use only digits)</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Type access code <b>ABCDE</b> here:</td>
+<td>ABCDE</td>
+</tr>
+<tr>
+<td>Access code: (find it on the bottom of our <a href="#" onclick="Javascript:return false">links page</a>)</td>
+<td>Somecode</td>
+</tr>
+</table>
+
+<p>Warning! <b>DO NOT</b> use these examples, use a unique question that will only be used on your website!</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
+<a name="47"></a><p class="title">Login attempts limit &amp; Ban time (minutes)</p>
+<p>This feature limits brute-force attacks to either login to HESK or view tickets.</p>
+
+<p>After <i>Login attempts limit</i> number of failed attempts to view a ticket or login to HESK the IP address will be banned for <i>Ban time (minutes)</i>.</p>
+
+<p>To disable failed login attempts limiting, set value to <b>0</b> (NOT recommended!).</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="69"></a><p class="title">Password reset</p>
+<p>If enabled, users will be able to reset their forgotten password over email.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="46"></a><p class="title">View tickets</p>
+<p>If enabled (checked), customers will need to enter both their email address and ticket tracking ID to view the contents of a tickets.
+If disabled, only entering ticket tracking ID will suffice.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="76"></a><p class="title">Frames</p>
+<p>Enable to prevent HESK being loaded in frames on third party websites. This helps combat &quot;clickjacking&quot; attempts.</p>
+
+<p>When enabled, HESK will send a <b>X-Frame-Options: SAMEORIGIN</b> HTTP header to the browser.</p>
+
+<p>If you want to display HESK inside a frame on a website under a different domain name than the one HESK is installed under, disable this feature.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="75"></a><p class="title">SSL</p>
+<p>You can force HESK to use secure connections (https versus http).</p>
+
+<p>To manage this setting, first manually open the <b>admin_settings_help_desk.php</b> file in your browser using https://, for example:</p>
+
+<p>https://example.com/hesk/admin/admin_settings_help_desk.php</p>
+
+<p>This is to ensure that SSL is properly configured and working on the server before setting HESK to force it.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<span class="section">&raquo; Attachments</span>
+
+<a name="37"></a><p class="title">Use attachments</p>
+<p>Select YES to enable file attachments. If enabled customers and support staff will have the option to attach files to support tickets.</p>
+<p><b>NOTE:</b> If and how file attachments will work depends on your server settings, please refer to readme.html for considerations and possible limitations of file attachments on your server.</p>
+
+<a name="38"></a><p class="title">Number per post</p>
+<p>Number of file attachments allowed per post. Optimal range is around 1 to 4. This setting is only available if &quot;Use attachments&quot; is set to YES.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
+<a name="39"></a><p class="title">Maxmimum file size</p>
+<p>Maximum size of attached files. Note that the maximum upload file size is limited by your server settings, please refer to readme.html for more information on file attachment limits. This setting is only available if &quot;Use attachments&quot; is set to YES.</p>
+
+<a name="40"></a><p class="title">Allowed file types</p>
+<p>Allowed file extensions for attaching files. To add more extensions use the same formatting <b>.ext</b> and separate them with a comma. This setting is only available if &quot;Use attachments&quot; is set to YES.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</body>
+
+</html>

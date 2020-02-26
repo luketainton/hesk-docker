@@ -1,0 +1,655 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML; 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<title>HESK - Changelog</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="docs_style.css" />
+</head>
+
+<body>
+<div id="wrapper">
+<div id="main">
+<h1><span class="dest">HESK&trade;</span> PHP Help Desk Software</h1>
+
+<table width="100%">
+<tr>
+<td width="50%" style="text-align:left;vertical-align:top">
+ <ul class="nobullets">
+ <li>Version: 3.0.0 from 17th February 2020</li>
+ <li>Developed by: Klemen Stirn, Mike Koch</li>
+ <li><a href="https://www.hesk.com">Help Desk Software HESK</a></li>
+ <li><a href="https://www.phpjunkyard.com">Free PHP Scripts</a></li>
+ </ul>
+</td>
+<td width="50%" style="text-align:right;vertical-align:top">
+ <ul class="nobullets">
+ <li><a href="index.html">HESK documentation</a></li>
+ <li><a href="step-by-step-guide.html">Step by step guide</a></li>
+ <li><a href="quick-guide.html">Quick guide</a></li>
+ <li><b>Changelog</b></li>
+ </ul>
+</td>
+</tr>
+</table>
+
+<div class="notice">
+<p><b>Hey, you should probably read this...</b><p>
+<p>HESK version 3 features a brand new user interface. While we consider it stable enough for use it is likely that we didn't spot all the errors across various browsers and devices.</p>
+<p>We encourage you to report any problems and user-experience suggestions to our <a href="https://developers.phpjunkyard.com">support forum</a>.</p>
+</div>
+
+<h2>HESK CHANGELOG</h2>
+
+<p><b>Changes in 3.0.0</b> - 17th February 2020<br />
+- a brand new mobile-friendly user interface<br />
+- built-in theme support for the public (customer) interface<br />
+- fix: SQL error when trying to ban an invalid IP<br />
+</p>
+
+<p><b>Changes in 2.8.5</b> - 6th January 2020<br />
+- PHP 7.4 compatibility<br />
+- MySQL 8.0.13 compatibility<br />
+- users with no can_reply_tickets permission can now create ticket notes<br />
+- updated third party libraries to the latest version<br />
+- fix: respect article order in Knowledgebase<br />
+- fix: save email attachments sent as message content type<br />
+- fix: better handle can_resolve and can_reply_tickets permissions<br />
+</p>
+
+<p><b>Changes in 2.8.4</b> - 17th August 2019<br />
+- fix: modified the HTMLPurifier library to be compatible with PHP 5.3<br />
+</p>
+
+<p><b>Changes in 2.8.3</b> - 16th August 2019<br />
+- fix: break long words when bulk printing tickets<br />
+- fix: HTML-encoded chars can cause MySQL truncate error<br />
+- fix: parse links with single quotes in HTML email to ticket<br />
+- fix: wrong option for staff re-send notification of an assigned ticket<br />
+- fix: in email to ticket inline attachments with no message are not imported correctly<br />
+- fix: descriptive error message when post_max_size is exceeded for customer interface<br />
+- fix: link to embedded image tags rather than deleting them<br />
+- fix: no image in service messages list for style &quot;None&quot;<br >
+- fix: pagination does not work when searching for tickets by owner<br />
+- fix: workaround for a Microsoft DKIM verification bug<br />
+</p>
+
+<p><b>Changes in 2.8.2</b> - 5th July 2018<br />
+- service messages can be set to display for a specific language only<br />
+- fix: use div instead of span in print template for better browser compatibility<br />
+- fix: double escaping in hesk_dbLike function may cause failed lookups<br />
+- fix: some queries don't work in MySQL ONLY_FULL_GROUP_BY mode<br />
+- fix: POP3 fetching EOF detection unreliable in newer PHP versions<br />
+- fix: Message-ID header missing host name over CLI<br />
+- fix: force hesk_mb_strtolower function to use UTF-8<br />
+</p>
+
+<p><b>Changes in 2.8.1</b> - 18th May 2018<br />
+- fix: update assignedby column when doing bulk assignments<br />
+- fix: add a unique Message-ID header to outgoing emails<br />
+</p>
+
+<p><b>Changes in 2.8.0</b> - 14th May 2018<br />
+- removed PHP 7.2 depreciated functions<br />
+- minimum required PHP version increased to 5.3<br />
+- bulk assign tickets form the ticket list<br />
+- bulk print tickets form the ticket list<br />
+- added tools for anonymizing tickets<br />
+- find tickets by customer IP address<br />
+- added support for Invisible reCAPTCHA<br />
+- removed reCAPTCHA V1 (discontinued by Google)<br />
+- staff can re-send email notifications for tickets<br />
+- dropped time difference calculation, using timezones<br />
+- new staff permission: can view tickets he/she assigned others<br />
+- export to Excel now works for individual and selected tickets<br />
+- fix: IMAP fetching ticket history log shows POP3 fetching<br />
+- fix: IMAP connection test fails if the password contains a backslash<br />
+- disable IMAP fetching if PHP was compiled without IMAP support<br />
+- warn if a user's email address matches the POP3/IMAP fetching address<br />
+- notice if &quot;From:&quot; email doesn't match SMTP sever email address<br />
+- new &quot;First name&quot; tag for email templates and canned responses<br />
+- minor UI improvements (ticket action buttons)<br />
+</p>
+
+<p><b>Changes in 2.7.6</b> - 1st March 2018<br />
+- improved handling of multiple emails in a ticket<br />
+- changed a setting field name to avoid a mod_security false positive<br />
+- fix: when editing a ticket, empty values should not be replaced with defaults<br />
+- fix: URL in a custom text field breaks HTML on the edit ticket page<br />
+- fix: removing duplicate recipients creates an issue in SMTP library<br />
+- fix: knowledgebase category shouldn't have its child set as parent<br />
+- fix: use multibyte functions for checking and limiting string length<br />
+- fix: (strict mode) only variables should be passed by reference<br />
+- fix: a non well formed numeric value notice in settings<br />
+- updated third party libraries to the latest version<br />
+</p>
+
+<p><b>Changes in 2.7.5</b> - 25th November 2017<br />
+- fix: old name and subject length limits in &quot;Edit ticket&quot;<br />
+</p>
+
+<p><b>Changes in 2.7.4</b> - 21st November 2017<br />
+- new email tag %%TIME_WORKED%% shows time staff worked on a ticket<br />
+- new email tag %%LAST_REPLY_BY%% shows name of the person who posted last ticket message<br />
+- increased maxlength attribute for ticket name and subject to max supported in database (50 and 70)<br />
+- improved few default email messages to avoid some spam filters marking them as &quot;linkbait&quot;<br />
+- fix: move category not working correctly for users with no global submit permission<br />
+- fix: if iconv is not available, attempt to use utf8_encode instead in email to ticket<br />
+- fix: don't encode email headers if ascii only, it triggers some spam filters<br />
+- fix: backslash not escaped properly in several functions<br />
+- fix: remove duplicate recipients in hesk_mail() function<br />
+- fix: missing name error message in profile<br />
+- fix: don't allow newlines in email headers<br />
+- fix: duplicate language string, IP WHOIS case<br />
+- fix: use multibyte strtolower for strings where needed<br />
+- fix: possible wrong previous month name in reports/exports<br />
+- updated several third party libraries to the latest version<br />
+</p>
+
+<p><b>Changes in 2.7.3</b> - 10th April 2017<br />
+- added meta robots &quot;noindex, nofollow&quot; tag to admin pages<br />
+- hide KB functionality from customer side if no public articles<br />
+- upload additional attachments when editing a ticket (up to allowed limit)<br />
+- modified client IP detection to enable detecting proxy connections<br />
+- improved display logic for top and latest public KB articles<br />
+- improved handling of PHP/MySQL timezone difference<br />
+- added new pages to allowed admin panel redirects<br />
+- updated HTML Purifier and allowed URI Schemes<br />
+- delete some cached files when saving settings<br />
+- fix: missing collations in MySQL prior to 5.6<br />
+- fix: missing statuses in ticket ID reminder email<br />
+- fix: issues with emails that contain a single quote<br />
+- fix: wrong custom date field value saved in some timezones<br />
+- fix: extra line when using a hidden custom field after message<br />
+- fix: session expired issue in very old PHP versions with register_globals on<br />
+</p>
+
+<p><b>Changes in 2.7.2</b> - 2nd January 2017<br />
+- fix: suppress warnings when check for update without cURL fails<br />
+- fix: MySQL strict mode issue when upgrading an old Hesk version<br />
+- fix: Content-Security-Policy flags setTimeout string as unsafe-eval<br />
+- fix: searching tickets disabled status New in show tickets form<br />
+- fix: do not overwrite the text/javascript header in tcal.php<br />
+- detect additional &quot;noreply&quot; addresses<br />
+- respect category order in ticket list group/order by category<br />
+- don't list KB articles under &quot;latest&quot; if they are already listed under &quot;top&quot;<br />
+- moved help desk title/URL under general settings to avoid confusion<br />
+- modified some default settings (does not affect updates)<br />
+</p>
+
+<p><b>Changes in 2.7.1</b> - 19th November 2016<br />
+- fix: don't modify ticket &quot;Last updated&quot; when updating HESK to 2.7.x<br />
+</p>
+
+<p><b>Changes in 2.7.0</b> - 19th November 2016<br />
+- custom fields have been improved significantly:<br />
+&nbsp;&nbsp;&nbsp;&raquo; translate title<br />
+&nbsp;&nbsp;&nbsp;&raquo; change display order<br />
+&nbsp;&nbsp;&nbsp;&raquo; tie them to specific categories<br />
+&nbsp;&nbsp;&nbsp;&raquo; private (staff only) custom fields supported<br />
+&nbsp;&nbsp;&nbsp;&raquo; mark as required for everyone or just for customers<br />
+&nbsp;&nbsp;&nbsp;&raquo; checkboxes now require only a single option (before: two)<br />
+&nbsp;&nbsp;&nbsp;&raquo; increased number of available custom fields to 50<br />
+&nbsp;&nbsp;&nbsp;&raquo; improved interface and moved under &quot;Tools&quot;<br />
+&nbsp;&nbsp;&nbsp;&raquo; do not show double punctuation in forms<br />
+&nbsp;&nbsp;&nbsp;&raquo; new types: date, email, hidden<br />
+- you can now create custom ticket statuses<br />
+- improved language loading (fallback if not found, custom text)<br />
+- automatically reload pages with list of tickets every X seconds/minutes<br />
+- require tickets to be assigned before staff is able to reply to them (option)<br />
+- implemented IMAP fetching (import emails to tickets from an IMAP email server)<br />
+- email templates can now be modified from the Admin panel (Tools &gt; Email templates)<br />
+- removed LIMIT 1 from SQL UPDATE/DELETE statements to avoid replication warnings<br />
+- in &quot;Tickets per user&quot; report show how many tickets a user has submitted <br />
+- in admin panel show a link to the public knowledgebase article location<br />
+- added head.txt for custom code to be included before &lt;/head&gt; tag<br />
+- delete knowledgebase articles from the &quot;Edit article&quot; page<br />
+- moved temporary files out of attachments folder<br />
+- new staff permissions:<br />
+&nbsp;&nbsp;&nbsp;&raquo; can resolve tickets<br />
+&nbsp;&nbsp;&nbsp;&raquo; can submit tickets to any category<br />
+&nbsp;&nbsp;&nbsp;&raquo; can move tickets to any category<br />
+- ticket message can be set to not required<br />
+- ticket subject can be set to not required<br />
+- ticket email can be set to not required<br />
+- HESK can now force SSL connections<br />
+- fix: JS function argument default values are not available before ES6<br />
+- fix: wrong order of ticket list column titles when a required column is missing<br />
+- fix: return back to the previous page after editing KB articles from List private/draft articles<br />
+- fix: remember opened ticket when changing display language in customer ticket view<br />
+</p>
+
+<p><b>Changes in 2.6.8</b> - 10th August 2016<br />
+- fix: wrong form title when editing service messages<br />
+- fix: removed some missing and/or mismatched HTML tags<br />
+- fix: modify SQL database table structure to work with strict mode<br />
+- security: fixed an issue, reported by Sven Morgenroth from Netsparker (<a href="https://www.netsparker.com">www</a>)<br />
+- security: various security improvements, reported by Mohammed Abdulqader Abobaker Al-saggaf (<a href="https://www.linkedin.com/pub/mohammed-al-saggaf/9b/934/15a" rel="nofollow">www</a>)<br />
+- misc: updated few third party libraries<br />
+</p>
+
+<p><b>Changes in 2.6.7</b> - 18th April 2016<br />
+- changed email piping and pop3 fetching files line endings to Unix format for compatibility<br />
+- security: removed private info from query string, reported by Alec Broughton (<a href="https://www.noodleman.co.uk">www</a>)<br />
+- security: require email to view tickets setting is now enabled by default<br />
+- fix: pagination in private staff messages not working<br />
+- fix: wrong links to index and KB page in help files<br />
+- in customer side emails are now shown as a link<br />
+</p>
+
+<p><b>Changes in 2.6.6</b> - 2nd February 2016<br />
+- improved reCaptcha library to work with cURL<br />
+- verify MySQL privileges before installing/upgrading<br />
+- fix: respect attachments settings in KB form (minimum 3 if enabled)<br />
+- fix: always checking for maintenance mode when downloading attachments<br />
+- fix: missing &lt;tr&gt; tag in Reports<br />
+</p>
+
+<p><b>Changes in 2.6.5</b> - 28th August 2015<br />
+- HESK now supports Zend OPcache enabled<br />
+- modified PHP7 depreciated class constructors<br />
+- improved handling of values/options when changing custom field type<br />
+- simple anti-SPAM image now uses PNG or GIF support if JPEG is not enabled<br />
+- trim &quot;Help Desk URL&quot; trailing slash when saving settings<br />
+- fix: send customer notification of a new staff reply in the correct language<br />
+- fix: merging tickets could hide old replies until a new reply is posted<br />
+- fix: preserve table prefix in installation script on connection error<br />
+- fix: session expired error when trying to reset password<br />
+- fix: don't send out content-type headers for CLI scripts<br />
+</p>
+
+<p><b>Changes in 2.6.4</b> - 22nd June 2015<br />
+- fix: session expired error if username case doesn't match exactly the one in database<br />
+</p>
+
+<p><b>Changes in 2.6.3</b> - 20th June 2015<br />
+- update unknown IP address to the IP address of the first ticket visitor from customer interface<br />
+- &quot;last modified&quot; value will now be preserved during hesk_tickets table update<br />
+- staff private messages can now have signatures attached<br />
+- added three new special tags to canned responses<br />
+- improved status assignment logic when customer reopens a closed ticket<br />
+- removed execution time limit in installation script to handle large database updates<br />
+- updated inline URL regex to not process emails in URLs containing not encoded emails<br />
+- fix: existing sessions should expire after changing credentials, reported by Indrajith.AN (<a href="https://www.facebook.com/indrajith.cyberXdestroyer">www</a>)<br />
+- fix: missing a day in the DateArray() function when passing daylight saving time adjustments<br />
+- fix: force content type header charset to utf-8 (override PHP 5.6+ default_charset)<br />
+- fix: status change not logged in ticket history when staff inserting customer reply<br />
+- fix: email to ticket: accept email if no message required but attachment exists<br />
+- fix: email confirmation not working properly when multiple emails are allowed<br />
+- fix: non-default MySQL ports ignored during upgrade using mysqli library<br />
+- fix: &quot;Small box&quot; setting disables knowledgebase search in admin panel<br />
+- fix: null attachment name length after removing non-ascii chars<br />
+- fix: grammar error in English language file<br />
+</p>
+
+<p><b>Changes in 2.6.2</b> - 18th March 2015<br />
+- fix: \0 converted to null byte in XML export<br />
+- fix: closedby column in hesk_tickets table must accept signed values<br />
+</p>
+
+<p><b>Changes in 2.6.1</b> - 26th February 2015<br />
+- fix: POP3 fetching task timeout can be disabled<br />
+- fix: security issue reported by Michał Bentkowski (<a href="http://www.securitum.pl">www</a>)<br />
+</p>
+
+<p><b>Changes in 2.6.0</b> - 22nd February 2015<br />
+- HESK is now compatible with PHP 5.6<br />
+- minimum MySQL server version is 5.0.7<br />
+- select which columns to display in ticket list<br />
+- staff can now manage notifications and preferences for other users<br />
+- option to disable email notifications to customer when they submit a new support ticket<br />
+- notify customer when a ticket is marked Resolved (by staff without replying or automatically)<br />
+- track what knowledgebase articles were suggested to the customer when submitting a new ticket<br />
+- remind customer to check SPAM box for confirmation emails after submitting ticket<br />
+- existing staff responses will be marked as read when customer replies over email<br />
+- ticket templates for faster submitting of common tickets from admin interface<br />
+- additional buttons to easily submit responses with different ticket statuses<br />
+- improved handling of the goto parameter in admin panel (Lisandro Ubiedo)<br />
+- require access control when testing connections (Lisandro Ubiedo)<br />
+- don't start a new POP3 fetching task if the previous is still running<br />
+- fix: fieldset legend element not aligned properly in most browsers<br />
+- fix: set correct MIME type for servers sending nosniff header<br />
+- fix: adjust MySQL time in legacy hesk_formatDate() function<br />
+- fix: remove all non-ascii chars from attachment names<br />
+- fix: custom checkbox fields not staying selected<br />
+- staff can indicate a reply as a reply from the customer<br />
+- use HESK knowledgebase only (no help desk)<br />
+- allow staff to reset forgotten passwords<br />
+- HESK can be put in maintenance mode<br />
+- ability to find tickets by Owner<br />
+- added support for reCAPTCHA API v2<br />
+- the &quot;Time worked&quot; feature can be disabled<br />
+- HESK width increased of 960 pixel by default<br />
+- show service messages on help desk homepage<br />
+- option to prevent customers from resolving tickets<br />
+- link customer IP addresses to an IP whois service<br />
+- new email tag %%ID%% prints sequential ticket ID<br />
+- save ticket response message for later without replying<br />
+- set default customer notification box selection in Profile<br />
+- ticket notes now allow attachments and can be modified<br />
+- staff members are now ordered by name for easier selection<br />
+- customers can select email reminder to list all or open tickets<br />
+- three time formats available for the &quot;Updated&quot; column in ticket list<br />
+- &quot;Submit a ticket&quot; form fields can now be populated using GET and POST<br />
+- when saving settings don't test SMTP and POP3 connection if no changes<br />
+- optionally show &quot;Click to select&quot; for ticket category, priority and custom fields<br />
+- skip customer notification of new ticket if a SPAM tag is in email subject<br />
+- customer email and staff signature field length increased to 1000 chars<br />
+- accept or reject emails with no message (email piping/POP3 fetching)<br />
+- on Categories page added links to list all tickets in each category<br />
+- when listing knowledgebase articles verify the category exists<br />
+- show related knowledgebase articles when viewing an article<br />
+- when creating tickets from emails respect the Reply-To: tag<br />
+- change ticket priority for selected tickets in ticket list<br />
+- set default priority for ticket categories<br />
+- minor changes to the interface<br />
+- ban email addresses<br />
+- ban IP addresses<br />
+</p>
+
+<p><b>Changes in 2.5.5</b> - 5th August 2014<br />
+- fix: correct TinyMCE update to 3.5.11 from version 2.5.4<br />
+</p>
+
+<p><b>Changes in 2.5.4</b> - 4th August 2014<br />
+- fix: MySQL test ignoring new database name when verifying tables<br />
+- fix: adjust time if MySQL and PHP use different time zone setting<br />
+- fix: single quotes not escaped properly in Javascript (Lisandro Ubiedo)<br />
+- updated TinyMCE to 3.5.11<br />
+</p>
+
+<p><b>Changes in 2.5.3</b> - 16th March 2014<br />
+- Firefox built-in spell check is now enabled when creating/editing knowledgebase articles<br />
+- rephrased few commands in the interface for better understanding and consistency<br />
+- fix: some Javascript not working if translated command contains a single quote<br />
+- fix: line separator chars causing Javascript syntax errors in canned responses<br />
+- fix: Hotmail breaks ticket tracking ID in email reply subject by adding spaces<br />
+- fix: define dt and lastchange variables for emails when adding a ticket note<br />
+- fix: email date should be in RFC2822 format (no manual time adjustment)<br />
+- fix: allow upgrading from 2.5.x series without patch files<br />
+- updated pop3.php to avoid a strict standards warning<br />
+- improved and simplified installation/update script<br />
+- added .header a:visited to hesk_style.css<br />
+- user password length is no longer limited<br />
+- updated TinyMCE to 3.5.10<br />
+</p>
+
+
+<p><b>Changes in 2.5.2</b> - 13th October 2013<br />
+- reports now include &quot;Time worked&quot; summary<br />
+- modified sorting by &quot;Last Replier&quot; field. Staff will be sorted first (by ID), then customers by name<br />
+- fix: toggling limit of categories and features for users should be controlled by selected admin value<br />
+- fix: checking if temporary file exists may cause problems with open_basedir in effect<br />
+- fix: disabled attachments in version 2.5.x don't load all required functions<br />
+- fix: knowledgebase categories have problems with % char in their name<br />
+- fix: anti-SPAM question doesn't accept 0 as a valid answer<br />
+- updated TinyMCE to 3.5.9<br />
+</p>
+
+<p><b>Changes in 2.5.1</b> - 8th August 2013<br />
+- added &quot;Updated&quot; value to the export of tickets to Excel<br />
+- added support for exporting tickets in Zip without Zip library enabled<br />
+- added two new email template tags: %%CREATED%% and %%UPDATED%%<br />
+- reduced memory usage in knowledgebase article suggestion, search and display<br />
+- set last replier name to the email sender name with email piping/POP3 fetching<br />
+- show &quot;Open&quot; and &quot;Resolved&quot; ticket count in reports by user and by category<br />
+- fixed HTML quoted printable chars causing problems in non UTF-8 emails<br />
+- fixed Javascript encoding of UTF-8 URL query parts<br />
+- fixed behavior of hesk_isEmailLoop() function<br />
+- remove invalid UTF-8 bytes from submitted text<br />
+- improved parsing of incoming email messages<br />
+- delete temporary email files on errors
+</p>
+
+<p><b>Changes in 2.5.0</b> - 2nd July 2013<br />
+- HESK is now fully compatible with PHP 5.5<br />
+- export tickets into Excel (XML spreadsheet)<br />
+- knowledgebase categories can now be ordered<br />
+- show number of private and draft articles in the Knowledgebase categories list<br />
+- new SPAM prevention option built-in: ReCaptcha<br />
+- new special tag for use in email templates: %%EMAIL%%<br />
+- support for %%MESSAGE%% tag in private messages<br />
+- in email piping/pop3 fetching show notice what attachments were removed and why<br />
+- if email contains message add direct links to any attachments at the bottom<br />
+- add the &quot;Reply above this line&quot; tag only if email contains message<br />
+- in emails make sure all fields have HTML special chars properly formatted<br />
+- pop3 fetching now has an option to keep copy of emails on the server<br />
+- pop3 fetching change verify sender name encoding<br />
+- use <i>mysqli</i> extension instead of <i>mysql</i> if available<br />
+- if customer reopens ticket change status to waiting reply from customer and remind customer to add a reply<br />
+- it's now easy to change the name of admin and attachments folders<br />
+- disallow uploads of some file types: .php, .phtml, .php3, .php4, .php5, .phps, .pl, .cgi, .shtm, .shtml<br />
+- optimized several SQL statements for better performance<br />
+- staff can now only run reports for categories they have access to and (by user) only for themselves.<br />
+- option to give staff permission to run full reports<br />
+- removed duplicates from text.php<br />
+- when grouping tickets by owner show current user's on top<br />
+- improved URL parsing to detect all schemes (http, https, ftp, sftp, file, ...)<br />
+- when replying as staff give an option to not send email notification<br />
+- in options.php urldecode $query<br />
+- On Hold and In Progress statuses not cleared from the &quot;Change status to&quot; box<br />
+- empty category value in submit ticket form if no public categories<br />
+- work-around for a bug in older versions of Internet Explorer not allowing https downloads<br />
+- long URLs in messages can be automatically shortened<br />
+- session names shouldn't collide with multiple copies installed<br />
+- email piping limit length of name and subject<br />
+- detect if an attachment file has been deleted<br />
+- show replier first name when printing tickets<br />
+- do not allow rating replies of third party tickets<br />
+- wrong status in email if status changes when replying<br />
+- make &quot;Add to the bottom&quot; default selection for adding canned responses<br />
+- &quot;last changed&quot; sometimes not updating correctly<br />
+- remove the need for server path setting<br />
+- forms need to allow longer emails (now 255 chars)<br />
+- if a customer replies to a ticket with status &quot;New&quot; don't change status<br />
+- &quot;Show newest on top&quot; setting now affects notes as well<br />
+- custom fields need to be converted into plain text before sending in emails<br />
+- hesk_makeURL should detect localhost addresses<br />
+- decode XHTML reserved entities to UTF-8 in emails<br />
+- prevent &amp; in &quot;Site title&quot; setting from becoming &amp;amp; in emails<br />
+- modified knowledgebase search form to make it clearer what the form does (search help)<br />
+- detect if someone tries to post more data than what the server allows (PHP post_max_size limit)<br />
+- expired sessions in admin panel may cause an &quot;Invalid Request&quot; error<br />
+- reloading the page after submitting a KB article creates a new (duplicate) article<br />
+- fix category name and email problems due to MySQL wildcard match<br />
+- for customers, auto-focus first required field when &quot;Submit a ticket&quot; form loads<br />
+- prevent caching of session pages by sending session_cache_limiter nocache<br />
+- private and draft article list showing only 1 draft per category<br />
+- limiting failed login attempts can now be disabled in settings<br />
+- modified the simple anti-spam image a bit<br />
+- count views of private articles<br />
+- when deleting knowledgebase category also delete/move subcategories and attachments<br />
+- fixed an error that can occur when merging tickets in strict MySQL mode<br />
+- if one attachment fails delete others as well<br />
+- fixed problems with \ &quot; &lt; &gt; &amp; in pop3/smtp passwords<br />
+- removed support email variable (not used anymore)<br />
+- removed Connection and Content-length HTTP headers from AJAX posts<br />
+- cache check for updates to 1 per hour<br />
+- updated TinyMCE to 3.5.8<br />
+- updated mime_parser class to 1.85<br />
+- few minor user interface changes
+</p>
+
+<p><b>Changes in 2.4.2</b> - 30th December 2012<br />
+- verify that a valid version of HESK has been installed</p>
+
+<p><b>Changes in 2.4.1</b> - 18th August 2012<br />
+- fixed comment URL parsing issues when replying to a ticket as staff<br />
+- fixed Knowledgebase file uploads not working on some installations of 2.4<br />
+- with auto-login set to OFF and Debug mode set to ON, notices were shown after staff login<br />
+- knowledgebase attachments on private and draft articles cannot be downloaded<br />
+- lastchange not updated when deleting ticket posts without status change<br />
+- some servers add slashes to file_get_contents(), detect and remove them<br />
+- some servers may report maximum file size in lowercase letters<br />
+- column hits in table hesk_pipe_loops didn't have a default value<br />
+- merge tickets option not showing on some installations of 2.4<br />
+- if a POP3 stream wrapper is already registered remove it<br />
+- improved detection of returned emails</p>
+
+<p><b>Changes in 2.4</b> - 9th August 2012<br />
+- encoding changed to UTF-8 for all languages<br />
+- time spent on ticket<br />
+- POP3 fetching (connect to an email account and convert emails into tickets)<br />
+- customers may reply to tickets by replying to notification emails<br />
+- detect and correct mistyped email addresses<br />
+- detect email piping loops<br />
+- enable/disable autoassign per category<br />
+- private ticket categories (for use by staff only)<br />
+- merge several tickets into one<br />
+- sticky knowledgebase articles<br />
+- keywords for knowledgebase articles<br />
+- hide date and views from knowledgebase articles<br />
+- set email &quot;From:&quot; name in HESK settings<br />
+- fixed bug: when moving ticket category an autoassign email wasn't sent<br />
+- fixed bug: reopen link still showed to customer when it should be disabled<br />
+- fixed bug: misplaced quote in users online list HTML code<br />
+- fixed bug: close ticket selection missing in new statuses<br />
+- fixed bug: staff should not be able to create new accounts with more features<br />
+- fixed broken Javascript code if language file uses single quotes<br />
+- fixed typos in some variable names<br />
+- fixed email date issues<br />
+- fixed email notifications should be sent in preferred language<br />
+- improved permission checking for access to attachments and tickets<br />
+- updated calendar to latest version<br />
+- updated WYSIWYG text editor to latest version<br />
+- updated mime_decode to latest version<br />
+- filter ticket ID for ugly words<br />
+- delete individual attachments from tickets<br />
+- new special tag for email templates: %%STATUS%%<br />
+- search ticket notes<br />
+- forgot ticket ID lists open and most recent tickets first<br />
+- forgot ticket ID can list open tickets only<br />
+- limit maximum open tickets per client (web form only)<br />
+- new replies can now be shown on top of the page<br />
+- reply box can be moved to the top of the page<br />
+- when showing next ticket that needs attention don't show tickets assigned to someone else<br />
+- searching tickets by message now also searches replies<br />
+- email when note is added to ticket assigned to me<br />
+- email subjects changed to include ticket subject and tracking ID<br />
+- improved email syntax validation<br />
+- moved less common functions from common.inc.php<br />
+- modified admin header to show nicely in non-English versions<br />
+- mark replies read by customer<br />
+- automatically check for updates<br />
+- a number of other minor changes and fixes.</p>
+
+<p><b>Changes in 2.3</b> - 15th September 2011<br />
+- a &quot;What You See is What You Get&quot; (WYSIWYG) editor for Knowledgebase articles<br />
+- import tickets into Knowledgebase articles<br />
+- automatically assign tickets to appropriate staff<br />
+- staff can change status of tickets<br />
+- two new ticket status options: On Hold, In Progress<br />
+- staff can set ticket priority to &quot;Critical&quot;<br />
+- view what staff is currently online<br />
+- create tickets from email (email piping)<br />
+- support for sending emails using a SMTP server rather than PHP mail()<br />
+- improved ticket sorting algorithm and new sorting options.<br />
+- change default ticket display and sorting in the admin homepage<br />
+- find tickets by email and sequential ticket ID<br />
+- brute force protection for both ticket view and staff login<br />
+- Hesk is now IPv6 ready<br />
+- fixed bug where required custom fields with value 0 would return an error<br />
+- fixed bug where emails were sometimes not sent to all staff when changing ticket category<br />
+- fixed bug where knowledgebase article count wasn't updated properly<br />
+- fixed a potential security issue on servers with PHP register_globals enabled<br />
+- renamed &quot;Close ticket&quot; to &quot;Mark as Resolved&quot; for clarity<br />
+- renamed &quot;Archived&quot; to &quot;Tagged&quot; for clarity<br />
+- you can require customers to enter both ticket ID and email to view a ticket<br />
+- modified ticket ID format so it is easier to read and repeat<br />
+- limit view of unassigned tickets to staff<br />
+- a number of error-handling and interface changes to make Hesk even more user friendly<br />
+- a number of minor changes and fixes.</p>
+
+<p><b>Changes in 2.2</b> - 9th June 2010<br />
+- assign owners to tickets (assign tickets to individual staff members)<br />
+- admin panel shows last repliers' name<br />
+- more information can be entered into e-mails (category, message, ticket owner, custom fields)<br />
+- staff can now submit tickets<br />
+- added reporting features<br />
+- added staff private messages<br />
+- check for duplicate tracking ID<br />
+- improved ticket searching<br />
+- fixed bug where edit_post rewrites session variables when register_globals is enabled<br />
+- fixed bug where e-mails and URLs don't show correctly when editing ticket<br />
+- fixed bug where last replier didn't show correctly after deleting a post<br />
+- lock/unlock individual tickets<br />
+- new way of suggesting KB articles<br />
+- ticket history log (who closed, opened, locked or unlocked a ticket)<br />
+- more user-friendly error and success message handling<br />
+- added checks to fight CSRF-type attacks<br />
+- generate URLs that will pre-load category selection when submitting new tickets<br />
+- settings will now accept localhost URLs<br />
+- purge attachments when the ticket is deleted<br />
+- disable customer setting ticket priority level<br />
+- a number of minor changes and fixes.</p>
+
+<p><b>Changes in 2.1</b> - 7th August 2009<br />
+- Full support for multiple languages<br />
+- Knowledgebase articles can now have attachments<br />
+- Increased custom fields number to 20<br />
+- Checkboxes now supported as custom fields<br />
+- Autologin feature<br />
+- Staff can edit all ticket details<br />
+- New redirect options after replying to a ticket (settable in Profile)<br />
+- Canned responses can be appended to the message instead of replacing it<br />
+- A read-only access to private knowledgebase by all staff<br />
+- Fixed numerous small bugs and issues thanks to large code testing and screening<br />
+- Improved security<br />
+- HESK moved to <a href="https://www.hesk.com">www.hesk.com</a> Web site, links within the script updated accordingly</p>
+
+<p><b>Changes in 2.0</b> - 24th January 2009<br />
+- Updated user interface<br />
+- Fully featured knowledge base (categories, articles (counting views, able to rate), search, ...)<br />
+- Display of latest and top articles<br />
+- Before a ticket is submitted HESK will suggest matching Knowledgebase articles<br />
+- You can add notes to tickets (hidden from customer, viewable by staff)<br />
+- Limit features for staff (not just Administrator/Staff, now you can enable/disable individual features for individual users)<br />
+- Rating of staff replies (Helpful/Not helpful)<br />
+- Up to 10 custom field now<br />
+- Custom fields can be text, textarea, select or radio button<br />
+- Disable list users in admin<br />
+- Remember staff username<br />
+- Default ticket listing by status (new, waiting reply first) then priority<br />
+- Staff passwords encrypted - not simple SHA1, but multiple times<br />
+- Admin files moved to &quot;admin&quot; folder<br />
+- Added prefix to database names<br />
+- Autoclose tickets after X days<br />
+- Adjust server time to match your local time<br />
+- Updated anti-SPAM features<br />
+- And many other changes</p>
+
+<p><b>Changes in 0.94.1</b> - 25th April 2007<br />
+- Fixed an XSS vulnerability on some servers (reported by Nemanja Avramovic)<br />
+- Changed the way file uploads are handled</p>
+
+<p><b>Changes in 0.94</b> - 23rd April 2007<br />
+- Added support for custom fields (up to 5)<br />
+- Added file attachments<br />
+- Added anti-SPAM security image<br />
+- Added canned responses<br />
+- Settings are now edited from the admin panel<br />
+- New ticket statuses (New, Replied, Waiting Reply, Resolved)<br />
+- Ticket ID reminder<br />
+- And many other changes (too many to list here)</p>
+
+<p><b>Changes in 0.93.1</b> - 17th September 2005<br />
+- Fixed a security issue reported by OS2A team</p>
+
+<p><b>Version 0.93</b> - 3rd July 2005<br />
+</p>
+
+<p><b>Version 0.92</b> - 28th May 2005<br />
+</p>
+
+<p><b>Version 0.91</b> - 4th May 2005<br />
+</p>
+
+<p><b>Initial release 0.90</b> - 23rd April 2005</p>
+
+<p>&nbsp;</p>
+
+<p style="text-align:center">&copy; Copyright <a href="https://www.hesk.com">HESK.COM</a> 2005-2020. All rights reserved.</p>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+Hello,
+
+You have received a new private message from %%NAME%% with the following subject:
+
+%%SUBJECT%%
+
+You can view your new message by clicking on the following link:
+%%TRACK_URL%%
+
+
+Sincerely,
+
+%%SITE_TITLE%%
+%%SITE_URL%%
