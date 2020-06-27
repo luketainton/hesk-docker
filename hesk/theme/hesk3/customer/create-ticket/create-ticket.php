@@ -25,17 +25,23 @@ require_once(TEMPLATE_PATH . 'customer/util/custom-fields.php');
     <title><?php echo $hesk_settings['tmp_title']; ?></title>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="" />
-    <meta name="theme-color" content="#fff" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo HESK_PATH; ?>img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo HESK_PATH; ?>img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo HESK_PATH; ?>img/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="<?php echo HESK_PATH; ?>img/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="<?php echo HESK_PATH; ?>img/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="shortcut icon" href="<?php echo HESK_PATH; ?>img/favicon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#2d89ef" />
+    <meta name="msapplication-config" content="<?php echo HESK_PATH; ?>img/favicon/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css" />
-
+    <!--[if IE]>
+    <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/ie9.css" />
+    <![endif]-->
     <style>
         .form-footer .btn {
             margin-top: 20px;
-            width: 100%;
         }
     </style>
     <?php include(TEMPLATE_PATH . '../../head.txt'); ?>
@@ -115,12 +121,12 @@ require_once(TEMPLATE_PATH . 'customer/util/custom-fields.php');
                 <form class="form form-submit-ticket ticket-create <?php echo count($_SESSION['iserror']) ? 'invalid' : ''; ?>" method="post" action="submit_ticket.php?submit=1" name="form1" id="form1" enctype="multipart/form-data">
                     <section class="form-groups">
                         <div class="form-group error">
-                            <label class="label required"><?php echo $hesklang['name']; ?></label>
+                            <label class="label required"><?php echo $hesklang['name']; ?>:</label>
                             <input type="text" name="name" class="form-control <?php if (in_array('name',$_SESSION['iserror'])) {echo 'isEerror';} ?>" maxlength="50" value="<?php if (isset($_SESSION['c_name'])) {echo stripslashes(hesk_input($_SESSION['c_name']));} ?>" required>
                         </div>
                         <div class="form-group">
-                            <label class="label <?php if ($hesk_settings['require_email']) { ?>required<?php } ?>"><?php echo $hesklang['email']; ?></label>
-                            <input type="email"
+                            <label class="label <?php if ($hesk_settings['require_email']) { ?>required<?php } ?>"><?php echo $hesklang['email']; ?>:</label>
+                            <input type="<?php echo $hesk_settings['multi_eml'] ? 'text' : 'email'; ?>"
                                    class="form-control <?php if (in_array('email',$_SESSION['iserror'])) {echo 'isError';} elseif (in_array('email',$_SESSION['isnotice'])) {echo 'isNotice';} ?>"
                                    name="email" id="email" maxlength="1000"
                                    value="<?php if (isset($_SESSION['c_email'])) {echo stripslashes(hesk_input($_SESSION['c_email']));} ?>" <?php if($hesk_settings['detect_typos']) { echo ' onblur="HESK_FUNCTIONS.suggestEmail(\'email\', \'email_suggestions\', 0)"'; } ?>
@@ -129,10 +135,10 @@ require_once(TEMPLATE_PATH . 'customer/util/custom-fields.php');
                         </div>
                         <?php if ($hesk_settings['confirm_email']): ?>
                             <div class="form-group">
-                                <label class="label <?php if ($hesk_settings['require_email']) { ?>required<?php } ?>"><?php echo $hesklang['confemail']; ?></label>
-                                <input type="email"
+                                <label class="label <?php if ($hesk_settings['require_email']) { ?>required<?php } ?>"><?php echo $hesklang['confemail']; ?>:</label>
+                                <input type="<?php echo $hesk_settings['multi_eml'] ? 'text' : 'email'; ?>"
                                        class="form-control <?php if (in_array('email2',$_SESSION['iserror'])) {echo 'isError';} elseif (in_array('email2',$_SESSION['isnotice'])) {echo 'isNotice';} ?>"
-                                       name="email" id="email" maxlength="1000"
+                                       name="email2" id="email2" maxlength="1000"
                                        value="<?php if (isset($_SESSION['c_email2'])) {echo stripslashes(hesk_input($_SESSION['c_email2']));} ?>"
                                        <?php if ($hesk_settings['require_email']) { ?>required<?php } ?>>
                             </div>
@@ -140,7 +146,7 @@ require_once(TEMPLATE_PATH . 'customer/util/custom-fields.php');
                     </section>
                     <?php if ($hesk_settings['cust_urgency']): ?>
                         <section class="param">
-                            <span class="label required"><?php echo $hesklang['priority']; ?></span>
+                            <span class="label required"><?php echo $hesklang['priority']; ?>:</span>
                             <div class="dropdown-select center out-close priority">
                                 <select name="priority">
                                     <?php if ($hesk_settings['select_pri']): ?>
@@ -172,7 +178,7 @@ require_once(TEMPLATE_PATH . 'customer/util/custom-fields.php');
                         <?php if ($hesk_settings['require_subject'] != -1): ?>
                             <div class="form-group">
                                 <label class="label <?php if ($hesk_settings['require_subject']) { ?>required<?php } ?>">
-                                    <?php echo $hesklang['subject']; ?>
+                                    <?php echo $hesklang['subject']; ?>:
                                 </label>
                                 <input type="text" class="form-control <?php if (in_array('subject',$_SESSION['iserror'])) {echo 'isError';} ?>"
                                        name="subject" maxlength="70"
@@ -184,7 +190,7 @@ require_once(TEMPLATE_PATH . 'customer/util/custom-fields.php');
                         if ($hesk_settings['require_message'] != -1): ?>
                             <div class="form-group">
                                 <label class="label <?php if ($hesk_settings['require_message']) { ?>required<?php } ?>">
-                                    <?php echo $hesklang['message']; ?>
+                                    <?php echo $hesklang['message']; ?>:
                                 </label>
                                 <textarea class="form-control <?php if (in_array('message',$_SESSION['iserror'])) {echo 'isError';} ?>"
                                           name="message" rows="12" cols="60"
@@ -221,7 +227,7 @@ require_once(TEMPLATE_PATH . 'customer/util/custom-fields.php');
                     ?>
                         <div class="divider"></div>
                         <section class="param param--attach">
-                            <span class="label"><?php echo $hesklang['attachments']; ?></span>
+                            <span class="label"><?php echo $hesklang['attachments']; ?>:</span>
                             <div class="attach">
                                 <div>
                                     <?php
@@ -383,11 +389,22 @@ END LICENSE CODE
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery-3.4.1.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/hesk_functions.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/svg4everybody.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.scrollbar.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/selectize.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.en.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.autocomplete.js"></script>
+<script type="text/javascript">
+(function ($) { $.fn.datepicker.language['en'] = {
+    days: ['<?php echo $hesklang['d0']; ?>', '<?php echo $hesklang['d1']; ?>', '<?php echo $hesklang['d2']; ?>', '<?php echo $hesklang['d3']; ?>', '<?php echo $hesklang['d4']; ?>', '<?php echo $hesklang['d5']; ?>', '<?php echo $hesklang['d6']; ?>'],
+    daysShort: ['<?php echo $hesklang['sun']; ?>', '<?php echo $hesklang['mon']; ?>', '<?php echo $hesklang['tue']; ?>', '<?php echo $hesklang['wed']; ?>', '<?php echo $hesklang['thu']; ?>', '<?php echo $hesklang['fri']; ?>', '<?php echo $hesklang['sat']; ?>'],
+    daysMin: ['<?php echo $hesklang['su']; ?>', '<?php echo $hesklang['mo']; ?>', '<?php echo $hesklang['tu']; ?>', '<?php echo $hesklang['we']; ?>', '<?php echo $hesklang['th']; ?>', '<?php echo $hesklang['fr']; ?>', '<?php echo $hesklang['sa']; ?>'],
+    months: ['<?php echo $hesklang['m1']; ?>','<?php echo $hesklang['m2']; ?>','<?php echo $hesklang['m3']; ?>','<?php echo $hesklang['m4']; ?>','<?php echo $hesklang['m5']; ?>','<?php echo $hesklang['m6']; ?>', '<?php echo $hesklang['m7']; ?>','<?php echo $hesklang['m8']; ?>','<?php echo $hesklang['m9']; ?>','<?php echo $hesklang['m10']; ?>','<?php echo $hesklang['m11']; ?>','<?php echo $hesklang['m12']; ?>'],
+    monthsShort: ['<?php echo $hesklang['ms01']; ?>','<?php echo $hesklang['ms02']; ?>','<?php echo $hesklang['ms03']; ?>','<?php echo $hesklang['ms04']; ?>','<?php echo $hesklang['ms05']; ?>','<?php echo $hesklang['ms06']; ?>', '<?php echo $hesklang['ms07']; ?>','<?php echo $hesklang['ms08']; ?>','<?php echo $hesklang['ms09']; ?>','<?php echo $hesklang['ms10']; ?>','<?php echo $hesklang['ms11']; ?>','<?php echo $hesklang['ms12']; ?>'],
+    today: '<?php echo $hesklang['r1']; ?>',
+    clear: '<?php echo $hesklang['clear']; ?>',
+    dateFormat: 'mm/dd/yyyy',
+    timeFormat: 'hh:ii aa',
+    firstDay: <?php echo $hesklang['first_day_of_week']; ?>
+}; })(jQuery);
+</script>
 <?php
 if (defined('RECAPTCHA'))
 {
@@ -402,6 +419,22 @@ if (defined('RECAPTCHA'))
 <script>
     $(document).ready(function() {
         $('#select_category').selectize();
+        <?php
+        foreach ($customFieldsBeforeMessage as $customField)
+        {
+            if ($customField['type'] == 'select')
+            {
+                echo "$('#{$customField['name']}').selectize();";
+            }
+        }
+        foreach ($customFieldsAfterMessage as $customField)
+        {
+            if ($customField['type'] == 'select')
+            {
+                echo "$('#{$customField['name']}').selectize();";
+            }
+        }
+        ?>
     });
 </script>
 <?php if (has_public_kb() && $hesk_settings['kb_recommendanswers']): ?>

@@ -1,5 +1,5 @@
 <?php
-// Settings file for HESK 3.0.0
+// Settings file for HESK 3.1.1
 
 // ==> GENERAL
 
@@ -41,6 +41,8 @@ $hesk_settings['autoclose']=0;
 $hesk_settings['max_open']=0;
 $hesk_settings['new_top']=0;
 $hesk_settings['reply_top']=0;
+$hesk_settings['hide_replies']=-1;
+$hesk_settings['limit_width']=800;
 
 // --> Features
 $hesk_settings['autologin']=1;
@@ -63,7 +65,7 @@ $hesk_settings['select_cat']=0;
 $hesk_settings['select_pri']=0;
 $hesk_settings['cat_show_select']=15;
 
-// --> SPAM prevention
+// --> SPAM Prevention
 $hesk_settings['secimg_use']=1;
 $hesk_settings['secimg_sum']='13N4BRS4WW';
 $hesk_settings['recaptcha_use']=0;
@@ -168,6 +170,7 @@ $hesk_settings['multi_eml']=0;
 $hesk_settings['confirm_email']=0;
 $hesk_settings['open_only']=1;
 
+
 // ==> TICKET LIST
 
 $hesk_settings['ticket_list']=array('trackid','lastchange','name','subject','status','lastreplier');
@@ -182,6 +185,7 @@ $hesk_settings['updatedformat']=2;
 // --> Date & Time
 $hesk_settings['timezone']='UTC';
 $hesk_settings['timeformat']='Y-m-d H:i:s';
+$hesk_settings['time_display']='1';
 
 // --> Other
 $hesk_settings['ip_whois']='https://whois.domaintools.com/{IP}';
@@ -196,7 +200,7 @@ $hesk_settings['check_updates']=1;
 #############################
 #     DO NOT EDIT BELOW     #
 #############################
-$hesk_settings['hesk_version']='3.0.0';
+$hesk_settings['hesk_version']='3.1.1';
 if ($hesk_settings['debug_mode'])
 {
     error_reporting(E_ALL);

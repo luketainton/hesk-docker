@@ -101,11 +101,19 @@ if (!defined('IN_SCRIPT')) {
         <?php endforeach; ?>
     </table>
 
+    <?php if (count($ticket['notes'])): ?>
+        <?php foreach ($ticket['notes'] as $note): ?>
+            <p><?php echo $hesklang['noteby']; ?> <b><?php echo ($note['name'] ? $note['name'] : $hesklang['e_udel']); ?></b></i> - <?php echo hesk_date($note['dt'], true); ?><br>
+            <?php echo strlen($note['message']) ? $note['message'] : '<i>no message</i>'; ?></p>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
     <?php if ($ticket['message'] != ''): ?>
         <p><?php echo $ticket['message']; ?></p>
     <?php endif; ?>
 
     <?php foreach ($ticket['replies'] as $reply): ?>
+        <hr>
         <table border="0">
             <tr>
                 <td><?php echo $hesklang['date']; ?>:</td>

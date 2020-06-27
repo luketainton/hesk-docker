@@ -15,7 +15,7 @@ function hesk3_show_messages($messages) {
     foreach ($messages as $message):
     ?>
     <div class="main__content notice-flash">
-        <div class="notification <?php echo $style_to_class[$message['style']]; ?>">
+        <div class="notification <?php echo $style_to_class[$message['style']]; ?> browser-default">
             <p><b><?php echo $message['title']; ?></b></p>
             <?php echo $message['message']; ?>
         </div>

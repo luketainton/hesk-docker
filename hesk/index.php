@@ -393,7 +393,7 @@ function print_start()
         $service_messages[] = $sm;
     }
 
-    $hesk_settings['render_template'](TEMPLATE_PATH . '/customer/index.php', array(
+    $hesk_settings['render_template'](TEMPLATE_PATH . 'customer/index.php', array(
         'top_articles' => $top_articles,
         'latest_articles' => $latest_articles,
         'service_messages' => $service_messages

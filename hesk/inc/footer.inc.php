@@ -49,11 +49,29 @@ if (isset($login_wrapper)) {
 </div> <!-- End wrapper -->
 <input type="hidden" name="HESK_PATH" value="<?php echo HESK_PATH; ?>">
 <script src="<?php echo HESK_PATH; ?>js/svg4everybody.min.js"></script>
-<script src="<?php echo HESK_PATH; ?>js/jquery.scrollbar.min.js"></script>
-<script src="<?php echo HESK_PATH; ?>js/selectize.min.js"></script>
+<?php
+// Do we need the calendar functions?
+if (defined('CALENDAR'))
+{
+?>
 <script src="<?php echo HESK_PATH; ?>js/datepicker.min.js"></script>
-<script src="<?php echo HESK_PATH; ?>js/datepicker.en.js"></script>
-<script src="<?php echo HESK_PATH; ?>js/jquery.autocomplete.js"></script>
+<script type="text/javascript">
+(function ($) { $.fn.datepicker.language['en'] = {
+    days: ['<?php echo $hesklang['d0']; ?>', '<?php echo $hesklang['d1']; ?>', '<?php echo $hesklang['d2']; ?>', '<?php echo $hesklang['d3']; ?>', '<?php echo $hesklang['d4']; ?>', '<?php echo $hesklang['d5']; ?>', '<?php echo $hesklang['d6']; ?>'],
+    daysShort: ['<?php echo $hesklang['sun']; ?>', '<?php echo $hesklang['mon']; ?>', '<?php echo $hesklang['tue']; ?>', '<?php echo $hesklang['wed']; ?>', '<?php echo $hesklang['thu']; ?>', '<?php echo $hesklang['fri']; ?>', '<?php echo $hesklang['sat']; ?>'],
+    daysMin: ['<?php echo $hesklang['su']; ?>', '<?php echo $hesklang['mo']; ?>', '<?php echo $hesklang['tu']; ?>', '<?php echo $hesklang['we']; ?>', '<?php echo $hesklang['th']; ?>', '<?php echo $hesklang['fr']; ?>', '<?php echo $hesklang['sa']; ?>'],
+    months: ['<?php echo $hesklang['m1']; ?>','<?php echo $hesklang['m2']; ?>','<?php echo $hesklang['m3']; ?>','<?php echo $hesklang['m4']; ?>','<?php echo $hesklang['m5']; ?>','<?php echo $hesklang['m6']; ?>', '<?php echo $hesklang['m7']; ?>','<?php echo $hesklang['m8']; ?>','<?php echo $hesklang['m9']; ?>','<?php echo $hesklang['m10']; ?>','<?php echo $hesklang['m11']; ?>','<?php echo $hesklang['m12']; ?>'],
+    monthsShort: ['<?php echo $hesklang['ms01']; ?>','<?php echo $hesklang['ms02']; ?>','<?php echo $hesklang['ms03']; ?>','<?php echo $hesklang['ms04']; ?>','<?php echo $hesklang['ms05']; ?>','<?php echo $hesklang['ms06']; ?>', '<?php echo $hesklang['ms07']; ?>','<?php echo $hesklang['ms08']; ?>','<?php echo $hesklang['ms09']; ?>','<?php echo $hesklang['ms10']; ?>','<?php echo $hesklang['ms11']; ?>','<?php echo $hesklang['ms12']; ?>'],
+    today: '<?php echo $hesklang['r1']; ?>',
+    clear: '<?php echo $hesklang['clear']; ?>',
+    dateFormat: 'mm/dd/yyyy',
+    timeFormat: 'hh:ii aa',
+    firstDay: <?php echo $hesklang['first_day_of_week']; ?>
+}; })(jQuery);
+</script>
+<?php
+}
+?>
 <script type="text/javascript" src="<?php echo HESK_PATH; ?>js/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.js"></script>
 <?php
 
@@ -84,6 +102,12 @@ if (defined('AUTOFOCUS'))
 })();
 </script>
 <?php
+}
+
+// Apply status coloring to drop-down box; needs to be called after app.js
+if (isset($hesk_settings['print_status_select_box_jquery']))
+{
+    hesk_print_status_select_box_jquery();
 }
 
 echo '

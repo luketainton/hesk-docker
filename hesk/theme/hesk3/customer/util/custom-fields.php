@@ -13,7 +13,7 @@ function hesk3_output_custom_fields($customFields) {
                 ?>
                 <div class="form-group <?php echo $customField['iserror'] ? 'isError' : '' ?>">
                     <label class="label <?php echo $customField['req'] ? 'required' : '' ?>">
-                        <?php echo $customField['title']; ?>
+                        <?php echo $customField['name:']; ?>
                     </label>
                     <?php
                     $i = 0;
@@ -37,9 +37,8 @@ function hesk3_output_custom_fields($customFields) {
             case 'select':
                 ?>
                 <section class="param blue-select">
-                    <span class="label <?php echo $customField['req'] ? 'required' : '' ?>"><?php echo $customField['title']; ?></span>
-                    <div class="dropdown-select center out-close">
-                        <select name="<?php echo $customField['name']; ?>">
+                    <span class="label <?php echo $customField['req'] ? 'required' : '' ?>"><?php echo $customField['name:']; ?></span>
+                        <select name="<?php echo $customField['name']; ?>" id="<?php echo $customField['name']; ?>">
                             <?php if (!empty($customField['value']['show_select'])): ?>
                             <option value=""><?php echo $hesklang['select']; ?></option>
                             <?php
@@ -47,19 +46,18 @@ function hesk3_output_custom_fields($customFields) {
                             $i = 0;
                             foreach ($customField['value']['options'] as $option):
                             ?>
-                            <option value="<?php echo hesk_htmlentities($option['value']); ?>" <?php echo $option['selected'] ? 'selected' : '' ?>><?php echo $option['value']; ?></option>
+                            <option <?php echo $option['selected'] ? 'selected' : '' ?>><?php echo $option['value']; ?></option>
                             <?php
                                 $i++;
                             endforeach; ?>
                         </select>
-                    </div>
                 </section>
             <?php
                 break;
             case 'checkbox':
                 ?>
                 <section class="param checkboxs">
-                    <label class="label <?php echo $customField['req'] ? 'required' : '' ?>"><?php echo $customField['title']; ?></label>
+                    <label class="label <?php echo $customField['req'] ? 'required' : '' ?>"><?php echo $customField['name:']; ?></label>
                     <?php
                     $i = 0;
                     foreach ($customField['value']['options'] as $option):
@@ -81,7 +79,7 @@ function hesk3_output_custom_fields($customFields) {
             case 'textarea':
                 ?>
                 <div class="form-group">
-                    <label class="label <?php echo $customField['req'] ? 'required' : '' ?>"><?php echo $customField['title']; ?></label>
+                    <label class="label <?php echo $customField['req'] ? 'required' : '' ?>"><?php echo $customField['name:']; ?></label>
                     <textarea name="<?php echo $customField['name']; ?>"
                               rows="<?php echo intval($customField['value']['rows']); ?>"
                               cols="<?php echo intval($customField['value']['cols']); ?>"
@@ -92,8 +90,9 @@ function hesk3_output_custom_fields($customFields) {
                 break;
             case 'date':
                 ?>
+                <!--[if !IE]><!-->
                 <section class="param calendar">
-                    <label class="label <?php echo $customField['req'] ? 'required' : '' ?>"><?php echo $customField['title']; ?></label>
+                    <label class="label <?php echo $customField['req'] ? 'required' : '' ?>"><?php echo $customField['name:']; ?></label>
                     <div class="calendar--button">
                         <button type="button">
                             <svg class="icon icon-calendar">
@@ -114,6 +113,21 @@ function hesk3_output_custom_fields($customFields) {
                         </i>
                     </div>
                 </section>
+                <!--<![endif]-->
+                <!--[if IE]>
+                <div class="form-group">
+                    <label class="label <?php echo $customField['req'] ? 'required' : '' ?>">
+                        <?php echo $customField['name:']; ?>
+                    </label>
+                    <input type="text" class="form-control <?php if ($customField['iserror']) { ?>isError<?php } ?>"
+                           value="<?php echo $customField['original_value']; ?>"
+                           name="<?php echo $customField['name']; ?>"
+                           <?php echo $customField['req'] ? 'required' : '' ?>>
+                    <label class="label">
+                        <?php echo $hesklang['d_format']; ?>: <?php echo date($customField['value']['date_format'], mktime(0, 0, 0, 12, 30, date('Y'))); ?>
+                    </label>
+                </div>
+                <![endif]-->
             <?php
                 break;
             case 'email':
@@ -123,9 +137,9 @@ function hesk3_output_custom_fields($customFields) {
                 ?>
                 <div class="form-group">
                     <label class="label <?php echo $customField['req'] ? 'required' : '' ?>">
-                        <?php echo $customField['title']; ?>
+                        <?php echo $customField['name:']; ?>
                     </label>
-                    <input type="email"
+                    <input type="<?php echo $customField['value']['multiple'] ? 'text' : 'email'; ?>"
                            id="<?php echo $customField['name']; ?>"
                            class="form-control"
                            value="<?php echo $customField['original_value']; ?>"
@@ -147,11 +161,12 @@ function hesk3_output_custom_fields($customFields) {
                 ?>
                 <div class="form-group">
                     <label class="label <?php echo $customField['req'] ? 'required' : '' ?>">
-                        <?php echo $customField['title']; ?>
+                        <?php echo $customField['name:']; ?>
                     </label>
                     <input type="text" class="form-control <?php if ($customField['iserror']) { ?>isError<?php } ?>"
                            value="<?php echo $customField['value']['default_value']; ?>"
                            name="<?php echo $customField['name']; ?>"
+                           maxlength="<?php echo intval($customField['value']['max_length']); ?>"
                            <?php echo $customField['req'] ? 'required' : '' ?>>
                 </div>
             <?php

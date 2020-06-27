@@ -63,7 +63,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                         </a>
                     </div>
                     <div class="listitem__menu">
-                        <a href="#" class="listitem__caption">Templates</a>
+                        <a href="#" class="listitem__caption"><?php echo $hesklang['nav_templates']; ?></a>
                         <ul class="submenu__list">
                             <li class="submenu__listitem <?php if ($calling_script === 'manage_canned') { ?>current<?php } ?>">
                                 <a href="manage_canned.php">
@@ -186,7 +186,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
 
                 //Reports
                 if (hesk_checkPermission('can_run_reports',0)) {
-                    $pages = array('reports', 'export');
+                    $pages = array('reports', 'export', 'module_statistics');
                     $open_menu = in_array($calling_script, $pages) ? 'current submenu-is-opened' : '';
                 ?>
                 <li class="listitem submenu <?php echo $open_menu; ?>">
@@ -206,9 +206,20 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                                     <?php echo $hesklang['reports_tab']; ?>
                                 </a>
                             </li>
-                            <li class="submenu__listitem <?php if ($calling_script === 'export') { ?>current<?php } ?>">
-                                <a href="export.php">
-                                    <?php echo $hesklang['export']; ?>
+                            <?php
+                            if (hesk_checkPermission('can_export',0)) {
+                                ?>
+                                <li class="submenu__listitem <?php if ($calling_script === 'export') { ?>current<?php } ?>">
+                                    <a href="export.php">
+                                        <?php echo $hesklang['export']; ?>
+                                    </a>
+                                </li>
+                                <?php
+                            }
+                            ?>
+                            <li class="submenu__listitem <?php if ($calling_script === 'module_statistics') { ?>current<?php } ?>">
+                                <a href="module_statistics.php">
+                                    <?php echo $hesklang['statistics']['tab']; ?>
                                 </a>
                             </li>
                         </ul>
@@ -422,7 +433,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
             </a>
             <div class="profile">
                 <div class="profile__item profile__item--mail">
-                    <a href="mail.php" class="btn btn-empty">
+                    <a href="mail.php" class="btn btn-empty tooltip" title="<?php echo $hesklang['m_h']; ?>">
                         <div class="profile__item_rel">
                             <svg class="icon icon-mail">
                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-mail"></use>

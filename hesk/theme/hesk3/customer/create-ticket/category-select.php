@@ -16,20 +16,20 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
     <title><?php echo $hesk_settings['hesk_title']; ?></title>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="" />
-    <meta name="theme-color" content="#fff" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo HESK_PATH; ?>img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo HESK_PATH; ?>img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo HESK_PATH; ?>img/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="<?php echo HESK_PATH; ?>img/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="<?php echo HESK_PATH; ?>img/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="shortcut icon" href="<?php echo HESK_PATH; ?>img/favicon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#2d89ef" />
+    <meta name="msapplication-config" content="<?php echo HESK_PATH; ?>img/favicon/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css" />
-
-    <style>
-        .form-footer .btn {
-            margin-top: 20px;
-            width: 100%;
-        }
-    </style>
-
+    <!--[if IE]>
+    <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/ie9.css" />
+    <![endif]-->
     <?php include(TEMPLATE_PATH . '../../head.txt'); ?>
 </head>
 
@@ -87,26 +87,26 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
                     hesk3_show_messages($messages);
                     ?>
                 </div>
-                <h3 class="article__heading article__heading--form">
-                    <span class="ml-1"><?php echo $hesklang['select_category_text']; ?></span>
-                </h3>
+                <h2 class="select__title"><?php echo $hesklang['select_category_text']; ?></h2>
                 <?php
                 // Show dropdown or list, depending on number of categories
-                if (count($hesk_settings['categories']) > $hesk_settings['cat_show_select']):
+                if (($category_count = count($hesk_settings['categories'])) > $hesk_settings['cat_show_select']):
                 ?>
                     <form action="index.php" method="get">
-                        <select class="form-control" name="category" id="select_category">
-                            <?php
-                            if ($hesk_settings['select_cat'])
-                            {
-                                echo '<option value="">'.$hesklang['select'].'</option>';
-                            }
-                            foreach ($hesk_settings['categories'] as $k=>$v)
-                            {
-                                echo '<option value="'.$k.'">'.$v.'</option>';
-                            }
-                            ?>
-                        </select>
+                        <div style="display: table; margin: 40px auto;">
+                            <select class="form-control cat-select" name="category" id="select_category">
+                                <?php
+                                if ($hesk_settings['select_cat'])
+                                {
+                                    echo '<option value="">'.$hesklang['select'].'</option>';
+                                }
+                                foreach ($hesk_settings['categories'] as $k=>$v)
+                                {
+                                    echo '<option value="'.$k.'">'.$v.'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
                         <div class="form-footer">
                             <button class="btn btn-full" type="submit"><?php echo $hesklang['c2c']; ?></button>
                             <input type="hidden" name="a" value="add">
@@ -115,14 +115,14 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
                 <?php else: ?>
                     <div class="nav">
                         <?php foreach ($hesk_settings['categories'] as $k => $v): ?>
-                        <a href="index.php?a=add&amp;category=<?php echo $k; ?>" class="navlink">
+                        <a href="index.php?a=add&amp;category=<?php echo $k; ?>" class="navlink <?php if ($category_count > 8) echo "navlink-condensed"; ?>">
                             <div class="icon-in-circle">
                                 <svg class="icon icon-chevron-right">
                                     <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-chevron-right"></use>
                                 </svg>
                             </div>
                             <div>
-                                <h5 class="navlink__title"><?php echo $v; ?></h5>
+                                <h5 class="navlink__title"><!--[if IE]> &raquo; <![endif]--><?php echo $v; ?></h5>
                             </div>
                         </a>
                         <?php endforeach; ?>
@@ -157,11 +157,7 @@ END LICENSE CODE
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery-3.4.1.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/hesk_functions.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/svg4everybody.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.scrollbar.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/selectize.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.en.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.autocomplete.js"></script>
 <script>
     $(document).ready(function() {
         $('#select_category').selectize();

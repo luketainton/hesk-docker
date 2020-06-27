@@ -230,7 +230,7 @@ if ($total > 0)
 
 		// Start ticket row
 		echo '
-		<tr title="'.$ticket['message'].'"'.($ticket['owner'] ? '' : ' class="new"').'>
+		<tr title="'.$ticket['message'].'" class="'.($ticket['owner'] ? '' : 'new').($ticket['priority'] == 'critical' ? ' bg-critical' : '').'">
 		<td class="table__first_th sindu_handle">
             <div class="checkbox-custom">
                 <input type="checkbox" id="ticket_check_'.$ticket['id'].'" name="id[]" value="'.$ticket['id'].'">
@@ -311,7 +311,7 @@ if ($total > 0)
 		// Print subject and link to the ticket page
 		if ( hesk_show_column('subject') )
 		{
-			echo '<td class="subject">'.($ticket['archive'] ? '<svg class="icon icon-tag" style="margin-right: 3px">
+			echo '<td class="subject">'.($ticket['archive'] ? '<svg class="icon icon-tag '.($ticket['owner'] != $_SESSION['id'] ? 'fill-gray' : '').'" style="margin-right: 3px">
                         <use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-tag"></use>
                     </svg>' : '').$owner.'<a class="link" href="admin_ticket.php?track='.$ticket['trackid'].'&amp;Refresh='.$random.'">'.$ticket['subject'].'</a></td>';
 		}

@@ -154,7 +154,7 @@ else
         <?php
         if ( ! isset($_SESSION['HESK_ERROR']))
         {
-            hesk_show_info($hesklang['nti3']);
+            hesk_show_info($hesklang['nti3'], ' ', false);
         }
 
         /* This will handle error, success and notice messages */
@@ -167,15 +167,15 @@ else
         <form method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" action="admin_submit_ticket.php" name="form1" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="create_name">
-                    <?php echo $hesklang['name']; ?> <span class="important">*</span>
+                    <?php echo $hesklang['name']; ?>: <span class="important">*</span>
                 </label>
                 <input type="text" id="create_name" name="name" class="form-control <?php if (in_array('name',$_SESSION['iserror'])) {echo 'isError';} ?>" maxlength="50" value="<?php if (isset($_SESSION['as_name'])) {echo stripslashes(hesk_input($_SESSION['as_name']));} ?>">
             </div>
             <div class="form-group">
                 <label for="email">
-                    <?php echo $hesklang['email'] . ($hesk_settings['require_email'] ? ' <span class="important">*</span>' : '') ; ?>
+                    <?php echo $hesklang['email'] . ':' . ($hesk_settings['require_email'] ? ' <span class="important">*</span>' : '') ; ?>
                 </label>
-                <input type="text"
+                <input type="<?php echo ($hesk_settings['multi_eml'] ? 'text' : 'email'); ?>"
                        class="form-control <?php if (in_array('email',$_SESSION['iserror'])) {echo 'isError';} elseif (in_array('email',$_SESSION['isnotice'])) {echo 'isNotice';} ?>"
                        name="email" id="email" maxlength="1000"
                        value="<?php if (isset($_SESSION['as_email'])) {echo stripslashes(hesk_input($_SESSION['as_email']));} ?>"
@@ -183,7 +183,7 @@ else
             </div>
             <div id="email_suggestions"></div>
             <div class="form-group">
-                <label><?php echo $hesklang['priority']; ?> <span class="important">*</span></label>
+                <label><?php echo $hesklang['priority']; ?>: <span class="important">*</span></label>
                 <div class="dropdown-select center out-close">
                     <select name="priority" <?php if (in_array('priority',$_SESSION['iserror'])) {echo ' class="isError" ';} ?> >
                         <?php
@@ -236,7 +236,7 @@ else
                         case 'radio':
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <div class="radio-list">';
 
                             $cls = in_array($k,$_SESSION['iserror']) ? ' class="isError" ' : '';
@@ -277,9 +277,8 @@ else
 
                             echo '
                                 <div class="form-group">
-                                    <label for="edit_">'.$v['name'].' '.$v['req'].'</label>
-                                    <div class="dropdown-select center out-close">
-                                        <select name="'.$k.'" '.$cls.'>';
+                                    <label for="edit_">'.$v['name:'].' '.$v['req'].'</label>
+                                        <select name="'.$k.'" id="'.$k.'" '.$cls.'>';
                             // Show "Click to select"?
                             if ( ! empty($v['value']['show_select']))
                             {
@@ -301,15 +300,18 @@ else
                                 echo '<option '.$selected.'>'.$option.'</option>';
                             }
                             echo '</select>
-                                    </div>
-                                </div>';
+                                </div>
+                                <script>
+                                    $(\'#'.$k.'\').selectize();
+                                </script>
+                                ';
                             break;
 
                         /* Checkbox */
                         case 'checkbox':
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>';
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>';
 
                             $cls = in_array($k,$_SESSION['iserror']) ? ' class="isError" ' : '';
 
@@ -343,7 +345,7 @@ else
 
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <textarea name="'.$k.'" class="form-control'.$cls.'" style="height: inherit" rows="'.intval($v['value']['rows']).'" cols="'.intval($v['value']['cols']).'" >'.$k_value.'</textarea>
                                 </div>';
                             break;
@@ -352,7 +354,7 @@ else
                         case 'date':
                             echo '
                                 <section class="param calendar">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <div class="calendar--button">
                                         <button type="button">
                                             <svg class="icon icon-calendar">
@@ -382,8 +384,8 @@ else
 
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
-                                    <input class="form-control '.$cls.'" type="email" name="'.$k.'" id="'.$k.'" value="'.$k_value.'" size="40" '.$suggest.'>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
+                                    <input class="form-control '.$cls.'" type="'.($v['value']['multiple'] ? 'text' : 'email').'" name="'.$k.'" id="'.$k.'" value="'.$k_value.'" size="40" '.$suggest.'>
                                 </div>
                                 <div id="'.$k.'_suggestions"></div>';
                             break;
@@ -393,14 +395,17 @@ else
 
                         /* Default text input */
                         default:
-                            $k_value = hesk_msgToPlain($k_value,0,0);
+                            if (strlen($k_value) != 0 || isset($_SESSION["as_$k"]))
+                            {
+                                $v['value']['default_value'] = $k_value;
+                            }
 
                             $cls = in_array($k,$_SESSION['iserror']) ? 'isError' : '';
 
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
-                                    <input class="form-control '.$cls.'" type="text" name="'.$k.'" size="40" maxlength="'.intval($v['value']['max_length']).'" value="'.$k_value.'">
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
+                                    <input class="form-control '.$cls.'" type="text" name="'.$k.'" size="40" maxlength="'.intval($v['value']['max_length']).'" value="'.$v['value']['default_value'].'">
                                 </div>';
                     }
                 }
@@ -453,16 +458,16 @@ else
                         {
                             if (document.getElementById('moderep').checked)
                             {
-                                document.getElementById('HeskMsg').innerHTML='<textarea name="message" id="message" rows="12" cols="60">'+myMsg+'</textarea>';
-                                document.getElementById('HeskSub').innerHTML='<input type="text" name="subject" id="subject" size="40" maxlength="70" value="'+mySubject+'" />';
+                                document.getElementById('HeskMsg').innerHTML='<textarea style="height: inherit" class="form-control" name="message" id="message" rows="12" cols="60">'+myMsg+'</textarea>';
+                                document.getElementById('HeskSub').innerHTML='<input class="form-control" type="text" name="subject" id="subject" maxlength="70" value="'+mySubject+'">';
                             }
                             else
                             {
                                 var oldMsg = document.getElementById('message').value;
-                                document.getElementById('HeskMsg').innerHTML='<textarea name="message" id="message" rows="12" cols="60">'+oldMsg+myMsg+'</textarea>';
+                                document.getElementById('HeskMsg').innerHTML='<textarea style="height: inherit" class="form-control" name="message" id="message" rows="12" cols="60">'+oldMsg+myMsg+'</textarea>';
                                 if (document.getElementById('subject').value == '')
                                 {
-                                    document.getElementById('HeskSub').innerHTML='<input type="text" name="subject" id="subject" size="40" maxlength="70" value="'+mySubject+'" />';
+                                    document.getElementById('HeskSub').innerHTML='<input class="form-control" type="text" name="subject" id="subject" maxlength="70" value="'+mySubject+'">';
                                 }
                             }
                         }
@@ -511,7 +516,7 @@ else
                     </div>
                 </div>
                 <div class="form-group">
-                    <label><?php echo $hesklang['select_ticket_tpl']; ?></label>
+                    <label><?php echo $hesklang['select_ticket_tpl']; ?>:</label>
                     <div class="dropdown-select center out-close">
                         <select name="saved_replies" onchange="setMessage(this.value)">
                             <option value="0"> - <?php echo $hesklang['select_empty']; ?> - </option>
@@ -531,11 +536,11 @@ else
             }
             ?>
             <div class="form-group">
-                <label><?php echo $hesklang['subject'] . ' ' . ($hesk_settings['require_subject']==1 ? '<span class="important">*</span>' : '') ; ?></label>
+                <label><?php echo $hesklang['subject'] . ': ' . ($hesk_settings['require_subject']==1 ? '<span class="important">*</span>' : '') ; ?></label>
                 <span id="HeskSub"><input class="form-control <?php if (in_array('subject',$_SESSION['iserror'])) {echo 'isError';} ?>" type="text" name="subject" id="subject" maxlength="70" value="<?php if (isset($_SESSION['as_subject'])) {echo stripslashes(hesk_input($_SESSION['as_subject']));} ?>"></span>
             </div>
             <div class="form-group">
-                <label><?php echo $hesklang['message'] . ' ' . ($hesk_settings['require_message']==1 ? '<span class="important">*</span>' : '') ; ?></label>
+                <label><?php echo $hesklang['message'] . ': ' . ($hesk_settings['require_message']==1 ? '<span class="important">*</span>' : '') ; ?></label>
                 <span id="HeskMsg">
                     <textarea style="height: inherit" class="form-control <?php if (in_array('message',$_SESSION['iserror'])) {echo 'isError';} ?>"
                               name="message" id="message" rows="12" cols="60"><?php if (isset($_SESSION['as_message'])) {echo stripslashes(hesk_input($_SESSION['as_message']));} ?></textarea>
@@ -578,7 +583,7 @@ else
                         case 'radio':
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <div class="radio-list">';
 
                             $cls = in_array($k,$_SESSION['iserror']) ? ' class="isError" ' : '';
@@ -619,9 +624,8 @@ else
 
                             echo '
                                 <div class="form-group">
-                                    <label for="edit_">'.$v['name'].' '.$v['req'].'</label>
-                                    <div class="dropdown-select center out-close">
-                                        <select name="'.$k.'" '.$cls.'>';
+                                    <label for="edit_">'.$v['name:'].' '.$v['req'].'</label>
+                                        <select name="'.$k.'" id="'.$k.'" '.$cls.'>';
                             // Show "Click to select"?
                             if ( ! empty($v['value']['show_select']))
                             {
@@ -643,15 +647,18 @@ else
                                 echo '<option '.$selected.'>'.$option.'</option>';
                             }
                             echo '</select>
-                                    </div>
-                                </div>';
+                                </div>
+                                <script>
+                                    $(\'#'.$k.'\').selectize();
+                                </script>
+                                ';
                             break;
 
                         /* Checkbox */
                         case 'checkbox':
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>';
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>';
 
                             $cls = in_array($k,$_SESSION['iserror']) ? ' class="isError" ' : '';
 
@@ -685,7 +692,7 @@ else
 
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <textarea name="'.$k.'" class="form-control'.$cls.'" style="height: inherit" rows="'.intval($v['value']['rows']).'" cols="'.intval($v['value']['cols']).'" >'.$k_value.'</textarea>
                                 </div>';
                             break;
@@ -694,7 +701,7 @@ else
                         case 'date':
                             echo '
                                 <section class="param calendar">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <div class="calendar--button">
                                         <button type="button">
                                             <svg class="icon icon-calendar">
@@ -724,8 +731,8 @@ else
 
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
-                                    <input class="form-control '.$cls.'" type="email" name="'.$k.'" id="'.$k.'" value="'.$k_value.'" size="40" '.$suggest.'>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
+                                    <input class="form-control '.$cls.'" type="'.($v['value']['multiple'] ? 'text' : 'email').'" name="'.$k.'" id="'.$k.'" value="'.$k_value.'" size="40" '.$suggest.'>
                                 </div>
                                 <div id="'.$k.'_suggestions"></div>';
                             break;
@@ -735,14 +742,17 @@ else
 
                         /* Default text input */
                         default:
-                            $k_value = hesk_msgToPlain($k_value,0,0);
+                            if (strlen($k_value) != 0 || isset($_SESSION["as_$k"]))
+                            {
+                                $v['value']['default_value'] = $k_value;
+                            }
 
                             $cls = in_array($k,$_SESSION['iserror']) ? 'isError' : '';
 
                             echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
-                                    <input class="form-control '.$cls.'" type="text" name="'.$k.'" size="40" maxlength="'.intval($v['value']['max_length']).'" value="'.$k_value.'">
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
+                                    <input class="form-control '.$cls.'" type="text" name="'.$k.'" size="40" maxlength="'.intval($v['value']['max_length']).'" value="'.$v['value']['default_value'].'">
                                 </div>';
                     }
                 }
@@ -760,7 +770,7 @@ else
                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-attach"></use>
                     </svg>
                     <div>
-                        <?php echo $hesklang['attachments']; ?>
+                        <?php echo $hesklang['attachments']; ?>:
                     </div>
                 </div>
                 <?php
@@ -781,7 +791,7 @@ else
             }
             ?>
             <div class="form-group" style="margin-top: 20px">
-                <label><?php echo $hesklang['addop']; ?></label>
+                <label><?php echo $hesklang['addop']; ?>:</label>
                 <div class="checkbox-list">
                     <div class="checkbox-custom">
                         <input type="checkbox" id="create_notify1" name="notify" value="1" <?php echo empty($_SESSION['as_notify']) ? '' : 'checked'; ?>>
@@ -795,9 +805,8 @@ else
             </div>
             <?php if (hesk_checkPermission('can_assign_others',0)) { ?>
                 <div class="form-group">
-                    <label><?php echo $hesklang['asst2']; ?></label>
-                    <div class="dropdown-select center out-close">
-                        <select name="owner" <?php if (in_array('owner',$_SESSION['iserror'])) {echo ' class="isError" ';} ?>>
+                    <label><?php echo $hesklang['asst2']; ?>:</label>
+                        <select name="owner" id="owner-select" <?php if (in_array('owner',$_SESSION['iserror'])) {echo ' class="isError" ';} ?>>
                             <option value="-1"> &gt; <?php echo $hesklang['unas']; ?> &lt; </option>
                             <?php
 
@@ -822,7 +831,9 @@ else
                             }
                             ?>
                         </select>
-                    </div>
+                        <script>
+                            $('#owner-select').selectize();
+                        </script>
                 </div>
                 <?php
             }
@@ -844,6 +855,11 @@ else
             <input type="hidden" name="category" value="<?php echo $category; ?>">
             <button type="submit" class="btn btn-full"><?php echo $hesklang['sub_ticket']; ?></button>
         </form>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
     </div>
 </div>
 <?php

@@ -70,10 +70,19 @@ if ($action != 'edit') {
 ?>
 <div class="main__content tools">
     <section class="tools__between-head fw">
-        <div class="head--tooltip">
-            <h2><?php echo $hesklang['et_title']; ?></h2>
-            <span><?php echo $hesklang['et_intro']; ?></span>
-        </div>
+        <h2>
+            <?php echo $hesklang['et_title']; ?>
+            <div class="tooltype right out-close">
+                <svg class="icon icon-info">
+                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                </svg>
+                <div class="tooltype__content">
+                    <div class="tooltype__wrapper">
+                        <?php echo $hesklang['et_intro']; ?>
+                    </div>
+                </div>
+            </div>
+        </h2>
         <?php if ($hesk_settings['can_sel_lang'] && count($hesk_settings['languages']) > 1): ?>
             <form method="get" action="email_templates.php">
             <div class="dropdown-select center out-close">
@@ -118,7 +127,7 @@ if ($action != 'edit') {
                             echo '<span style="color:red">'.$hesklang['not_writable'].'</span>';
                         } else {
                             ?>
-                            <a title="<?php echo $hesklang['edit']; ?>" href="email_templates.php?a=edit&amp;id=<?php echo $email; ?>&amp;edit_language=<?php echo urlencode($hesk_settings['edit_language']); ?>" class="edit">
+                            <a title="<?php echo $hesklang['edit']; ?>" href="email_templates.php?a=edit&amp;id=<?php echo $email; ?>&amp;edit_language=<?php echo urlencode($hesk_settings['edit_language']); ?>" class="edit tooltip">
                                 <svg class="icon icon-edit-ticket">
                                     <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-edit-ticket"></use>
                                 </svg>

@@ -312,14 +312,14 @@ if ($hesk_settings['imap'] && hesk_validateEmail($hesk_settings['imap_user'], 'E
                     /* To edit yourself go to "Profile" page, not here. */
                     if ($myuser['id'] == $_SESSION['id']) {
                         $edit_code = '
-                            <a href="profile.php" class="edit" title="'.$hesklang['edit'].'">
+                            <a href="profile.php" class="edit tooltip" title="'.$hesklang['edit'].'">
                                 <svg class="icon icon-edit-ticket">
                                     <use xlink:href="' . HESK_PATH . 'img/sprite.svg#icon-edit-ticket"></use>
                                 </svg>
                             </a>';
                     } else {
                         $edit_code = '
-                            <a href="manage_users.php?a=edit&amp;id='.$myuser['id'].'" class="edit" title="'.$hesklang['edit'].'">
+                            <a href="manage_users.php?a=edit&amp;id='.$myuser['id'].'" class="edit tooltip" title="'.$hesklang['edit'].'">
                                 <svg class="icon icon-edit-ticket">
                                     <use xlink:href="' . HESK_PATH . 'img/sprite.svg#icon-edit-ticket"></use>
                                 </svg>
@@ -342,7 +342,7 @@ if ($hesk_settings['imap'] && hesk_validateEmail($hesk_settings['imap_user'], 'E
                         $remove_code = '
                         <a href="javascript:" data-modal="[data-modal-id=\''.$modal_id.'\']" 
                             title="'.$hesklang['remove'].'"
-                            class="delete">
+                            class="delete tooltip">
                             <svg class="icon icon-delete">
                                 <use xlink:href="' . HESK_PATH . 'img/sprite.svg#icon-delete"></use>
                             </svg>
@@ -354,7 +354,7 @@ if ($hesk_settings['imap'] && hesk_validateEmail($hesk_settings['imap_user'], 'E
                         if ($myuser['autoassign']) {
                             $autoassign_code = '
                                 <label class="switch-checkbox">
-                                    <a id="autoassign-'.$myuser['id'].'" href="manage_users.php?a=autoassign&amp;s=0&amp;id='.$myuser['id'].'&amp;token='.hesk_token_echo(0).'" title="'.$hesklang['aaon'].'">
+                                    <a class="tooltip" data-ztt_vertical_offset="-5" id="autoassign-'.$myuser['id'].'" href="manage_users.php?a=autoassign&amp;s=0&amp;id='.$myuser['id'].'&amp;token='.hesk_token_echo(0).'" title="'.$hesklang['aaon'].'">
                                         <input type="checkbox" checked>
                                         <div class="switch-checkbox__bullet">
                                             <i>
@@ -372,7 +372,7 @@ if ($hesk_settings['imap'] && hesk_validateEmail($hesk_settings['imap_user'], 'E
                         } else {
                             $autoassign_code = '
                                 <label class="switch-checkbox">
-                                    <a id="autoassign-'.$myuser['id'].'"  href="manage_users.php?a=autoassign&amp;s=1&amp;id='.$myuser['id'].'&amp;token='.hesk_token_echo(0).'" title="'.$hesklang['aaoff'].'">
+                                    <a class="tooltip" data-ztt_vertical_offset="-5" id="autoassign-'.$myuser['id'].'"  href="manage_users.php?a=autoassign&amp;s=1&amp;id='.$myuser['id'].'&amp;token='.hesk_token_echo(0).'" title="'.$hesklang['aaoff'].'">
                                         <input type="checkbox">
                                         <div class="switch-checkbox__bullet">
                                             <i>

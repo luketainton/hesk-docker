@@ -25,10 +25,10 @@ function displayKbSearch() {
                     <div class="alert none">
                         <div class="alert__inner">
                             <div class="alert__head">
-                                <h6 class="alert__title"><?php echo $hesklang['sc']; ?>:</h6>
+                                <h6 class="alert__title" style="margin-bottom:10px"><?php echo $hesklang['sc']; ?>:</h6>
                             </div>
-                            <ul id="kb-suggestion-list" class="type--list">
-                            </ul>
+                            <ol id="kb-suggestion-list" class="type--list" style="list-style-type: decimal; padding-left: 15px;">
+                            </ol>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@ function outputSearchJavascript() {
                 $('.kb-suggestions').show();
                 var $suggestionList = $('#kb-suggestion-list');
                 $suggestionList.html('');
-                var format = '<li style="margin-bottom: 5px">' +
+                var format = '<li style="margin-bottom: 15px; padding-left: 0.5em;">' +
                     '<a class="link" href="knowledgebase.php?article={0}">{1}</a>' +
                     '<br>' +
                     '{2}' +
@@ -82,7 +82,7 @@ function outputSearchJavascript() {
                 });
 
                 if (!results) {
-                    $suggestionList.append('<li>' + noArticlesFoundText + '</li>');
+                    $suggestionList.append('<li style="list-style-type: none; margin-left: -15px;">' + noArticlesFoundText + '</li>');
                 }
             });
         });

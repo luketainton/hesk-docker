@@ -120,7 +120,7 @@ $num = hesk_dbNumRows($result);
                             <use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-chevron-down"></use>
                         </svg>
                     </a>
-                    <a title="'.$hesklang['move_dn'].'" href="manage_ticket_templates.php?a=order&amp;replyid='.$mysaved['id'].'&amp;move=15&amp;token='.hesk_token_echo(0).'">
+                    <a class="tooltip" title="'.$hesklang['move_dn'].'" href="manage_ticket_templates.php?a=order&amp;replyid='.$mysaved['id'].'&amp;move=15&amp;token='.hesk_token_echo(0).'">
                         <svg class="icon icon-chevron-down">
                             <use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-chevron-down"></use>
                         </svg>
@@ -129,7 +129,7 @@ $num = hesk_dbNumRows($result);
                 elseif ($j == $num)
                 {
                     echo'
-                    <a title="'.$hesklang['move_up'].'" href="manage_ticket_templates.php?a=order&amp;replyid='.$mysaved['id'].'&amp;move=-15&amp;token='.hesk_token_echo(0).'">
+                    <a class="tooltip" title="'.$hesklang['move_up'].'" href="manage_ticket_templates.php?a=order&amp;replyid='.$mysaved['id'].'&amp;move=-15&amp;token='.hesk_token_echo(0).'">
                         <svg class="icon icon-chevron-up">
                             <use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-chevron-down"></use>
                         </svg>
@@ -143,12 +143,12 @@ $num = hesk_dbNumRows($result);
                 else
                 {
                     echo'
-                    <a title="'.$hesklang['move_up'].'" href="manage_ticket_templates.php?a=order&amp;replyid='.$mysaved['id'].'&amp;move=-15&amp;token='.hesk_token_echo(0).'">
+                    <a class="tooltip" title="'.$hesklang['move_up'].'" href="manage_ticket_templates.php?a=order&amp;replyid='.$mysaved['id'].'&amp;move=-15&amp;token='.hesk_token_echo(0).'">
                         <svg class="icon icon-chevron-up">
                             <use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-chevron-down"></use>
                         </svg>
                     </a>
-                    <a title="'.$hesklang['move_dn'].'" href="manage_ticket_templates.php?a=order&amp;replyid='.$mysaved['id'].'&amp;move=15&amp;token='.hesk_token_echo(0).'">
+                    <a class="tooltip" title="'.$hesklang['move_dn'].'" href="manage_ticket_templates.php?a=order&amp;replyid='.$mysaved['id'].'&amp;move=15&amp;token='.hesk_token_echo(0).'">
                         <svg class="icon icon-chevron-down">
                             <use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-chevron-down"></use>
                         </svg>
@@ -165,12 +165,12 @@ $num = hesk_dbNumRows($result);
                 'manage_ticket_templates.php?a=remove&amp;id='.$mysaved['id'].'&amp;token='.hesk_token_echo(0));
 
             echo '
-            <a title="'.$hesklang['edit'].'" href="javascript:setMessage(' . $mysaved['id'] . ')">
+            <a class="tooltip" title="'.$hesklang['edit'].'" href="javascript:setMessage(' . $mysaved['id'] . ')">
                 <svg class="icon icon-edit-ticket">
                     <use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-edit-ticket"></use>
                 </svg>
             </a>
-            <a title="'.$hesklang['remove'].'" href="javascript:" data-modal="[data-modal-id=\''.$modal_id.'\']">
+            <a class="tooltip" title="'.$hesklang['remove'].'" href="javascript:" data-modal="[data-modal-id=\''.$modal_id.'\']">
                 <svg class="icon icon-delete">
                     <use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-delete"></use>
                 </svg>

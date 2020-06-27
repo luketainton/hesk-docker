@@ -115,7 +115,7 @@ function hesk_get_status_select($ignore_status = '', $can_resolve = true, $selec
 
     foreach ($hesk_settings['statuses'] as $k => $v)
     {
-        if ($k == $ignore_status)
+        if ($k === $ignore_status)
         {
             continue;
         }
@@ -198,7 +198,7 @@ function hesk_get_ticket_status($status, $append = '', $check_change = 1)
     {
         if (isset($hesk_settings['statuses'][$status]['color']))
         {
-            return '<span style="color:'.$hesk_settings['statuses'][$status]['color'].'">'.$hesk_settings['statuses'][$status]['name'].'</font>';
+            return '<span style="color:'.$hesk_settings['statuses'][$status]['color'].'">'.$hesk_settings['statuses'][$status]['name'].'</span>';
         }
 
         return $hesk_settings['statuses'][$status]['name'];
@@ -207,13 +207,13 @@ function hesk_get_ticket_status($status, $append = '', $check_change = 1)
     // Is this a default status? Use style class to add color
     if (isset($hesk_settings['statuses'][$status]['class']))
     {
-        return '<span class="'.$hesk_settings['statuses'][$status]['class'].'">'.$hesk_settings['statuses'][$status]['name'].'</font>' . $append;
+        return '<span class="'.$hesk_settings['statuses'][$status]['class'].'">'.$hesk_settings['statuses'][$status]['name'].'</span>' . $append;
     }
 
     // Does this status have a color code?
     if (isset($hesk_settings['statuses'][$status]['color']))
     {
-        return '<span style="color:'.$hesk_settings['statuses'][$status]['color'].'">'.$hesk_settings['statuses'][$status]['name'].'</font>' . $append;
+        return '<span style="color:'.$hesk_settings['statuses'][$status]['color'].'">'.$hesk_settings['statuses'][$status]['name'].'</span>' . $append;
     }
 
     // Just return the name if nothing matches
@@ -227,3 +227,40 @@ function hesk_can_customer_change_status($status)
     global $hesk_settings;
     return ( ! isset($hesk_settings['statuses'][$status]['can_customers_change']) || $hesk_settings['statuses'][$status]['can_customers_change'] == '1') ? true : false;
 } // END hesk_get_ticket_status()
+
+
+function hesk_print_status_select_box_jquery()
+{
+    global $hesk_settings;
+    ?>
+    <script>
+    $(document).ready(function() {
+        <?php
+        foreach ($hesk_settings['statuses'] as $id => $data)
+        {
+            // Is this a default status? Use style class to add color
+            if (isset($data['class']))
+            {
+                echo '$("#ticket-status-div > div.dropdown-select > ul.dropdown-list > li[data-option=\''.$id.'\']").addClass("'.$data['class'].'");'."\n";
+                echo '
+                    $("#ticket-status-div > div.dropdown-select > div.label > span").filter(function () {
+                        return $(this).text() == "'.addslashes($data['name']).'";
+                    }).addClass("'.$data['class'].'");'."\n";
+                continue;
+            }
+
+            // Does this status have a color code?
+            if (isset($data['color']))
+            {
+                echo '$("#ticket-status-div > div.dropdown-select > ul.dropdown-list > li[data-option=\''.$id.'\']").css("color", "'.$data['color'].'");'."\n";
+                echo '
+                    $("#ticket-status-div > div.dropdown-select > div.label > span").filter(function () {
+                        return $(this).text() == "'.addslashes($data['name']).'";
+                    }).css("color", "'.$data['color'].'");'."\n";
+            }
+        }
+        ?>
+    });
+    </script>
+    <?php
+} // END hesk_print_status_select_box_jquery()

@@ -74,6 +74,12 @@ elseif ($artid)
 	}
 
     $article = hesk_dbFetchAssoc($result) or hesk_error($hesklang['kb_art_id']);
+    $article['views_formatted'] = number_format($article['views'], 0, null, $hesklang['sep_1000']);
+    $article['votes_formatted'] = number_format($article['votes'], 0, null, $hesklang['sep_1000']);
+    if ($article['catid'] == 1)
+    {
+        $article['cat_name'] = $hesklang['kb_text'];
+    }
     hesk_show_kb_article($artid);
 }
 else
@@ -134,9 +140,7 @@ function hesk_kb_search($query)
             if ($hesk_settings['kb_rating'])
             {
                 $alt = $article['rating'] ? sprintf($hesklang['kb_rated'], sprintf("%01.1f", $article['rating'])) : $hesklang['kb_not_rated'];
-                $rat = '<td width="1" valign="top">
-                    '.hesk3_get_rating($article['rating']).'
-                </td>';
+                $rat = hesk3_get_rating($article['rating']);
             }
             else
             {
@@ -179,7 +183,11 @@ function hesk_kb_search($query)
 
 function hesk_show_kb_article($artid)
 {
-	global $hesk_settings, $hesklang, $article;
+	global $hesk_settings, $hesklang, $article, $can_man_kb;
+
+    // We should style <code> elemenets here
+    define('STYLE_CODE',1);
+    define('TIMEAGO',1);
 
 	// Print header
     $hesk_settings['tmp_title'] = $article['subject'];
@@ -188,6 +196,8 @@ function hesk_show_kb_article($artid)
 
     // Update views by 1
 	hesk_dbQuery('UPDATE `'.hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` SET `views`=`views`+1 WHERE `id`={$artid}");
+    $article['views']++;
+    $article['views_formatted'] = number_format($article['views'], 0, null, $hesklang['sep_1000']);
 ?>
     <div class="main__content knowledge article">
         <div class="article__detalies">
@@ -227,25 +237,34 @@ function hesk_show_kb_article($artid)
                 <li>
                     <div class="name"><?php echo $hesklang['dta']; ?></div>
                     <div class="descr">
-                        <?php echo hesk_date($article['dt'], true); ?>
+                        <time class="timeago tooltip" datetime="<?php echo date("c", strtotime($article['dt'])) ; ?>" title="<?php echo hesk_date($article['dt'], true); ?>"><?php echo hesk_date($article['dt'], true); ?></time>
                     </div>
                 </li>
                 <li>
                     <div class="name"><?php echo $hesklang['views']; ?></div>
-                    <div class="descr"><?php echo (isset($_GET['rated']) ? $article['views'] : $article['views']+1); ?></div>
+                    <div class="descr"><?php echo $article['views_formatted']; ?></div>
                 </li>
                 <?php
                 if ($hesk_settings['kb_rating']) {
                     ?>
                     <li>
-                        <div class="name"><?php echo $hesklang['rating']; ?></div>
-                        <div class="descr"><?php echo hesk3_get_rating($article['rating']); ?></div>
+                        <div class="name"><?php echo $hesklang['rating']; ?> (<?php echo $hesklang['votes']; ?>)</div>
+                        <div class="descr">
+                            <div class="rate"><?php echo hesk3_get_rating($article['rating']); ?> <span>(<?php echo $article['votes_formatted']; ?>)</span></div>
+                        </div>
                     </li>
                     <?php
                 }
                 ?>
             </ul>
-
+            <?php if ($can_man_kb) {
+                ?>
+                <div class="article__detalies_action">
+                    <a href="manage_knowledgebase.php?a=edit_article&amp;id=<?php echo $artid; ?>" class="btn btn btn--blue-border" ripple="ripple"><?php echo $hesklang['kb_art_edit']; ?><div class="ripple--container"></div></a>
+                </div>
+                <?php
+            }
+            ?>
         </div>
         <div class="article__body">
             <?php
@@ -264,7 +283,7 @@ function hesk_show_kb_article($artid)
             }
             ?>
             <h2><?php echo $article['subject']; ?></h2>
-            <div class="article__description">
+            <div class="article__description browser-default">
                 <?php echo $article['content']; ?>
 
             </div>

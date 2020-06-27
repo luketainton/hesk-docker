@@ -1614,9 +1614,7 @@ $hesklang['unban_ip']='Unban this IP';
 $hesklang['addnote']='Add note';
 $hesklang['show_previous_replies']='Show previous replies';
 $hesklang['thist']='Ticket History';
-$hesklang['type_your_message']='Type your message'; // Used when there are no canned responses
-$hesklang['type_your_message_or_reply_from_template']='Type your message or %s'; // %s: "reply from template" (see $hesklang['reply_from_template'])
-$hesklang['reply_from_template'] = 'reply from template'; // See $hesklang['type_your_message_or_reply_from_template'] for usage
+$hesklang['type_your_message']='Type your message';
 $hesklang['close_button_text']='Close';
 $hesklang['create_new_ticket']='Create New Ticket';
 $hesklang['ktool']='Knowledgebase tools';
@@ -1653,6 +1651,108 @@ $hesklang['critical']='Critical';
 $hesklang['canned_add']='New canned response';
 $hesklang['ticket_tpl_add']='New ticket template';
 $hesklang['help_desk']='Help Desk'; // Displayed on staff sidebar menu
+
+// Added or modified in HESK 3.1.0
+$hesklang['TIMEAGO_LANG_FILE']='jquery.timeago.en.js'; // Name of the proper language file in folder /js/timeago/locales
+$hesklang['tdis']='Time display';
+$hesklang['tdisd']='Date and time';
+$hesklang['tdisa']='Time ago (example: 5 hours ago)';
+$hesklang['nav_templates']='Templates'; // Admin panel navigation item
+$hesklang['hide_replies']='Hide ticket replies';
+$hesklang['hide_replies_no']='Never, always show all replies';
+$hesklang['hide_replies_yes']='Hide all replies except the last:';
+$hesklang['hide_replies_def']='Show the last staff reply and any subsequent customer replies';
+$hesklang['reply_by']='Reply by'; // Reply by NAME
+$hesklang['btt']='Back to Top';
+$hesklang['lwidth']='Limit ticket width';
+$hesklang['lwidtall']='Use the full available width';
+$hesklang['lwidtpx']='Maximum width in pixels:';
+// 3-letter days of the week
+$hesklang['mon']='Mon';
+$hesklang['tue']='Tue';
+$hesklang['wed']='Wed';
+$hesklang['thu']='Thu';
+$hesklang['fri']='Fri';
+$hesklang['sat']='Sat';
+$hesklang['sun']='Sun';
+$hesklang['clear']='Clear'; // delete field value
+$hesklang['first_day_of_week']='0'; // first day of week; 0 = Sunday, 1 = Monday, 2 = Tuesday, ...
+$hesklang['cat_intro']='Here you are able to manage categories. Categories are useful
+for categorizing tickets by relevance (for example &quot;Sales&quot;,
+&quot;Hardware problems&quot;, &quot;PHP/MySQL problems&quot; etc) and for
+assigning users to categories.'; // this was in before 3.0.x, bringing it back
+$hesklang['spam_req']='At least one SPAM prevention measure must be enabled!';
+$hesklang['modules'] = 'Modules';
+$hesklang['modules_demo'] = 'This module is currently available only in %s'; // %s = Hesk cloud link
+$hesklang['see_demo']='Try the live demo here: %s'; // %s = Hesk demo link 
+$hesklang['statistics']['tab'] = 'Statistics';
+$hesklang['statistics']['intro'] = 'This report will give you insight into your help desk usage and staff performance.';
+$hesklang['statistics']['ntsp']='No tickets in the selected time period.';
+$hesklang['statistics']['pie_title_ro']='Open vs Resolved tickets';
+$hesklang['statistics']['open']='Open';
+$hesklang['statistics']['resolved']='Resolved';
+$hesklang['statistics']['pie_title_as']='Open tickets: Assigned vs Unassigned';
+$hesklang['statistics']['ass']='Assigned';
+$hesklang['statistics']['unas']='Unassigned';
+$hesklang['statistics']['pie_title_au']='Open tickets: Answered vs Unanswered';
+$hesklang['statistics']['answered']='Answered';
+$hesklang['statistics']['unanswered']='Unanswered';
+$hesklang['statistics']['pie_title_so']='Status of open tickets';
+$hesklang['statistics']['retic']='Tickets:';
+$hesklang['statistics']['chart_title_md']='Tickets per day of month';
+$hesklang['statistics']['chart_title_wd']='Tickets per weekday';
+$hesklang['statistics']['chart_title_hd']='Tickets per day hour';
+$hesklang['statistics']['chart_title_tfr']='Time to first staff reply';
+$hesklang['statistics']['chart_title_tfrc']='Tickets replied to within a time frame';
+$hesklang['statistics']['chart_title_ttr']='Time from submitting to resolving a ticket';
+$hesklang['statistics']['chart_title_ttrc']='Tickets resolved within a time frame';
+$hesklang['statistics']['chart_title_sr']='Staff replies';
+$hesklang['statistics']['chart_title_srt']='Staff replies per ticket';
+$hesklang['statistics']['chart_title_srtr']='Staff replies per ticket (resolved tickets only)';
+$hesklang['statistics']['chart_title_srt1']='Staff replies per ticket (tickets with at least 1 reply)';
+$hesklang['statistics']['ct_30']='30 minutes';
+$hesklang['statistics']['ct_1h']='1 hour';
+$hesklang['statistics']['ct_2h']='2 hours';
+$hesklang['statistics']['ct_4h']='4 hours';
+$hesklang['statistics']['ct_1d']='1 day';
+$hesklang['statistics']['ct_2d']='2 days';
+$hesklang['statistics']['ct_3d']='3 days';
+$hesklang['statistics']['ct_1w']='1 week';
+$hesklang['statistics']['ct_wp']='> 1 week';
+$hesklang['statistics']['ct_1m']='1 month';
+$hesklang['statistics']['ct_mp']='> 1 month';
+$hesklang['statistics']['axis1']='% of tickets replied';
+$hesklang['statistics']['axis2']='% of tickets resolved';
+$hesklang['statistics']['axis3']='% of tickets';
+$hesklang['statistics']['axis4']='Time to first reply';
+$hesklang['statistics']['axis5']='Time to resolved';
+$hesklang['statistics']['axis6']='Number of replies';
+$hesklang['statistics']['axis7']='Number of tickets';
+$hesklang['statistics']['axis8']='Weekday';
+$hesklang['statistics']['axis9']='Hour';
+$hesklang['statistics']['axis10']='Day of month';
+$hesklang['statistics']['tr_0']='No reply';
+$hesklang['statistics']['tr_1']='1 reply';
+$hesklang['statistics']['tr_2']='2 replies';
+$hesklang['statistics']['tr_5']='3-5 replies';
+$hesklang['statistics']['tr_10']='6-10 replies';
+$hesklang['statistics']['tr_99']='> 10 replies';
+$hesklang['statistics']['average']='Average';
+$hesklang['statistics']['atfr']='Average hours and minutes to first staff reply:';
+$hesklang['statistics']['attr']='Average hours and minutes to resolve a ticket:';
+$hesklang['statistics']['about']='about %s'; // approximate time; "about 5 days 3 hous"
+$hesklang['statistics']['na']='N/A';
+$hesklang['statistics']['trept']='Total tickets staff replied to:';
+$hesklang['statistics']['trnr']='Total tickets resolved without a staff reply:';
+$hesklang['statistics']['tsr']='Total staff replies:';
+$hesklang['statistics']['tsrt']='Average staff replies per ticket:';
+$hesklang['statistics']['tsro']='Average staff replies per ticket (tickets with at least 1 staff reply):';
+$hesklang['statistics']['tsrc']='Average staff replies required to resolve a ticket:';
+$hesklang['statistics']['tsrr']='Average staff replies required to resolve a ticket (tickets with at least 1 staff reply):';
+$hesklang['sep_1000']=','; // separator between every group of thousands: 1,000,000
+$hesklang['sep_dec']='.'; // separator between full and decimal numbers: 0.99
+$hesklang['and_more']='and much more...'; // last item in a list
+
 
 // DO NOT CHANGE BELOW
 if (!defined('IN_SCRIPT')) die('PHP syntax OK!');

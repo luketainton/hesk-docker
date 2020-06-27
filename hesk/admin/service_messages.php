@@ -30,6 +30,10 @@ hesk_checkPermission('can_service_msg');
 // Define required constants
 define('LOAD_TABS',1);
 define('WYSIWYG',1);
+if (isset($_SESSION['preview_sm']))
+{
+    define('STYLE_CODE',1);
+}
 
 // Do we need to show the language options?
 $hesk_settings['show_language'] = (count($hesk_settings['languages']) > 1);
@@ -62,7 +66,19 @@ $num = hesk_dbNumRows($res);
 ?>
 <div class="main__content tools">
     <section class="tools__between-head">
-        <h2><?php echo $hesklang['sm_title']; ?></h2>
+        <h2>
+            <?php echo $hesklang['sm_title']; ?>
+            <div class="tooltype right out-close">
+                <svg class="icon icon-info">
+                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                </svg>
+                <div class="tooltype__content">
+                    <div class="tooltype__wrapper">
+                        <?php echo $hesklang['sm_intro']; ?>
+                    </div>
+                </div>
+            </div>
+        </h2>
         <?php if ($action !== 'edit_sm' && !isset($_SESSION['preview_sm'])): ?>
             <div class="btn btn--blue-border" ripple="ripple" data-action="create-service-message"><?php echo $hesklang['new_sm']; ?></div>
         <?php endif;?>
@@ -167,7 +183,7 @@ $num = hesk_dbNumRows($res);
                                                     <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                                 </svg>
                                             </a>
-                                            <a href="service_messages.php?a=order_sm&amp;id=<?php echo $sm['id']; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
+                                            <a class="tooltip" href="service_messages.php?a=order_sm&amp;id=<?php echo $sm['id']; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
                                                title="<?php echo $hesklang['move_dn']; ?>">
                                                 <svg class="icon icon-chevron-down">
                                                     <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
@@ -178,7 +194,7 @@ $num = hesk_dbNumRows($res);
                                         elseif ($k == $num)
                                         {
                                             ?>
-                                            <a href="service_messages.php?a=order_sm&amp;id=<?php echo $sm['id']; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
+                                            <a class="tooltip" href="service_messages.php?a=order_sm&amp;id=<?php echo $sm['id']; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
                                                title="<?php echo $hesklang['move_up']; ?>">
                                                 <svg class="icon icon-chevron-up">
                                                     <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
@@ -195,13 +211,13 @@ $num = hesk_dbNumRows($res);
                                         else
                                         {
                                             ?>
-                                            <a href="service_messages.php?a=order_sm&amp;id=<?php echo $sm['id']; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
+                                            <a class="tooltip" href="service_messages.php?a=order_sm&amp;id=<?php echo $sm['id']; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
                                                title="<?php echo $hesklang['move_up']; ?>">
                                                 <svg class="icon icon-chevron-up">
                                                     <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                                 </svg>
                                             </a>
-                                            <a href="service_messages.php?a=order_sm&amp;id=<?php echo $sm['id']; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
+                                            <a class="tooltip" href="service_messages.php?a=order_sm&amp;id=<?php echo $sm['id']; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
                                                title="<?php echo $hesklang['move_dn']; ?>">
                                                 <svg class="icon icon-chevron-down">
                                                     <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
@@ -211,12 +227,12 @@ $num = hesk_dbNumRows($res);
                                         }
                                     }
                                     ?>
-                                    <a href="service_messages.php?a=edit_sm&amp;id=<?php echo $sm['id']; ?>" class="edit" title="<?php echo $hesklang['edit']; ?>">
+                                    <a href="service_messages.php?a=edit_sm&amp;id=<?php echo $sm['id']; ?>" class="edit tooltip" title="<?php echo $hesklang['edit']; ?>">
                                         <svg class="icon icon-edit-ticket">
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-edit-ticket"></use>
                                         </svg>
                                     </a>
-                                    <a href="javascript:" class="delete" title="<?php echo $hesklang['delete']; ?>" data-modal="[data-modal-id='<?php echo $modal_id; ?>']">
+                                    <a href="javascript:" class="delete tooltip" title="<?php echo $hesklang['delete']; ?>" data-modal="[data-modal-id='<?php echo $modal_id; ?>']">
                                         <svg class="icon icon-delete">
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-delete"></use>
                                         </svg>
@@ -266,6 +282,11 @@ if ($hesk_settings['kb_wysiwyg'])
             hesk_handle_messages();
         }
 
+        if ( isset($_SESSION['new_sm']) && (isset($_SESSION['preview_sm']) || ! isset($_SESSION['edit_sm'])) )
+        {
+            $_SESSION['new_sm'] = hesk_stripArray($_SESSION['new_sm']);
+        }
+
         /* Do we have a service message to preview? */
         if (isset($_SESSION['preview_sm'])) {
             hesk_service_message($_SESSION['new_sm']);
@@ -280,7 +301,7 @@ if ($hesk_settings['kb_wysiwyg'])
                 <div class="step-item step-1">
                     <div class="form-group">
                         <label for="sm-title"><?php echo $hesklang['sm_mtitle']; ?></label>
-                        <input id="sm-title" type="text" name="title" class="form-control <?php echo in_array('title', hesk_SESSION(array('new_sm','errors'))) ? 'isError' : ''; ?>" maxlength="255" <?php if (isset($_SESSION['new_sm']['title'])) {echo 'value="'.$_SESSION['new_sm']['title'].'"';} ?>>
+                        <input id="sm-title" type="text" name="title" class="form-control <?php echo hesk_SESSION(array('new_sm','errors')) ? 'isError' : ''; ?>" maxlength="255" <?php if (isset($_SESSION['new_sm']['title'])) {echo 'value="'.$_SESSION['new_sm']['title'].'"';} ?>>
                     </div>
                     <div class="form-group" style="width: 100%">
                         <label for="content"><?php echo $hesklang['sm_msg']; ?></label>
@@ -488,6 +509,7 @@ function edit_sm()
     	hesk_error($hesklang['sm_not_found']);
 	}
 	$sm = hesk_dbFetchAssoc($res);
+    $sm['message'] = hesk_htmlspecialchars($sm['message']);
 
     $_SESSION['smord'] = $id;
 	$_SESSION['new_sm'] = $sm;

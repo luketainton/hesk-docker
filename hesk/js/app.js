@@ -96,10 +96,10 @@ $(document).ready(function () {
             }
         });
         var heskPath = $('input[type="hidden"][name="HESK_PATH"]').val();
-        var template = '<div class="label"><span>' + value + '</span><svg class="icon icon-chevron-down"><use xlink:href="' + heskPath + 'img/sprite.svg#icon-chevron-down"></use></svg></div><ul class="dropdown-list">';
+        var template = '<div class="label"><span>' + escapeHtml(value) + '</span><svg class="icon icon-chevron-down"><use xlink:href="' + heskPath + 'img/sprite.svg#icon-chevron-down"></use></svg></div><ul class="dropdown-list">';
         for (var i in options) {
             if (options[i].selected) $(el).attr('data-value', options[i].val);
-            template += '<li data-option="' + options[i].val + '"' + (options[i].selected ? ' class="selected"' : '') + '>' + options[i].text + '</li>'
+            template += '<li data-option="' + options[i].val + '"' + (options[i].selected ? ' class="selected"' : '') + '>' + escapeHtml(options[i].text) + '</li>'
         }
         template += '</ul></div>';
         $(el).append(template);
@@ -431,24 +431,6 @@ $(document).ready(function () {
     });
 
     /* ===========================================================
-                        Textarea autosize
-    ============================================================*/
-    $('.textarea-scrollbar').scrollbar();
-
-    if ($('.ticket .block--message textarea').length && $('.ticket .block--message textarea').val().length) $('.ticket .block--message .placeholder').hide();
-    $('.ticket .block--message textarea').focus(function (e) {
-        $(e.target).closest('.block--message').find('.placeholder').fadeOut(150);
-    });
-    $('.ticket .block--message textarea').blur(function (e) {
-        if ($(e.target).val().length == 0) $(e.target).closest('.block--message').find('.placeholder').fadeIn(150);
-    });
-    $('.ticket .block--message .placeholder').click(function (e) {
-        $(e.currentTarget).fadeOut(150);
-        $(e.currentTarget).closest('.block--message').find('textarea').focus();
-    })
-    // END Textarea autosize
-
-    /* ===========================================================
                     Dropdown & dropdown selects
     ============================================================*/
 
@@ -726,7 +708,6 @@ $(document).ready(function () {
                            Tickets list
    ============================================================*/
     // Tickets Filters
-    $('.scrollbar-inner').scrollbar();
     $('[data-action="filter--search"]').keyup(function (e) {
         if ($(e.target).val().length) {
             $(this).closest('.form-group').find('.search-clear').css('opacity', 1);
@@ -966,22 +947,26 @@ $(document).ready(function () {
     /* ===========================================================
                             Create ticket
     ============================================================*/
-    $('.datepicker').datepicker({
-        language: 'en',
-        position: 'right top',
-        autoClose: true,
-        onSelect: function (formattedDate, date, inst) {
-            if (formattedDate.length) {
-                inst.$el
-                    .parent()
-                    .parent()
-                    .find('.calendar--value').fadeIn(150).find('span').text(formattedDate);
+
+    if ( $.isFunction($.fn.datepicker) ) {
+        $('.datepicker').datepicker({
+            language: 'en',
+            position: 'right top',
+            autoClose: true,
+            onSelect: function (formattedDate, date, inst) {
+                if (formattedDate.length) {
+                    inst.$el
+                        .parent()
+                        .parent()
+                        .find('.calendar--value').fadeIn(150).find('span').text(formattedDate);
+                }
+            },
+            onHide: function (inst, animationCompleted) {
+                $('.param.calendar button').removeClass('active');
             }
-        },
-        onHide: function (inst, animationCompleted) {
-            $('.param.calendar button').removeClass('active');
-        }
-    });
+        });
+    } /* End if datepicker */
+
     $('.param.calendar button').click(function (e) {
         $(this).addClass('active');
         $(this).parent()
@@ -1263,26 +1248,24 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-
-
-    $('#search-datepicker').datepicker({
-        language: 'en',
-        position: 'left top',
-        autoClose: true,
-        range: true,
-        multipleDatesSeparator: ' - ',
-        toggleSelected: false,
-        onSelect: function (formattedDate, date, inst) {
-            if (formattedDate.length) {
-                //$('.ticket-create .param.calendar .calendar--value').fadeIn(150).find('span').text(formattedDate);
+    if ( $.isFunction($.fn.datepicker) ) {
+        $('#search-datepicker').datepicker({
+            language: 'en',
+            position: 'left top',
+            autoClose: true,
+            range: true,
+            multipleDatesSeparator: ' - ',
+            toggleSelected: false,
+            onSelect: function (formattedDate, date, inst) {
+                if (formattedDate.length) {
+                    //$('.ticket-create .param.calendar .calendar--value').fadeIn(150).find('span').text(formattedDate);
+                }
+            },
+            onHide: function (inst, animationCompleted) {
+                //$('.ticket-create .param.calendar button').removeClass('active');
             }
-        },
-        onHide: function (inst, animationCompleted) {
-            //$('.ticket-create .param.calendar button').removeClass('active');
-        }
-    });
-
-
+        });
+    } /* End if datepicker */
 
 
     /* ===========================================================
@@ -1330,3 +1313,10 @@ $('#header-search').keyup(function (e) {
 window.onload = function(){
     $('#loader').fadeOut(150);
 };*/
+
+function escapeHtml(html){
+    var text = document.createTextNode(html);
+    var p = document.createElement('p');
+    p.appendChild(text);
+    return p.innerHTML;
+}

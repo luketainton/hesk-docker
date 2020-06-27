@@ -22,13 +22,20 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
     <title><?php echo $hesk_settings['hesk_title']; ?></title>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="" />
-    <meta name="theme-color" content="#fff" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo HESK_PATH; ?>img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo HESK_PATH; ?>img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo HESK_PATH; ?>img/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="<?php echo HESK_PATH; ?>img/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="<?php echo HESK_PATH; ?>img/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="shortcut icon" href="<?php echo HESK_PATH; ?>img/favicon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#2d89ef" />
+    <meta name="msapplication-config" content="<?php echo HESK_PATH; ?>img/favicon/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css" />
-
+    <!--[if IE]>
+    <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/ie9.css" />
+    <![endif]-->
     <style>
         #forgot-tid-submit {
             width: 200px;
@@ -129,47 +136,41 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
                         ?>
                     </section>
                     <div class="form-footer">
-                        <button type="submit" class="btn btn-full" ripple="ripple">View Ticket</button>
+                        <button type="submit" class="btn btn-full" ripple="ripple"><?php echo $hesklang['view_ticket']; ?></button>
                         <a href="javascript:" onclick="$('#forgot').toggle()" class="link"><?php echo $hesklang['forgot_tid']; ?></a>
                     </div>
-                </form>
-                <div id="forgot" style="display: <?php echo $submittedForgotTrackingIdForm ? 'block' : 'none'; ?>;">
-                    <div class="alert warning">
-                        <div class="alert__inner">
-                            <div class="alert__head">
-                                <svg class="icon icon-warning">
-                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-warning"></use>
-                                </svg>
-                                <h6 class="alert__title"><?php echo $hesklang['forgot_tid'];?></h6>
-                            </div>
-                            <div class="alert__descr">
-                                <p><?php echo $hesklang['tid_mail']; ?></p>
-                                <form action="index.php" method="post" name="form1" class="form">
-                                    <div class="form-group">
-                                        <label class="label" style="display: none"><?php echo $hesklang['email']; ?></label>
-                                        <input type="email" class="form-control" name="email" value="<?php echo $email; ?>">
+                    </form>
+
+                    <!-- Start ticket reminder form -->
+                    <div id="forgot" style="display: <?php echo $submittedForgotTrackingIdForm ? 'block' : 'none'; ?>;">
+                        <div class="notification orange" style="margin-bottom:0px;">
+                            <b><?php echo $hesklang['forgot_tid']; ?></b><br><br>
+                            <?php echo $hesklang['tid_mail']; ?>
+                            <form action="index.php" method="post" name="form1" class="form">
+                                <div class="form-group">
+                                    <label class="label" style="display: none"><?php echo $hesklang['email']; ?></label>
+                                    <input type="email" class="form-control" name="email" value="<?php echo $email; ?>">
+                                </div>
+                                <div class="form-group">
+                                    <div class="radio-custom">
+                                        <input type="radio" name="open_only" id="open_only1" value="1" <?php echo $hesk_settings['open_only'] ? 'checked' : ''; ?>>
+                                        <label for="open_only1">
+                                            <?php echo $hesklang['oon1']; ?>
+                                        </label>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="radio-custom">
-                                            <input type="radio" name="open_only" id="open_only1" value="1" <?php echo $hesk_settings['open_only'] ? 'checked' : ''; ?>>
-                                            <label for="open_only1">
-                                                <?php echo $hesklang['oon1']; ?>
-                                            </label>
-                                        </div>
-                                        <div class="radio-custom">
-                                            <input type="radio" name="open_only" id="open_only0" value="0" <?php echo !$hesk_settings['open_only'] ? 'checked' : ''; ?>>
-                                            <label for="open_only0">
-                                                <?php echo $hesklang['oon2']; ?>
-                                            </label>
-                                        </div>
+                                    <div class="radio-custom">
+                                        <input type="radio" name="open_only" id="open_only0" value="0" <?php echo !$hesk_settings['open_only'] ? 'checked' : ''; ?>>
+                                        <label for="open_only0">
+                                            <?php echo $hesklang['oon2']; ?>
+                                        </label>
                                     </div>
-                                    <input type="hidden" name="a" value="forgot_tid">
-                                    <button id="forgot-tid-submit" type="submit" class="btn btn-full"><?php echo $hesklang['tid_send']; ?></button>
-                                </form>
-                            </div>
+                                </div>
+                                <input type="hidden" name="a" value="forgot_tid">
+                                <button id="forgot-tid-submit" type="submit" class="btn btn-full"><?php echo $hesklang['tid_send']; ?></button>
+                            </form>
                         </div>
                     </div>
-                </div>
+                    <!-- End ticket reminder form -->
             </div>
         </div>
 <?php
@@ -199,11 +200,7 @@ END LICENSE CODE
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery-3.4.1.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/hesk_functions.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/svg4everybody.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.scrollbar.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/selectize.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.en.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.autocomplete.js"></script>
 <script>
     $(document).ready(function() {
         $('#select_category').selectize();

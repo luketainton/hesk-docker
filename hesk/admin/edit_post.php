@@ -343,16 +343,16 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
             {
                 ?>
                 <div class="form-group">
-                    <label for="edit_subject"><?php echo $hesklang['subject']; ?></label>
+                    <label for="edit_subject"><?php echo $hesklang['subject']; ?>:</label>
                     <input type="text" class="form-control" id="edit_subject" name="subject" maxlength="70" value="<?php echo $ticket['subject'];?>">
                 </div>
                 <div class="form-group">
-                    <label for="edit_name"><?php echo $hesklang['name']; ?></label>
+                    <label for="edit_name"><?php echo $hesklang['name']; ?>:</label>
                     <input type="text" name="name" id="edit_name" class="form-control" maxlength="50" value="<?php echo $ticket['name'];?>">
                 </div>
                 <div class="form-group">
-                    <label for="edit_email"><?php echo $hesklang['email']; ?></label>
-                    <input type="email" name="email" class="form-control" id="edit_email" maxlength="1000" value="<?php echo $ticket['email'];?>">
+                    <label for="edit_email"><?php echo $hesklang['email']; ?>:</label>
+                    <input type="<?php echo $hesk_settings['multi_eml'] ? 'text' : 'email'; ?>" name="email" class="form-control" id="edit_email" maxlength="1000" value="<?php echo $ticket['email'];?>">
                 </div>
                 <?php
                 foreach ($hesk_settings['custom_fields'] as $k=>$v) {
@@ -370,7 +370,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
                             case 'radio':
                                 echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <div class="radio-list">';
 
                                         $cls = in_array($k,$_SESSION['iserror']) ? ' class="isError" ' : '';
@@ -411,9 +411,8 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
                                 echo '
                                 <div class="form-group">
-                                    <label for="edit_">'.$v['name'].' '.$v['req'].'</label>
-                                    <div class="dropdown-select center out-close">
-                                        <select name="'.$k.'" '.$cls.'>';
+                                    <label for="edit_">'.$v['name:'].' '.$v['req'].'</label>
+                                        <select name="'.$k.'" id="'.$k.'" '.$cls.'>';
                                         // Show "Click to select"?
                                         if ( ! empty($v['value']['show_select']))
                                         {
@@ -435,15 +434,18 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
                                             echo '<option '.$selected.'>'.$option.'</option>';
                                         }
                                         echo '</select>
-                                    </div>
-                                </div>';
+                                </div>
+                                <script>
+                                    $(\'#'.$k.'\').selectize();
+                                </script>
+                                ';
                                 break;
 
                             /* Checkbox */
                             case 'checkbox':
                                 echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>';
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>';
 
                                 $cls = in_array($k,$_SESSION['iserror']) ? ' class="isError" ' : '';
 
@@ -477,7 +479,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
                                 echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <textarea name="'.$k.'" class="form-control'.$cls.'" style="height: inherit" rows="'.intval($v['value']['rows']).'" cols="'.intval($v['value']['cols']).'" >'.$k_value.'</textarea>
                                 </div>';
                                 break;
@@ -488,7 +490,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
                                 echo '
                                 <section class="param calendar">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <div class="calendar--button">
                                         <button type="button">
                                             <svg class="icon icon-calendar">
@@ -518,8 +520,8 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
                                 echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
-                                    <input class="form-control '.$cls.'" type="email" name="'.$k.'" id="'.$k.'" value="'.$k_value.'" size="40" '.$suggest.'>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
+                                    <input class="form-control '.$cls.'" type="'.($v['value']['multiple'] ? 'text' : 'email').'" name="'.$k.'" id="'.$k.'" value="'.$k_value.'" size="40" '.$suggest.'>
                                 </div>
                                 <div id="'.$k.'_suggestions"></div>';
                                 break;
@@ -535,7 +537,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
                                 echo '
                                 <div class="form-group">
-                                    <label>'.$v['name'].' '.$v['req'].'</label>
+                                    <label>'.$v['name:'].' '.$v['req'].'</label>
                                     <input class="form-control '.$cls.'" type="text" name="'.$k.'" size="40" maxlength="'.intval($v['value']['max_length']).'" value="'.$k_value.'">
                                 </div>';
                         }
@@ -546,7 +548,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
             }
             ?>
             <div class="form-group">
-                <label for="edit_message"><?php echo $hesklang['message']; ?></label>
+                <label for="edit_message"><?php echo $hesklang['message']; ?>:</label>
                 <textarea style="height: inherit" class="form-control" id="edit_message" name="message" rows="12" cols="60"><?php echo $ticket['message']; ?></textarea>
             </div>
 
@@ -555,7 +557,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
             if ($hesk_settings['attachments']['use'] && $number_of_attachments < $hesk_settings['attachments']['max_number'])
             {
                 echo '<div class="form-group">';
-                echo '<label>' . $hesklang['attachments'] . ' (<a class="link" href="javascript:" onclick="hesk_window(\'../file_limits.php\',250,500);return false;">' . $hesklang['ful'] . '</a>)</label>';
+                echo '<label>' . $hesklang['attachments'] . ': (<a class="link" href="javascript:" onclick="hesk_window(\'../file_limits.php\',250,500);return false;">' . $hesklang['ful'] . '</a>)</label>';
                 for ($i=$number_of_attachments+1;$i<=$hesk_settings['attachments']['max_number'];$i++)
                 {
                     echo '<input type="file" name="attachment['.$i.']" size="50" /><br />';

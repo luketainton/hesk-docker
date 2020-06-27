@@ -136,6 +136,16 @@ if ($section === 'GENERAL') {
 	$set['max_open']		= hesk_checkMinMax( intval( hesk_POST('s_max_open') ) , 0, 999, 0);
 	$set['new_top']			= empty($_POST['s_new_top']) ? 0 : 1;
 	$set['reply_top']		= empty($_POST['s_reply_top']) ? 0 : 1;
+    $set['hide_replies']	= hesk_checkMinMax( intval( hesk_POST('s_hide_replies') ) , -1, 1, -1);
+    if ($set['hide_replies'] == 1)
+    {
+        $set['hide_replies'] = hesk_checkMinMax( intval( hesk_POST('s_hide_replies_num') ) , 1, 99, 10);
+    }
+    $set['limit_width']	= empty($_POST['s_limit_width']) ? 0 : 1;
+    if ($set['limit_width'])
+    {
+        $set['limit_width'] = hesk_checkMinMax( intval( hesk_POST('s_limit_width_num') ) , 50, 9999, 800);
+    }
 
 	/* --> Features */
 	$set['autologin']		= empty($_POST['s_autologin']) ? 0 : 1;
@@ -210,7 +220,7 @@ if ($section === 'GENERAL') {
 
 			foreach ($set['attachments']['allowed_types'] as $ext)
 			{
-				if (strlen($ext) > 1)
+				if (strlen($ext) > 0)
 				{
 					$keep_these[] = '.' . $ext;
 				}
@@ -459,6 +469,7 @@ if ($section === 'GENERAL') {
 		$set['timezone'] = 'UTC';
 	}
 	$set['timeformat']		= hesk_input( hesk_POST('s_timeformat') ) or $set['timeformat'] = 'Y-m-d H:i:s';
+    $set['time_display']    = empty($_POST['s_time_display']) ? 0 : 1;
 
 	/* --> Other */
 	$set['ip_whois']		= hesk_input( hesk_POST('s_ip_whois_url', 'https://whois.domaintools.com/{IP}') );
@@ -526,6 +537,8 @@ $hesk_settings[\'autoclose\']=' . hesk_getProperty($set, 'autoclose') . ';
 $hesk_settings[\'max_open\']=' . hesk_getProperty($set, 'max_open') . ';
 $hesk_settings[\'new_top\']=' . hesk_getProperty($set, 'new_top') . ';
 $hesk_settings[\'reply_top\']=' . hesk_getProperty($set, 'reply_top') . ';
+$hesk_settings[\'hide_replies\']=' . hesk_getProperty($set, 'hide_replies') . ';
+$hesk_settings[\'limit_width\']=' . hesk_getProperty($set, 'limit_width') . ';
 
 // --> Features
 $hesk_settings[\'autologin\']=' . hesk_getProperty($set, 'autologin') . ';
@@ -668,6 +681,7 @@ $hesk_settings[\'updatedformat\']=' . hesk_getProperty($set, 'updatedformat') . 
 // --> Date & Time
 $hesk_settings[\'timezone\']=\'' . hesk_getProperty($set, 'timezone') . '\';
 $hesk_settings[\'timeformat\']=\'' . hesk_getProperty($set, 'timeformat') . '\';
+$hesk_settings[\'time_display\']=\'' . hesk_getProperty($set, 'time_display') . '\';
 
 // --> Other
 $hesk_settings[\'ip_whois\']=\'' . hesk_getProperty($set, 'ip_whois') . '\';
@@ -738,7 +752,6 @@ function hesk_getLanguagesArray($returnArray=0)
 	global $hesk_settings, $hesklang;
 
 	/* Get a list of valid emails */
-    $hesk_settings['smtp'] = 0;
     $valid_emails = array_keys( hesk_validEmails() );
 
 	$dir = HESK_PATH . 'language/';
@@ -788,7 +801,7 @@ function hesk_getLanguagesArray($returnArray=0)
                 {
                 	$add = 0;
                 }
-                elseif ( ! preg_match('/\$hesklang\[\'team\'\]/', $tmp) )
+                elseif ( ! preg_match('/\$hesklang\[\'TIMEAGO_LANG_FILE\'\]/', $tmp) )
                 {
                 	$add = 0;
                 }
@@ -933,10 +946,10 @@ function hesk_getProperty($set, $property) {
 	}
 
 	if (is_array($hesk_settings[$property])) {
-		return "'" . implode('\',\'', $hesk_settings[$property]) . "'";
+		return "'" . implode('\',\'', hesk_slashArray($hesk_settings[$property])) . "'";
 	}
 
-	return isset($set[$property]) ? $set[$property] : $hesk_settings[$property];
+	return isset($set[$property]) ? $set[$property] : addslashes($hesk_settings[$property]);
 }
 
 function hesk_getLanguageForFile($set) {
