@@ -50,7 +50,19 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 hesk_handle_messages();
 ?>
 <div class="main__content tools">
-    <h2><?php echo $hesklang['banip']; ?></h2>
+    <h2>
+        <?php echo $hesklang['banip']; ?>
+        <div class="tooltype right out-close">
+            <svg class="icon icon-info">
+                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+            </svg>
+            <div class="tooltype__content">
+                <div class="tooltype__wrapper">
+                    <?php echo $hesklang['banip_intro']; ?>
+                </div>
+            </div>
+        </div>
+    </h2>
     <form action="banned_ips.php" method="post" name="form1">
         <div class="tools__add-mail form">
             <div class="form-group">

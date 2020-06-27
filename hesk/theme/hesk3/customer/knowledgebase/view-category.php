@@ -38,12 +38,20 @@ $service_message_type_to_class = array(
     <title><?php echo $hesk_settings['tmp_title']; ?></title>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="" />
-    <meta name="theme-color" content="#fff" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo HESK_PATH; ?>img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo HESK_PATH; ?>img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo HESK_PATH; ?>img/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="<?php echo HESK_PATH; ?>img/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="<?php echo HESK_PATH; ?>img/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="shortcut icon" href="<?php echo HESK_PATH; ?>img/favicon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#2d89ef" />
+    <meta name="msapplication-config" content="<?php echo HESK_PATH; ?>img/favicon/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css" />
+    <!--[if IE]>
+    <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/ie9.css" />
+    <![endif]-->
     <!--suppress CssOverwrittenProperties -->
     <style>
         .topics__block {
@@ -113,14 +121,14 @@ $service_message_type_to_class = array(
                     <svg class="icon icon-chevron-right">
                         <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-chevron-right"></use>
                     </svg>
-                    <?php if ($currentCategory['id'] != 1): ?>
-                    <a href="knowledgebase.php">
-                        <span><?php echo $hesklang['kb_text']; ?></span>
+                    <?php foreach ($hesk_settings['public_kb_categories'][$currentCategory['id']]['parents'] as $parent_id): ?>
+                    <a href="knowledgebase.php<?php if ($parent_id > 1) echo "?category={$parent_id}"; ?>">
+                        <span><?php echo $hesk_settings['public_kb_categories'][$parent_id]['name']; ?></span>
                     </a>
                     <svg class="icon icon-chevron-right">
                         <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-chevron-right"></use>
                     </svg>
-                    <?php endif; ?>
+                    <?php endforeach; ?>
                     <div class="last"><?php echo $currentCategory['name']; ?></div>
                 </div>
             </div>
@@ -128,63 +136,73 @@ $service_message_type_to_class = array(
         <div class="main__content">
             <div class="contr">
                 <div class="help-search">
-                    <h2 class="search__title"><?php echo $hesklang['how_can_we_help']; ?></h2>
+                    <?php if ($currentCategory['id'] == 1 && $hesk_settings['kb_enable'] == 2): ?>
+                        <h2 class="search__title"><?php echo $hesklang['how_can_we_help']; ?></h2>
+                    <?php endif; ?>
                     <?php displayKbSearch(); ?>
                 </div>
                 <?php if ($noSearchResults): ?>
-                    <div class="alert warning">
-                        <div class="alert__inner">
-                            <div class="alert__head">
-                                <svg class="icon icon-warning">
-                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-warning"></use>
-                                </svg>
-                                <h6 class="alert__title"><?php echo $hesklang['no_results_found']; ?></h6>
-                            </div>
-                            <p class="alert__descr"><?php echo $hesklang['nosr']; ?></p>
+                    <div class="main__content notice-flash" style="padding: 0px;">
+                        <div class="notification orange">
+                            <p><b><?php echo $hesklang['no_results_found']; ?></b></p>
+                            <?php echo $hesklang['nosr']; ?>
                         </div>
                     </div>
                 <?php endif; ?>
-                <?php foreach ($serviceMessages as $service_message): ?>
-                    <div class="alert <?php echo $service_message_type_to_class[$service_message['style']] ?>">
-                        <div class="alert__inner">
-                            <div class="alert__head">
-                                <svg class="icon icon-warning">
-                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-warning"></use>
-                                </svg>
-                                <h6 class="alert__title"><?php echo $service_message['title']; ?></h6>
-                            </div>
-                            <p class="alert__descr">
-                                <?php echo $service_message['message']; ?>
-                            </p>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                <?php hesk3_show_messages($service_messages); ?>
                 <div class="content">
-                    <div class="block__head">
-                        <div class="icon-in-circle">
-                            <svg class="icon icon-knowledge">
-                                <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-knowledge"></use>
-                            </svg>
+                    <?php if ($currentCategory['id'] == 1): ?>
+                        <div class="block__head">
+                            <div class="icon-in-circle">
+                                <svg class="icon icon-knowledge">
+                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-knowledge"></use>
+                                </svg>
+                            </div>
+                            <h3 class="h-3 ml-1"><?php echo $currentCategory['name']; ?></h3>
                         </div>
-                        <h3 class="h-3 ml-1"><?php echo $currentCategory['name']; ?></h3>
-                    </div>
-                    <?php if ($currentCategory['id'] != 1): ?>
-                    <a class="link back-link" href="<?php echo $parentLink; ?>">
-                        (<?php echo $hesklang['back']; ?>)
-                    </a>
+                    <?php else: ?>
+                        <div class="block__head" style="padding-bottom: 32px; text-align: left ! important; display: block;">
+                            <h3 class="h-3 kb--folder">
+                                <svg class="icon icon-knowledge">
+                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-knowledge"></use>
+                                </svg>
+                                <a href="knowledgebase.php">
+                                    <span><?php echo $hesk_settings['public_kb_categories'][1]['name']; ?></span>
+                                </a>
+                                <svg class="icon icon-chevron-right">
+                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-chevron-right"></use>
+                                </svg>
+                                <?php foreach ($hesk_settings['public_kb_categories'][$currentCategory['id']]['parents'] as $parent_id): ?>
+                                    <?php if ($parent_id == 1) {continue;} ?>
+                                    <svg class="icon icon-folder">
+                                        <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-folder"></use>
+                                    </svg>
+                                    <a href="knowledgebase.php?category=<?php echo $parent_id; ?>">
+                                        <span><?php echo $hesk_settings['public_kb_categories'][$parent_id]['name']; ?></span>
+                                    </a>
+                                    <svg class="icon icon-chevron-right">
+                                        <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-chevron-right"></use>
+                                    </svg>
+                                <?php endforeach; ?>
+                                <svg class="icon icon-folder">
+                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-folder"></use>
+                                </svg>
+                                <?php echo $currentCategory['name']; ?>
+                            </h3>
+                        </div>
+                    <?php endif; ?>
                     <?php
-                    endif;
                     if (count($subcategories) > 0):
                     ?>
                     <div class="topics">
                         <?php foreach ($subcategories as $subcategory): ?>
                         <div class="topics__block">
                             <h5 class="topics__title">
-                                <svg class="icon icon-knowledge">
-                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-knowledge"></use>
+                                <svg class="icon icon-folder">
+                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-folder"></use>
                                 </svg>
                                 <span>
-                                    <a class="link" href="knowledgebase.php?category=<?php echo $subcategory['subcategory']['id']; ?>">
+                                    <a class="title-link" href="knowledgebase.php?category=<?php echo $subcategory['subcategory']['id']; ?>">
                                         <?php echo $subcategory['subcategory']['name']; ?>
                                     </a>
                                 </span>
@@ -202,7 +220,7 @@ $service_message_type_to_class = array(
                                 ?>
                                 <li class="text-bold">
                                     <a href="knowledgebase.php?category=<?php echo $subcategory['subcategory']['id']; ?>">
-                                        <?php echo $hesklang['m']; ?>
+                                        <?php echo $hesklang['m']; ?> &raquo;
                                     </a>
                                 </li>
                                 <?php endif; ?>
@@ -213,7 +231,7 @@ $service_message_type_to_class = array(
                     <?php endif; ?>
                 </div>
                 <?php if (count($articlesInCategory) > 0): ?>
-                <article class="article">
+                <article class="article" <?php if (count($subcategories) == 0) echo 'style="margin-top: -20px"'; ?>>
                     <div class="block__head">
                         <h3 class="h-3 text-center"><?php echo $hesklang['ac']; ?></h3>
                     </div>
@@ -228,26 +246,44 @@ $service_message_type_to_class = array(
                             <h5 class="preview__title"><?php echo $article['subject']; ?></h5>
                             <p class="navlink__descr"><?php echo $article['content_preview']; ?></p>
                         </div>
-                        <div class="rate">
-                            <?php
-                            if ($hesk_settings['kb_rating']) {
-                                echo hesk3_get_customer_rating($article['rating']);
-                            }
-
-                            if ($hesk_settings['kb_views'] && $hesk_settings['kb_rating']): ?>
-                                <span class="lightgrey">(<?php echo $article['views']; ?>)</span>
-                            <?php elseif ($hesk_settings['kb_views']): ?>
-                                <span class="lightgrey">
-                                            <?php echo $hesklang['views'] ?>:
-                                            <?php echo $article['views']; ?>
-                                        </span>
-                            <?php endif; ?>
-                        </div>
+                        <?php if ($hesk_settings['kb_views'] || $hesk_settings['kb_rating']): ?>
+                            <div class="rate">
+                                <?php if ($hesk_settings['kb_views']): ?>
+                                    <div style="margin-right: 10px; display: -ms-flexbox; display: flex;">
+                                        <svg class="icon icon-eye-close">
+                                            <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-eye-close"></use>
+                                        </svg>
+                                        <span class="lightgrey"><?php echo $article['views_formatted']; ?></span>
+                                    </div>
+                                <?php
+                                endif;
+                                if ($hesk_settings['kb_rating']): ?>
+                                    <?php echo hesk3_get_customer_rating($article['rating']); ?>
+                                    <?php if ($hesk_settings['kb_views']) echo '<span class="lightgrey">('.$article['votes_formatted'].')</span>'; ?>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                     </a>
+                    <!--[if IE]>
+                        <p>&nbsp;</p>
+                    <![endif]-->
                     <?php endforeach; ?>
                 </article>
                 <?php
                 endif;
+
+                // No sub-categories and no articles in this category
+                if ( ! count($articlesInCategory) && ! count($subcategories)):
+                ?>
+                <div class="main__content notice-flash">
+                    <div class="notification blue text-center">
+                        <?php echo $hesklang['noac']; ?><br><br>
+                        <a class="link" href="javascript:history.go(-1)"><?php echo $hesklang['back']; ?></a>
+                    </div>
+                </div>
+                <?php
+                endif;
+
                 if (count($topArticles) > 0 || count($latestArticles) > 0):
                 ?>
                 <article class="article">
@@ -289,22 +325,27 @@ $service_message_type_to_class = array(
                                                 <?php echo $article['content_preview']; ?>
                                             </p>
                                         </div>
-                                        <div class="rate">
-                                            <?php
-                                            if ($hesk_settings['kb_rating']) {
-                                                echo hesk3_get_customer_rating($article['rating']);
-                                            }
-
-                                            if ($hesk_settings['kb_views'] && $hesk_settings['kb_rating']): ?>
-                                                <span class="lightgrey">(<?php echo $article['views']; ?>)</span>
-                                            <?php elseif ($hesk_settings['kb_views']): ?>
-                                                <span class="lightgrey">
-                                                    <?php echo $hesklang['views'] ?>:
-                                                    <?php echo $article['views']; ?>
-                                                </span>
-                                            <?php endif; ?>
-                                        </div>
+                                        <?php if ($hesk_settings['kb_views'] || $hesk_settings['kb_rating']): ?>
+                                            <div class="rate">
+                                                <?php if ($hesk_settings['kb_views']): ?>
+                                                    <div style="margin-right: 10px; display: -ms-flexbox; display: flex;">
+                                                        <svg class="icon icon-eye-close">
+                                                            <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-eye-close"></use>
+                                                        </svg>
+                                                        <span class="lightgrey"><?php echo $article['views_formatted']; ?></span>
+                                                    </div>
+                                                <?php
+                                                endif;
+                                                if ($hesk_settings['kb_rating']): ?>
+                                                    <?php echo hesk3_get_customer_rating($article['rating']); ?>
+                                                    <?php if ($hesk_settings['kb_views']) echo '<span class="lightgrey">('.$article['votes_formatted'].')</span>'; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
                                     </a>
+                                    <!--[if IE]>
+                                        <p>&nbsp;</p>
+                                    <![endif]-->
                                 <?php endforeach; ?>
                             </div>
                         <?php
@@ -329,22 +370,27 @@ $service_message_type_to_class = array(
                                                 <?php echo $article['content_preview']; ?>
                                             </p>
                                         </div>
-                                        <div class="rate">
-                                            <?php
-                                            if ($hesk_settings['kb_rating']) {
-                                                echo hesk3_get_customer_rating($article['rating']);
-                                            }
-
-                                            if ($hesk_settings['kb_views'] && $hesk_settings['kb_rating']): ?>
-                                                <span class="lightgrey">(<?php echo $article['views']; ?>)</span>
-                                            <?php elseif ($hesk_settings['kb_views']): ?>
-                                                <span class="lightgrey">
-                                                    <?php echo $hesklang['views'] ?>:
-                                                    <?php echo $article['views']; ?>
-                                                </span>
-                                            <?php endif; ?>
-                                        </div>
+                                        <?php if ($hesk_settings['kb_views'] || $hesk_settings['kb_rating']): ?>
+                                            <div class="rate">
+                                                <?php if ($hesk_settings['kb_views']): ?>
+                                                    <div style="margin-right: 10px; display: -ms-flexbox; display: flex;">
+                                                        <svg class="icon icon-eye-close">
+                                                            <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-eye-close"></use>
+                                                        </svg>
+                                                        <span class="lightgrey"><?php echo $article['views_formatted']; ?></span>
+                                                    </div>
+                                                <?php
+                                                endif;
+                                                if ($hesk_settings['kb_rating']): ?>
+                                                    <?php echo hesk3_get_customer_rating($article['rating']); ?>
+                                                    <?php if ($hesk_settings['kb_views']) echo '<span class="lightgrey">('.$article['votes_formatted'].')</span>'; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
                                     </a>
+                                    <!--[if IE]>
+                                        <p>&nbsp;</p>
+                                    <![endif]-->
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
@@ -381,11 +427,7 @@ END LICENSE CODE
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/hesk_functions.js"></script>
 <?php outputSearchJavascript(); ?>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/svg4everybody.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.scrollbar.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/selectize.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.en.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.autocomplete.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.js"></script>
 </body>
 </html>

@@ -1194,6 +1194,11 @@ function hesk_iUpdateTables()
     // 2.8.4 no changes
     // 2.8.5 no changes
     // 3.0.0 no changes
+    // 3.0.1 no changes
+    // 3.0.2 no changes
+    // 3.0.3 no changes
+    // 3.1.0 no changes
+    // 3.1.1 no changes
 
 	// Insert the "HESK updated to latest version" mail for the administrator
 	if ( file_exists(HESK_PATH.'hesk_license.php') )
@@ -1336,6 +1341,8 @@ function hesk_defaultSettings()
 	$hesk_settings['max_open']=0;
 	$hesk_settings['new_top']=0;
 	$hesk_settings['reply_top']=0;
+    $hesk_settings['hide_replies']=-1;
+    $hesk_settings['limit_width']=800;
 
 	// --> Features
 	$hesk_settings['autologin']=1;
@@ -1477,6 +1484,7 @@ function hesk_defaultSettings()
 	// --> Date & Time
 	$hesk_settings['timezone']=date_default_timezone_get();
 	$hesk_settings['timeformat']='Y-m-d H:i:s';
+    $hesk_settings['time_display']=1;
 
 	// --> Other
 	$hesk_settings['ip_whois']='https://whois.domaintools.com/{IP}';

@@ -649,13 +649,13 @@ function hesk_verifyGoto()
 	// Allowed files for redirect
 	$OK_urls = array(
 		'admin_main.php' => '',
+		'admin_settings_email.php' => '',
 		'admin_settings_general.php' => '',
 		'admin_settings_help_desk.php' => '',
 		'admin_settings_knowledgebase.php' => '',
-		'admin_settings_email.php' => '',
-		'admin_settings_ticket_list.php' => '',
 		'admin_settings_misc.php' => '',
 		'admin_settings_save.php' => 'admin_settings_general.php',
+		'admin_settings_ticket_list.php' => '',
 		'admin_ticket.php' => '',
 		'archive.php' => '',
 		'assign_owner.php' => '',
@@ -678,6 +678,7 @@ function hesk_verifyGoto()
 		'manage_knowledgebase.php' => '',
 		'manage_ticket_templates.php' => '',
 		'manage_users.php' => '',
+		'module_statistics.php' => '',
 		'new_ticket.php' => '',
 		'profile.php' => '',
 		'reports.php' => '',

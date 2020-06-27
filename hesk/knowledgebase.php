@@ -94,6 +94,9 @@ if (isset($_GET['rating']))
     exit();
 }
 
+// Get list of public categories
+$hesk_settings['public_kb_categories'] = hesk_kbCategoriesArray();
+
 /* Any category ID set? */
 $catid = intval( hesk_GET('category', 1) );
 $artid = intval( hesk_GET('article', 0) );
@@ -125,6 +128,12 @@ elseif ($artid)
                             ");
 
     $article = hesk_dbFetchAssoc($result) or hesk_error($hesklang['kb_art_id']);
+    $article['views_formatted'] = number_format($article['views'], 0, null, $hesklang['sep_1000']);
+    $article['votes_formatted'] = number_format($article['votes'], 0, null, $hesklang['sep_1000']);
+    if ($article['catid'] == 1)
+    {
+        $article['cat_name'] = $hesklang['kb_text'];
+    }
     hesk_show_kb_article($artid);
 }
 else
@@ -141,11 +150,9 @@ function hesk_kb_search($query) {
 
     define('HESK_NO_ROBOTS',1);
 
-	/* Print header */
     $hesk_settings['tmp_title'] = $hesklang['sr'] . ': ' . hesk_mb_substr(hesk_htmlspecialchars(stripslashes($query)),0,20);
-	require_once(HESK_PATH . 'inc/header.inc.php');
 
-	$res = hesk_dbQuery('SELECT t1.`id`, t1.`subject`, LEFT(`t1`.`content`, '.max(200, $hesk_settings['kb_substrart'] * 2).') AS `content`, t1.`rating`, t1.`views` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` AS t1
+	$res = hesk_dbQuery('SELECT t1.`id`, t1.`subject`, LEFT(`t1`.`content`, '.max(200, $hesk_settings['kb_substrart'] * 2).') AS `content`, t1.`rating`, t1.`votes`, t1.`views` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` AS t1
     					LEFT JOIN `'.hesk_dbEscape($hesk_settings['db_pfix'])."kb_categories` AS t2 ON t1.`catid` = t2.`id`
 						WHERE t1.`type`='0' AND t2.`type`='0' AND  MATCH(`subject`,`content`,`keywords`) AGAINST ('".hesk_dbEscape($query)."') LIMIT " . intval($hesk_settings['kb_search_limit']));
     $num = hesk_dbNumRows($res);
@@ -154,6 +161,8 @@ function hesk_kb_search($query) {
     while ($article = hesk_dbFetchAssoc($res))
     {
         $article['content_preview'] = hesk_kbArticleContentPreview($article['content']);
+        $article['views_formatted'] = number_format($article['views'], 0, null, $hesklang['sep_1000']);
+        $article['votes_formatted'] = number_format($article['votes'], 0, null, $hesklang['sep_1000']);
         $articles[] = $article;
     }
 
@@ -178,6 +187,8 @@ function hesk_show_kb_article($artid)
     if (!isset($_GET['rated']) && !hesk_detect_bots())
     {
 		hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` SET `views`=`views`+1 WHERE `id`={$artid}");
+        $article['views']++;
+        $article['views_formatted'] = number_format($article['views'], 0, null, $hesklang['sep_1000']);
     }
 
     if ($article['catid']==1)
@@ -254,10 +265,16 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 	$res = hesk_dbQuery("SELECT `id`,`name`,`parent` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_categories` WHERE `id`='{$catid}' AND `type`='0' LIMIT 1");
     $thiscat = hesk_dbFetchAssoc($res) or hesk_error($hesklang['kb_cat_inv']);
 
+    // Top category? Translate name
+    if ($thiscat['id'] == 1)
+    {
+        $thiscat['name'] = $hesklang['kb_text'];
+    }
+
     $response = array(
         'currentCategory' => $thiscat,
         'noSearchResults' => $is_search,
-        'serviceMessages' => array()
+        'service_messages' => array()
     );
     if ($is_search == 0)
     {
@@ -269,12 +286,12 @@ function hesk_show_kb_category($catid, $is_search = 0) {
         {
             // Service messages
             $service_messages = array();
-            $res = hesk_dbQuery('SELECT `title`, `message`, `style` FROM `'.hesk_dbEscape($hesk_settings['db_pfix'])."service_messages` WHERE `type`='0' ORDER BY `order` ASC");
+            $res = hesk_dbQuery('SELECT `title`, `message`, `style` FROM `'.hesk_dbEscape($hesk_settings['db_pfix'])."service_messages` WHERE `type`='0' AND (`language` IS NULL OR `language` LIKE '".hesk_dbEscape($hesk_settings['language'])."') ORDER BY `order` ASC");
             while ($sm=hesk_dbFetchAssoc($res))
             {
                 $service_messages[] = $sm;
             }
-            $response['serviceMessages'] = $service_messages;
+            $response['service_messages'] = $service_messages;
         }
     }
 
@@ -290,30 +307,50 @@ function hesk_show_kb_category($catid, $is_search = 0) {
     {
         while ($cat = hesk_dbFetchAssoc($result))
         {
-            /* Print most popular/sticky articles */
+            $displayShowMoreLink = false;
             $articles_to_display = array();
+
             if ($hesk_settings['kb_numshow'] && $cat['articles'])
             {
                 $res = hesk_dbQuery("SELECT `id`,`subject` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` WHERE `catid`='{$cat['id']}' AND `type`='0' ORDER BY `sticky` DESC, `art_order` ASC LIMIT " . (intval($hesk_settings['kb_numshow']) + 1) );
                 while ($art = hesk_dbFetchAssoc($res)) {
                     $articles_to_display[] = $art;
                 }
-                $displayShowMoreLink = hesk_dbNumRows($res) > $hesk_settings['kb_numshow'];
-                $response['subcategories'][] = array(
-                    'subcategory' => $cat,
-                    'articles' => $articles_to_display,
-                    'displayShowMoreLink' => $displayShowMoreLink
-                );
+
+                // Do we have more articles for display than what we need?
+                if (hesk_dbNumRows($res) > $hesk_settings['kb_numshow']) {
+                    $displayShowMoreLink = true;
+                    array_pop($articles_to_display);
+                } else {
+                    // Maybe we have further sub-categories?
+                    foreach ($hesk_settings['public_kb_categories'] as $category)
+                    {
+                        // Show "More" if the sub-category has sub-categories
+                        if ($category['parent'] == $cat['id'])
+                        {
+                            $displayShowMoreLink = true;
+                            break;
+                        }
+                    }
+                }
             }
+
+            $response['subcategories'][] = array(
+                'subcategory' => $cat,
+                'articles' => $articles_to_display,
+                'displayShowMoreLink' => $displayShowMoreLink
+            );
         }
     } // END if NumRows > 0
 
     $articles_in_category = array();
-    $res = hesk_dbQuery("SELECT `id`, `subject`, LEFT(`content`, ".max(200, $hesk_settings['kb_substrart'] * 2).") AS `content`, `rating`, `views` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` WHERE `catid`='{$catid}' AND `type`='0' ORDER BY `sticky` DESC, `art_order` ASC");
+    $res = hesk_dbQuery("SELECT `id`, `subject`, LEFT(`content`, ".max(200, $hesk_settings['kb_substrart'] * 2).") AS `content`, `rating`, `votes`, `views` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` WHERE `catid`='{$catid}' AND `type`='0' ORDER BY `sticky` DESC, `art_order` ASC");
 
     while ($article = hesk_dbFetchAssoc($res))
     {
         $article['content_preview'] = hesk_kbArticleContentPreview($article['content']);
+        $article['views_formatted'] = number_format($article['views'], 0, null, $hesklang['sep_1000']);
+        $article['votes_formatted'] = number_format($article['votes'], 0, null, $hesklang['sep_1000']);
         $articles_in_category[] = $article;
     }
     $response['articlesInCategory'] = $articles_in_category;

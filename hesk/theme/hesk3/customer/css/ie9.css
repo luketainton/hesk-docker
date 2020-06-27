@@ -1,0 +1,16 @@
+a {
+    box-shaddow: none ! important;
+    padding: 0px ! important;
+}
+
+.icon-in-circle {
+    display: none ! important;
+}
+
+.tabbed__tabs .tabbed__tabs_tab.is-visible {
+    display: block ! important;
+}
+
+div.last {
+    display: inline ! important;
+}

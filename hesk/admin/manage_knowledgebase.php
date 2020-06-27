@@ -186,17 +186,17 @@ while (count($kb_cat) > 0)
 
 			// Generate KB menu icons
 			$menu_icons =
-			'<a href="manage_knowledgebase.php?a=add_article&amp;catid='.$my.'" onclick="document.getElementById(\'option'.$j.'\').selected=true;return true;" title="'.$hesklang['kb_i_art'].'">'.
+			'<a class="tooltip" data-ztt_vertical_offset="0" href="manage_knowledgebase.php?a=add_article&amp;catid='.$my.'" onclick="document.getElementById(\'option'.$j.'\').selected=true;return true;" title="'.$hesklang['kb_i_art'].'">'.
 			    '<svg style="fill: #9c9c9c" class="icon icon-add">'.
                     '<use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-add"></use>'.
                 '</svg>'.
              '</a>&nbsp;&nbsp;&nbsp;'
-			.'<a href="manage_knowledgebase.php?a=add_category&amp;parent='.$my.'" onclick="document.getElementById(\'option'.$j.'_2\').selected=true;return true;" title="'.$hesklang['kb_i_cat'].'">'.
+			.'<a class="tooltip" data-ztt_vertical_offset="0" href="manage_knowledgebase.php?a=add_category&amp;parent='.$my.'" onclick="document.getElementById(\'option'.$j.'_2\').selected=true;return true;" title="'.$hesklang['kb_i_cat'].'">'.
                 '<svg style="fill: #9c9c9c" class="icon icon-categories">'.
                     '<use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-categories"></use>'.
                 '</svg>'.
               '</a>&nbsp;&nbsp;&nbsp;'
-			.'<a href="manage_knowledgebase.php?a=manage_cat&amp;catid='.$my.'" title="'.$hesklang['kb_p_man'].'">'.
+			.'<a class="tooltip" data-ztt_vertical_offset="0" href="manage_knowledgebase.php?a=manage_cat&amp;catid='.$my.'" title="'.$hesklang['kb_p_man'].'">'.
 			    '<svg style="fill: #9c9c9c" class="icon icon-settings">'.
                     '<use xlink:href="'.HESK_PATH.'img/sprite.svg#icon-settings"></use>'.
                 '</svg>'.
@@ -214,7 +214,7 @@ while (count($kb_cat) > 0)
             }
             else
             {
-                $menu_icons .= '<a style="width: 11px; display: inline-block" href="manage_knowledgebase.php?a=order_cat&amp;catid='.$my.'&amp;move=-15&amp;token=' . hesk_token_echo(0) . '" title="'.$hesklang['move_up'].'">'.
+                $menu_icons .= '<a class="tooltip" data-ztt_vertical_offset="0" style="width: 11px; display: inline-block" href="manage_knowledgebase.php?a=order_cat&amp;catid='.$my.'&amp;move=-15&amp;token=' . hesk_token_echo(0) . '" title="'.$hesklang['move_up'].'">'.
                     '<svg class="icon icon-chevron-up" style="fill: '.$arrow_colors[$arrow].'; font-size: 8px">'.
                         '<use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-chevron-down"></use>'.
                     '</svg>'.
@@ -232,7 +232,7 @@ while (count($kb_cat) > 0)
             }
             else
             {
-				$menu_icons .= '<a style="width: 11px; display: inline-block" href="manage_knowledgebase.php?a=order_cat&amp;catid='.$my.'&amp;move=15&amp;token=' . hesk_token_echo(0) . '" title="'.$hesklang['move_dn'].'">'.
+				$menu_icons .= '<a class="tooltip" data-ztt_vertical_offset="0" style="width: 11px; display: inline-block" href="manage_knowledgebase.php?a=order_cat&amp;catid='.$my.'&amp;move=15&amp;token=' . hesk_token_echo(0) . '" title="'.$hesklang['move_dn'].'">'.
                     '<svg class="icon icon-chevron-down" style="fill: '.$arrow_colors[$arrow].'">'.
                         '<use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-chevron-down"></use>'.
                     '</svg>'.
@@ -654,7 +654,7 @@ function list_draft() {
                                     </a>
                                 </td>
                                 <td class="view">
-                                    <svg class="icon icon-eye-close">
+                                    <svg class="icon icon-eye-close tooltip" title="<?php echo $hesklang['views'].': '.$article['views'];?>">
                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-eye-close"></use>
                                     </svg>
                                     <?php echo $article['views']; ?>
@@ -664,7 +664,7 @@ function list_draft() {
                                 </td>
                                 <td class="actions">
                                     <div class="actions--buttons">
-                                        <a href="manage_knowledgebase.php?a=edit_article&amp;id=<?php echo $article['id']; ?>"
+                                        <a class="tooltip" href="manage_knowledgebase.php?a=edit_article&amp;id=<?php echo $article['id']; ?>"
                                            title="<?php echo $hesklang['edit']; ?>">
                                             <svg class="icon icon-edit-ticket">
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-edit-ticket"></use>
@@ -675,8 +675,8 @@ function list_draft() {
                                             $hesklang['del_art'],
                                             'manage_knowledgebase.php?a=remove_article&amp;id='. $article['id'] .'&amp;token='. hesk_token_echo(0));
                                         ?>
-                                        <a href="javascript:"
-                                            data-modal="[data-modal-id='<?php echo $modal_id; ?>']"
+                                        <a class="tooltip" href="javascript:"
+                                           data-modal="[data-modal-id='<?php echo $modal_id; ?>']"
                                            title="<?php echo $hesklang['delete']; ?>">
                                             <svg class="icon icon-delete">
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-delete"></use>
@@ -792,7 +792,7 @@ function list_private() {
                                     </a>
                                 </td>
                                 <td class="view">
-                                    <svg class="icon icon-eye-close">
+                                    <svg class="icon icon-eye-close tooltip" title="<?php echo $hesklang['views'].': '.$article['views'];?>">
                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-eye-close"></use>
                                     </svg>
                                     <?php echo $article['views']; ?>
@@ -802,7 +802,7 @@ function list_private() {
                                 </td>
                                 <td class="actions">
                                     <div class="actions--buttons">
-                                        <a href="manage_knowledgebase.php?a=edit_article&amp;id=<?php echo $article['id']; ?>"
+                                        <a class="tooltip" href="manage_knowledgebase.php?a=edit_article&amp;id=<?php echo $article['id']; ?>"
                                            title="<?php echo $hesklang['edit']; ?>">
                                             <svg class="icon icon-edit-ticket">
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-edit-ticket"></use>
@@ -813,7 +813,7 @@ function list_private() {
                                             $hesklang['del_art'],
                                             'manage_knowledgebase.php?a=remove_article&amp;id='. $article['id'] .'&amp;token='. hesk_token_echo(0));
                                         ?>
-                                        <a href="javascript:"
+                                        <a class="tooltip" href="javascript:"
                                            data-modal="[data-modal-id='<?php echo $modal_id; ?>']"
                                            title="<?php echo $hesklang['delete']; ?>">
                                             <svg class="icon icon-delete">
@@ -1106,6 +1106,11 @@ function save_article()
     $old_type  = intval( hesk_POST('old_type') );
     $old_type  = ($old_type < 0 || $old_type > 2) ? 0 : $old_type;
     $from = hesk_POST('from');
+
+    if ( ! in_array($from, array('draft', 'private')))
+    {
+        $from = 'manage_cat';
+    }
 
     $subject = hesk_input( hesk_POST('subject') ) or $hesk_error_buffer[] = $hesklang['kb_e_subj'];
 
@@ -1477,6 +1482,7 @@ function edit_article()
                     break;
                 default:
                     $redirect_action = 'a=manage_cat&amp;catid='.$catid;
+                    $from = 'manage_cat';
                     break;
             }
             ?>
@@ -1532,18 +1538,12 @@ function edit_article()
                                 $style = 'class="option'.$tmp.'OFF" onmouseover="this.className=\'option'.$tmp.'ON\'" onmouseout="this.className=\'option'.$tmp.'OFF\'"';
 
                                 echo '
-                                    <a title="'.$hesklang['dela'].'" href="manage_knowledgebase.php?a=remove_kb_att&amp;id='.$id.'&amp;kb_att='.$att_id.'&amp;token='.hesk_token_echo(0).'" onclick="return hesk_confirmExecute(\''.hesk_makeJsString($hesklang['delatt']).'\');">
-                                        <svg class="icon icon-delete">
+                                    <a class="tooltip" style="text-decoration: none; margin-left: 16px; margin-right: 6px" title="'.$hesklang['dela'].'" href="manage_knowledgebase.php?a=remove_kb_att&amp;id='.$id.'&amp;kb_att='.$att_id.'&amp;token='.hesk_token_echo(0).'" onclick="return hesk_confirmExecute(\''.hesk_makeJsString($hesklang['delatt']).'\');">
+                                        <svg class="icon icon-delete" style="vertical-align: middle;">
                                             <use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-delete"></use>
                                         </svg>
-                                    </a> ';
-                                echo '
-                                    <a href="../download_attachment.php?kb_att='.$att_id.'" title="'.$hesklang['dnl'].' '.$att_name.'">
-                                        <svg class="icon icon-attach">
-                                            <use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-attach"></use>
-                                        </svg>
-                                    </a> ';
-                                echo '<a href="../download_attachment.php?kb_att='.$att_id.'">'.$att_name.'</a><br />';
+                                    </a>&raquo; ';
+                                echo '<a href="../download_attachment.php?kb_att='.$att_id.'" title="'.$hesklang['dnl'].' '.$att_name.'">'.$att_name.'</a><br />';
                             }
                             echo '<br>';
                         }
@@ -1802,7 +1802,7 @@ function manage_category() {
                                     </a>
                                 </td>
                                 <td class="view">
-                                    <svg class="icon icon-eye-close">
+                                    <svg class="icon icon-eye-close tooltip" title="<?php echo $hesklang['views'].': '.$article['views'];?>">
                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-eye-close"></use>
                                     </svg>
                                     <?php echo $article['views']; ?>
@@ -1823,7 +1823,7 @@ function manage_category() {
                                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                                     </svg>
                                                 </a>
-                                                <a href="manage_knowledgebase.php?a=order_article&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>">
+                                                <a class="tooltip" href="manage_knowledgebase.php?a=order_article&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>" title="<?php echo $hesklang['move_dn']; ?>">
                                                     <svg class="icon icon-chevron-down">
                                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                                     </svg>
@@ -1833,7 +1833,7 @@ function manage_category() {
                                             elseif ($k == $num)
                                             {
                                                 ?>
-                                                <a href="manage_knowledgebase.php?a=order_article&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>">
+                                                <a class="tooltip" href="manage_knowledgebase.php?a=order_article&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>" title="<?php echo $hesklang['move_up']; ?>">
                                                     <svg class="icon icon-chevron-up">
                                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                                     </svg>
@@ -1848,12 +1848,12 @@ function manage_category() {
                                             else
                                             {
                                                 ?>
-                                                <a href="manage_knowledgebase.php?a=order_article&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>">
+                                                <a class="tooltip" href="manage_knowledgebase.php?a=order_article&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>" title="<?php echo $hesklang['move_up']; ?>">
                                                     <svg class="icon icon-chevron-up">
                                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                                     </svg>
                                                 </a>
-                                                <a href="manage_knowledgebase.php?a=order_article&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>">
+                                                <a class="tooltip" href="manage_knowledgebase.php?a=order_article&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>" title="<?php echo $hesklang['move_dn']; ?>">
                                                     <svg class="icon icon-chevron-down">
                                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                                     </svg>
@@ -1876,13 +1876,13 @@ function manage_category() {
                                             </a>';
                                         }
                                         ?>
-                                        <a href="manage_knowledgebase.php?a=sticky&amp;s=<?php echo $article['sticky'] ? 0 : 1 ?>&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;token=<?php hesk_token_echo(); ?>"
+                                        <a class="tooltip" href="manage_knowledgebase.php?a=sticky&amp;s=<?php echo $article['sticky'] ? 0 : 1 ?>&amp;id=<?php echo $article['id']; ?>&amp;catid=<?php echo $catid; ?>&amp;token=<?php hesk_token_echo(); ?>"
                                            title="<?php echo $article['sticky'] ? $hesklang['stickyoff'] : $hesklang['stickyon']; ?>">
                                             <svg class="icon icon-pin" <?php echo $article['sticky'] ? ' style="fill: #38bc7d; transform: rotate(50deg);"' : ''; ?>>
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-pin"></use>
                                             </svg>
                                         </a>
-                                        <a href="manage_knowledgebase.php?a=edit_article&amp;id=<?php echo $article['id']; ?>"
+                                        <a class="tooltip" href="manage_knowledgebase.php?a=edit_article&amp;id=<?php echo $article['id']; ?>"
                                            title="<?php echo $hesklang['edit']; ?>">
                                             <svg class="icon icon-edit-ticket">
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-edit-ticket"></use>
@@ -1893,7 +1893,7 @@ function manage_category() {
                                             $hesklang['del_art'],
                                             'manage_knowledgebase.php?a=remove_article&amp;id='. $article['id'] .'&amp;token='. hesk_token_echo(0));
                                         ?>
-                                        <a href="javascript:"
+                                        <a class="tooltip" href="javascript:"
                                            data-modal="[data-modal-id='<?php echo $modal_id; ?>']"
                                            title="<?php echo $hesklang['delete']; ?>">
                                             <svg class="icon icon-delete">

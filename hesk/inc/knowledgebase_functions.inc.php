@@ -16,6 +16,49 @@ if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
 
 /*** FUNCTIONS ***/
 
+function hesk_kbCategoriesArray($public_only = true)
+{
+    global $hesk_settings, $hesklang;
+
+    $res = hesk_dbQuery("SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_categories` " . ($public_only ? "WHERE `type`='0'" : "") . " ORDER BY `cat_order` ASC");
+
+    $categories = array();
+
+    while ($category = hesk_dbFetchAssoc($res))
+    {
+        $categories[$category['id']] = $category;
+    }
+
+    // Get the full parent path for each category
+    foreach ($categories as $id => $category)
+    {
+        $categories[$id]['parents'] = array();
+
+        // Top category? Just translate name.
+        if ($category['parent'] == 0)
+        {
+            $categories[$id]['name'] = $hesklang['kb_text'];
+            continue;
+        }
+
+        $current_parrent = $category['parent'];
+        $categories[$id]['parents'][] = $current_parrent;
+
+        while ($current_parrent > 0)
+        {
+            if (($current_parrent = $categories[$current_parrent]['parent']) > 0)
+            {
+                $categories[$id]['parents'][] = $current_parrent;
+            }
+        }
+
+        $categories[$id]['parents'] = array_reverse($categories[$id]['parents']);
+    }
+
+    return $categories;
+} // END hesk_kbCategoriesArray()
+
+
 function hesk_kbArticleContentPreview($txt)
 {
 	global $hesk_settings;
@@ -61,7 +104,7 @@ function hesk_kbTopArticles($how_many, $index = 1)
     }
 
     /* Get list of articles from the database */
-    $res = hesk_dbQuery("SELECT `t1`.`id`,`t1`.`subject`,`t1`.`views`, `t1`.`content`, `t2`.`name` AS `category`, `t1`.`rating` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` AS `t1`
+    $res = hesk_dbQuery("SELECT `t1`.`id`,`t1`.`catid`,`t1`.`subject`,`t1`.`views`, `t1`.`content`, `t2`.`name` AS `category`, `t1`.`rating`, `t1`.`votes` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` AS `t1`
                         LEFT JOIN `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_categories` AS `t2` ON `t1`.`catid` = `t2`.`id`
                         WHERE `t1`.`type`='0' AND `t2`.`type`='0'
                         ORDER BY `t1`.`sticky` DESC, `t1`.`views` DESC, `t1`.`art_order` ASC LIMIT ".intval($how_many));
@@ -73,8 +116,16 @@ function hesk_kbTopArticles($how_many, $index = 1)
 
 	while ($article = hesk_dbFetchAssoc($res))
 	{
+        // Top category? Translate name
+        if ($article['catid'] == 1)
+        {
+            $article['category'] = $hesklang['kb_text'];
+        }
+
         $hesk_settings['kb_top_articles_printed'][] = $article['id'];
         $article['content_preview'] = hesk_kbArticleContentPreview($article['content']);
+        $article['views_formatted'] = number_format($article['views'], 0, null, $hesklang['sep_1000']);
+        $article['votes_formatted'] = number_format($article['votes'], 0, null, $hesklang['sep_1000']);
         $articles[] = $article;
 	}
 
@@ -119,14 +170,22 @@ function hesk_kbLatestArticles($how_many, $index = 1)
     }
 
     /* Get list of articles from the database */
-    $res = hesk_dbQuery("SELECT `t1`.`id`,`t1`.`subject`,`t1`.`dt`,`t1`.`views`, `t1`.`content`, `t1`.`rating`, `t2`.`name` AS `category` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` AS `t1`
+    $res = hesk_dbQuery("SELECT `t1`.`id`,`t1`.`catid`,`t1`.`subject`,`t1`.`dt`,`t1`.`views`, `t1`.`content`, `t1`.`rating`, `t1`.`votes`, `t2`.`name` AS `category` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` AS `t1`
                         LEFT JOIN `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_categories` AS `t2` ON `t1`.`catid` = `t2`.`id`
                         WHERE `t1`.`type`='0' AND `t2`.`type`='0' {$sql_top}
                         ORDER BY `t1`.`dt` DESC LIMIT ".intval($how_many));
 
 	while ($article = hesk_dbFetchAssoc($res))
 	{
+        // Top category? Translate name
+        if ($article['catid'] == 1)
+        {
+            $article['category'] = $hesklang['kb_text'];
+        }
+
         $article['content_preview'] = hesk_kbArticleContentPreview($article['content']);
+        $article['views_formatted'] = number_format($article['views'], 0, null, $hesklang['sep_1000']);
+        $article['votes_formatted'] = number_format($article['votes'], 0, null, $hesklang['sep_1000']);
 	    $articles[] = $article;
 	}
 

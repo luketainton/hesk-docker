@@ -62,7 +62,19 @@ if (!hesk_SESSION('error')) {
 ?>
 <div class="main__content categories">
     <section class="categories__head">
-        <h2><?php echo $hesklang['menu_cat']; ?></h2>
+        <h2>
+            <?php echo $hesklang['menu_cat']; ?>
+            <div class="tooltype right out-close">
+                <svg class="icon icon-info">
+                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                </svg>
+                <div class="tooltype__content">
+                    <div class="tooltype__wrapper">
+                        <?php echo $hesklang['cat_intro']; ?>
+                    </div>
+                </div>
+            </div>
+        </h2>
         <button class="btn btn btn--blue-border" ripple="ripple" data-action="category-create">
             <?php echo $hesklang['add_cat']; ?>
         </button>
@@ -189,7 +201,7 @@ if (!hesk_SESSION('error')) {
                             <?php
                             $tickets_url = 'show_tickets.php?category='.$mycat['id'].'&amp;s_all=1&amp;s_my=1&amp;s_ot=1&amp;s_un=1';
                             ?>
-                            <a href="<?php echo $tickets_url; ?>" title="<?php $hesklang['list_tickets_cat']; ?>">
+                            <a class="tooltip" data-ztt_vertical_offset="0" href="<?php echo $tickets_url; ?>" title="<?php echo $hesklang['list_tickets_cat']; ?>">
                                 <?php echo $all; ?>
                                 (<?php echo $width_all; ?>%)
                             </a>
@@ -213,9 +225,9 @@ if (!hesk_SESSION('error')) {
                         </td>
                         <?php if ($hesk_settings['autoassign']): ?>
                         <td class="assign">
-                            <form action="manage_categories.php" method="get">
-                                <label class="switch-checkbox">
-                                    <input type="checkbox" onchange="this.form.submit()" name="s" <?php if ($mycat['autoassign']): ?>checked<?php endif; ?> />
+                            <label class="switch-checkbox">
+                                <a class="tooltip" data-ztt_vertical_offset="-5" id="autoassign-<?php echo $mycat['id']; ?>" href="manage_categories.php?a=autoassign&amp;s=<?php echo ($mycat['autoassign'] ? '0' : '1'); ?>&amp;catid=<?php echo $mycat['id']; ?>&amp;token=<?php echo hesk_token_echo(0); ?>" title="<?php echo ($mycat['autoassign'] ? $hesklang['aaon'] : $hesklang['aaoff']); ?>">
+                                    <input type="checkbox" <?php if ($mycat['autoassign']): ?>checked<?php endif; ?>>
                                     <div class="switch-checkbox__bullet">
                                         <i>
                                             <svg class="icon icon-close">
@@ -226,15 +238,12 @@ if (!hesk_SESSION('error')) {
                                             </svg>
                                         </i>
                                     </div>
-                                </label>
-                                <input type="hidden" name="a" value="autoassign">
-                                <input type="hidden" name="catid" value="<?php echo $mycat['id']; ?>">
-                                <input type="hidden" name="token" value="<?php echo hesk_token_echo(); ?>">
-                            </form>
+                                </a>
+                            </label>
                         </td>
                         <?php endif; ?>
                         <td class="nowrap generate">
-                            <a href="javascript:" data-action="generate-link" data-link="<?php echo htmlspecialchars($hesk_settings['hesk_url']) . '/index.php?a=add&catid=' . intval($mycat['id']); ?>">Generate link</a>
+                            <a href="javascript:" data-action="generate-link" data-link="<?php echo htmlspecialchars($hesk_settings['hesk_url']) . '/index.php?a=add&catid=' . intval($mycat['id']); ?>"><?php echo $hesklang['geco']; ?></a>
                             <?php
                             if ($num > 1) {
                                 if ($j == 1) {
@@ -244,7 +253,7 @@ if (!hesk_SESSION('error')) {
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                         </svg>
                                     </a>
-                                    <a href="manage_categories.php?a=order&amp;catid=<?php echo $mycat['id']; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
+                                    <a class="tooltip" href="manage_categories.php?a=order&amp;catid=<?php echo $mycat['id']; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
                                        title="<?php echo $hesklang['move_dn']; ?>">
                                         <svg class="icon icon-chevron-down">
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
@@ -254,7 +263,7 @@ if (!hesk_SESSION('error')) {
                                     echo'';
                                 } elseif ($j == $num) {
                                     ?>
-                                    <a href="manage_categories.php?a=order&amp;catid=<?php echo $mycat['id']; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
+                                    <a class="tooltip" href="manage_categories.php?a=order&amp;catid=<?php echo $mycat['id']; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
                                        title="<?php echo $hesklang['move_up']; ?>">
                                         <svg class="icon icon-chevron-up">
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
@@ -269,13 +278,13 @@ if (!hesk_SESSION('error')) {
                                     <?php
                                 } else {
                                     ?>
-                                    <a href="manage_categories.php?a=order&amp;catid=<?php echo $mycat['id']; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
+                                    <a class="tooltip" href="manage_categories.php?a=order&amp;catid=<?php echo $mycat['id']; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
                                        title="<?php echo $hesklang['move_up']; ?>">
                                         <svg class="icon icon-chevron-up">
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                         </svg>
                                     </a>
-                                    <a href="manage_categories.php?a=order&amp;catid=<?php echo $mycat['id']; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
+                                    <a class="tooltip" href="manage_categories.php?a=order&amp;catid=<?php echo $mycat['id']; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
                                        title="<?php echo $hesklang['move_dn']; ?>">
                                         <svg class="icon icon-chevron-down">
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
@@ -291,7 +300,7 @@ if (!hesk_SESSION('error')) {
                                     $hesklang['confirm_del_cat'],
                                     'manage_categories.php?a=remove&catid='. $mycat['id'] .'&token='. hesk_token_echo(0));
                                 ?>
-                            <a href="javascript:" class="delete" data-modal="[data-modal-id='<?php echo $modal_id; ?>']">
+                            <a class="tooltip" title="<?php echo $hesklang['delcat']; ?>" href="javascript:" class="delete" data-modal="[data-modal-id='<?php echo $modal_id; ?>']">
                                 <svg class="icon icon-delete">
                                     <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-delete"></use>
                                 </svg>
@@ -632,7 +641,7 @@ function toggle_autoassign()
 	$catid = intval( hesk_GET('catid') ) or hesk_error($hesklang['cat_move_id']);
 	$_SESSION['selcat2'] = $catid;
 
-    if (hesk_GET('s') === 'on')
+    if ( intval( hesk_GET('s') ) )
     {
 		$autoassign = 1;
         $tmp = $hesklang['caaon'];

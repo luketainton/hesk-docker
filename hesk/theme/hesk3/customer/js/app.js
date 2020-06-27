@@ -99,7 +99,7 @@ $(document).ready(function() {
     });
     var template =
       '<div class="label"><span>' +
-      value +
+      escapeHtml(value) +
       '</span><svg class="icon icon-chevron-down"><use xlink:href="./img/sprite.svg#icon-chevron-down"></use></svg></div><ul class="dropdown-list">';
     for (var i in options) {
       if (options[i].selected) $(el).attr("data-value", options[i].val);
@@ -109,7 +109,7 @@ $(document).ready(function() {
         '"' +
         (options[i].selected ? ' class="selected"' : "") +
         ">" +
-        options[i].text +
+        escapeHtml(options[i].text) +
         "</li>";
     }
     template += "</ul></div>";
@@ -463,22 +463,24 @@ $(document).ready(function() {
   /* ===========================================================
                           Create ticket
   ============================================================*/
-  $(".datepicker").datepicker({
-    language: "en",
-    position: "right bottom",
-    autoClose: true,
-    onSelect: function(formattedDate, date, inst) {
-      if (formattedDate.length) {
-        inst.$el
-            .parent()
-            .parent()
-            .find('.calendar--value').fadeIn(150).find('span').text(formattedDate);
+  if ( $.isFunction($.fn.datepicker) ) {
+    $(".datepicker").datepicker({
+      language: "en",
+      position: "right bottom",
+      autoClose: true,
+      onSelect: function(formattedDate, date, inst) {
+        if (formattedDate.length) {
+          inst.$el
+              .parent()
+              .parent()
+              .find('.calendar--value').fadeIn(150).find('span').text(formattedDate);
+        }
+      },
+      onHide: function(inst, animationCompleted) {
+        $(".ticket-create .param.calendar button").removeClass("active");
       }
-    },
-    onHide: function(inst, animationCompleted) {
-      $(".ticket-create .param.calendar button").removeClass("active");
-    }
-  });
+    });
+  } /* End if datepicker */
   $(".ticket-create .param.calendar button").click(function(e) {
     $(this).addClass("active");
     $(this).parent().find('.datepicker')
@@ -543,3 +545,10 @@ $(document).ready(function() {
 window.onload = function() {
   $("#loader").fadeOut(150);
 };
+
+function escapeHtml(html){
+  var text = document.createTextNode(html);
+  var p = document.createElement('p');
+  p.appendChild(text);
+  return p.innerHTML;
+}

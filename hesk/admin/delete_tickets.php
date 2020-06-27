@@ -538,6 +538,15 @@ elseif ($_POST['a']=='print')
         // Get replies
         $res  = hesk_dbQuery("SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` WHERE `replyto`='{$ticket['id']}' ORDER BY `id` ASC");
 
+        // Get notes
+        $notes = array();
+        $res2 = hesk_dbQuery("SELECT t1.*, t2.`name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."notes` AS t1 LEFT JOIN `".hesk_dbEscape($hesk_settings['db_pfix'])."users` AS t2 ON t1.`who` = t2.`id` WHERE `ticket`='{$ticket['id']}' ORDER BY t1.`id`");
+        while ($note = hesk_dbFetchAssoc($res2))
+        {
+            $notes[] = $note;
+        }
+
+        $ticket['notes'] = $notes;
         $ticket['replies'] = $res;
         $ticket['categoryName'] = $category['name'];
         $tickets[] = $ticket;

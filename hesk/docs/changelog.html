@@ -15,7 +15,7 @@
 <tr>
 <td width="50%" style="text-align:left;vertical-align:top">
  <ul class="nobullets">
- <li>Version: 3.0.0 from 17th February 2020</li>
+ <li>Version: 3.1.1 from 3rd May 2020</li>
  <li>Developed by: Klemen Stirn, Mike Koch</li>
  <li><a href="https://www.hesk.com">Help Desk Software HESK</a></li>
  <li><a href="https://www.phpjunkyard.com">Free PHP Scripts</a></li>
@@ -38,12 +38,86 @@
 <p>We encourage you to report any problems and user-experience suggestions to our <a href="https://developers.phpjunkyard.com">support forum</a>.</p>
 </div>
 
-<h2>HESK CHANGELOG</h2>
+<h2>HESK 3 CHANGELOG</h2>
+
+<p><b>Changes in 3.1.1</b> - 3rd May 2020<br />
+- knowledgebase now shows full category structure in breadcrumbs<br />
+- added custom favicon for better display on different devices<br />
+- fix: saving general settings resets sending emails to PHP mail()<br />
+- fix: sub-categories with no articles are hidden in customer side<br />
+- fix: in customer side knowledgebase votes show views<br />
+- fix: knowledgebase sub-category preview shows 1 article too many<br />
+- fix: knowledgebase views show 1 less than actual when viewing an article<br />
+- fix: non-default time format may show staff replies as &quot;50 years ago&quot; in customer-side<br />
+- fix: custom header and footer are outside of the main wapper<br />
+- minor styling and usability changes<br />
+</p>
+
+<p><b>Changes in 3.1.0</b> - 7th April 2020<br />
+- [<a href="https://www.hesk.com/get/hesk3-statistics">CLOUD ONLY</a>] Statistics module: insight into help desk usage and staff performance<br />
+- choose the desired ticket reply hiding logic<br />
+- added tooltips to action icons without a label<br />
+- descriptive timestamps in ticket details (e.g., 5 hours ago)<br />
+- improved ticket content readability, including adjustable max-width<br />
+- improved formatting of WYSIWYG-generated content<br />
+- improved customer-side display in Internet Explorer 9<br />
+- security: fixed a reflected XSS, reported by Mostafa Gamal &amp; Ahmed Sherif<br />
+- fix: hide the link to Export tickets page if the user has no export permission<br />
+- fix: HTML header code printed twice on the knowledgebase results page<br />
+- fix: properly strip slashes and encode HTML in service messages<br />
+- fix: custom text and hidden fields don't display a default value in admin panel &gt; New ticket<br />
+- fix: custom text field maxlength not working in customer side<br />
+- fix: ticket replies not hidden correctly with "Newest reply at top"<br />
+- fix: if a settings label is long it doesn't align nicely<br />
+- fix: some hard-coded text cannot be translated<br />
+- fix: show full custom field names in customer submit a ticket form<br />
+- fix: when multiple languages are allowed, cannot add a custom status<br />
+- fix: when multiple languages are allowed, editing a custom field shows empty field names<br />
+- fix: IMAP &quot;Keep a copy&quot; checkbox not saving<br />
+- fix: cannot allow single char attachment extensions<br />
+- minor styling and usability changes<br />
+</p>
+
+<p><b>Changes in 3.0.3</b> - 8th March 2020<br />
+- fix: customer ticket reminder form not working in 3.0.2<br />
+</p>
+
+<p><b>Changes in 3.0.2</b> - 3rd March 2020<br />
+- fix: settings for POP3 fetching not saving<br />
+- fix: the style of subject and message inputs changes when selecting a ticket template<br />
+- fix: issues with selecting drop-down select box values<br />
+- fix: cannot change ticket status to &quot;New&quot;<br />
+- fix: unable to append or select canned responses in some situations<br />
+- fix: Javascript not escaping converted HTML code properly<br />
+- fix: duplicate &quot;Assign this ticket to myself&quot; in the reply form<br />
+- fix: ticket details not responsive in Edge<br />
+- fix: Undefined offset notice in ticket history<br />
+- tickets with status &quot;Critical&quot; now have a distinctive background color in ticket list<br />
+- minor styling and usability changes<br />
+</p>
+
+<p><b>Changes in 3.0.1</b> - 27th February 2020<br />
+- fix: suppress browser errors when multiple email addresses are allowed<br />
+- fix: properly escape variables when saving settings<br />
+- fix: confirm email always returns an error<br />
+- fix: hesk_error() function should exit not return for end-users<br />
+- fix: unable to append or select canned responses in some situations<br />
+- minor styling and usability changes<br />
+</p>
 
 <p><b>Changes in 3.0.0</b> - 17th February 2020<br />
 - a brand new mobile-friendly user interface<br />
 - built-in theme support for the public (customer) interface<br />
 - fix: SQL error when trying to ban an invalid IP<br />
+</p>
+
+<h2>HESK 2 CHANGELOG</h2>
+
+<p><b>Changes in 2.8.6</b> - 7th April 2020<br />
+- security: fixed a reflected XSS, reported by Mostafa Gamal &amp; Ahmed Sherif<br />
+- fix: SQL error when trying to ban an invalid IP<br />
+- fix: properly strip slashes and encode HTML in service messages<br />
+- fix: cannot allow single char attachment extensions<br />
 </p>
 
 <p><b>Changes in 2.8.5</b> - 6th January 2020<br />

@@ -29,12 +29,18 @@ require(TEMPLATE_PATH . 'customer/view-ticket/partial/add-reply.php');
     <title><?php echo $hesk_settings['hesk_title']; ?></title>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="" />
-    <meta name="theme-color" content="#fff" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo HESK_PATH; ?>img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo HESK_PATH; ?>img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo HESK_PATH; ?>img/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="<?php echo HESK_PATH; ?>img/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="<?php echo HESK_PATH; ?>img/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="shortcut icon" href="<?php echo HESK_PATH; ?>img/favicon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#2d89ef" />
+    <meta name="msapplication-config" content="<?php echo HESK_PATH; ?>img/favicon/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css" />
+    <link rel="stylesheet" href="./css/zebra_tooltips.css">
     <?php include(TEMPLATE_PATH . '../../head.txt'); ?>
 </head>
 
@@ -121,9 +127,9 @@ require(TEMPLATE_PATH . 'customer/view-ticket/partial/add-reply.php');
                                         </a>
                                     </div>
                                     <?php endif; ?>
-                                    <time class="date"><?php echo hesk_date($ticket['dt'], true); ?></time>
+                                    <time class="timeago tooltip" datetime="<?php echo date("c", strtotime($ticket['dt'])) ; ?>" title="<?php echo hesk_date($ticket['dt'], true); ?>"><?php echo hesk_date($ticket['dt'], true); ?></time>
                                 </div>
-                                <a href="print.php?track=<?php echo $ticket['trackid'].$hesk_settings['e_query']; ?>" class="btn btn-action">
+                                <a title="<?php echo $hesklang['btn_print']; ?>" href="print.php?track=<?php echo $ticket['trackid'].$hesk_settings['e_query']; ?>" target="_blank" class="btn btn-action tooltip">
                                     <svg class="icon icon-print">
                                         <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-print"></use>
                                     </svg>
@@ -171,30 +177,33 @@ require(TEMPLATE_PATH . 'customer/view-ticket/partial/add-reply.php');
                             <div class="accordion-body">
                                 <div class="row">
                                     <div class="title"><?php echo $hesklang['trackID']; ?>:</div>
-                                    <?php if ($hesk_settings['sequential']): ?>
-                                    <div class="value">
-                                        <?php echo $trackingID; ?>
-                                        (<?php echo $hesklang['seqid']; ?>: <?php echo $ticket['id']; ?>)
-                                    </div>
-                                    <?php else: ?>
-                                        <div class="value">
-                                            <?php echo $trackingID; ?>
-                                        </div>
-                                    <?php endif; ?>
+                                    <div class="value"><?php echo $trackingID; ?></div>
                                 </div>
+                                <?php if ($hesk_settings['sequential']): ?>
                                 <div class="row">
-                                    <div class="title"><?php echo $hesklang['ticket_status']; ?>:</div>
-                                    <?php
-                                    if ($ticket['status'] == 3) {
-                                        $status_action = ($ticket['locked'] != 1 && $hesk_settings['custopen']) ? ' <a class="link" href="change_status.php?track='.$trackingID.$hesk_settings['e_query'].'&amp;s=2&amp;Refresh='.rand(10000,99999).'&amp;token='.hesk_token_echo(0).'">'.$hesklang['open_action'].'</a>' : '';
-                                    } elseif ($hesk_settings['custclose']) {
-                                        $status_action = ' <a class="link ml-1" href="change_status.php?track='.$trackingID.$hesk_settings['e_query'].'&amp;s=3&amp;Refresh='.rand(10000,99999).'&amp;token='.hesk_token_echo(0).'">'.$hesklang['close_action'].'</a>';
-                                    } else {
-                                        $status_action = '';
-                                    }
-                                    ?>
-                                    <div class="value"><?php echo hesk_get_ticket_status($ticket['status'], $status_action); ?></div>
+                                    <div class="title"><?php echo $hesklang['seqid']; ?>:</div>
+                                    <div class="value"><?php echo $ticket['id']; ?></div>
                                 </div>
+                                <?php endif; ?>
+                                <?php
+                                if ($ticket['status'] == 3) {
+                                    $status_action = ($ticket['locked'] != 1 && $hesk_settings['custopen']) ? '[<a class="link" href="change_status.php?track='.$trackingID.$hesk_settings['e_query'].'&amp;s=2&amp;Refresh='.rand(10000,99999).'&amp;token='.hesk_token_echo(0).'">'.$hesklang['open_action'].'</a>]' : '';
+                                } elseif ($hesk_settings['custclose']) {
+                                    $status_action = '[<a class="link" href="change_status.php?track='.$trackingID.$hesk_settings['e_query'].'&amp;s=3&amp;Refresh='.rand(10000,99999).'&amp;token='.hesk_token_echo(0).'">'.$hesklang['close_action'].'</a>]';
+                                } else {
+                                    $status_action = '';
+                                }
+                                ?>
+                                <div class="row" <?php echo strlen($status_action) ? 'style="margin-bottom: 10px;"' : ''; ?>>
+                                    <div class="title"><?php echo $hesklang['ticket_status']; ?>:</div>
+                                    <div class="value"><?php echo hesk_get_ticket_status($ticket['status']); ?></div>
+                                </div>
+                                <?php if (strlen($status_action)): ?>
+                                <div class="row">
+                                    <div class="title">&nbsp;</div>
+                                    <div class="value center"><?php echo $status_action; ?></div>
+                                </div>
+                                <?php endif; ?>
                                 <div class="row">
                                     <div class="title"><?php echo $hesklang['created_on']; ?>:</div>
                                     <div class="value"><?php echo hesk_date($ticket['dt'], true); ?></div>
@@ -265,12 +274,25 @@ END LICENSE CODE
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery-3.4.1.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/hesk_functions.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/svg4everybody.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.scrollbar.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/selectize.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.en.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.autocomplete.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.js"></script>
+<?php if ($hesk_settings['time_display']): ?>
+    <script src="./js/timeago/jquery.timeago.js?<?php echo $hesk_settings['hesk_version']; ?>"></script>
+    <?php if ($hesklang['TIMEAGO_LANG_FILE'] != 'jquery.timeago.en.js'): ?>
+        <script type="text/javascript" src="./js/timeago/locales/<?php echo $hesklang['TIMEAGO_LANG_FILE']; ?>?<?php echo $hesk_settings['hesk_version']; ?>"></script>
+    <?php endif; ?>
+    <script type="text/javascript">
+    jQuery(document).ready(function() {
+        $("time.timeago").timeago();
+    });
+    </script>
+<?php endif; ?>
+<script src="./js/zebra_tooltips.min.js?<?php echo $hesk_settings['hesk_version']; ?>"></script>
+<script>
+$(document).ready(function() {
+    new $.Zebra_Tooltips($('.tooltip'), {animation_offset: 0, animation_speed: 100, hide_delay: 0, show_delay: 0, vertical_alignment: 'above', vertical_offset: 5});
+});
+</script>
 </body>
 </html>
 <?php
@@ -283,19 +305,18 @@ function displayReplies($replies, $trackingId) {
         if ($reply['staffid'] && !$reply['read']) {
             $unread_replies[] = $reply['id'];
         }
-
-        $reply['dt'] = hesk_date($reply['dt'], true);
         ?>
         <article class="ticket__body_block <?php if ($reply['staffid']) { ?>response<?php } ?>">
             <div class="block--head">
                 <div class="d-flex">
                     <div class="contact">
-                        <span><?php echo $hesklang['name']; ?>:</span>
-                        <span><?php echo $reply['name']; ?></span>
+                        <?php echo $hesklang['reply_by']; ?>
+                        <b><?php echo $reply['name']; ?></b>
+                        &raquo;
+                        <time class="timeago tooltip" datetime="<?php echo date("c", strtotime($reply['dt'])) ; ?>" title="<?php echo hesk_date($reply['dt'], true); ?>"><?php echo hesk_date($reply['dt'], true); ?></time>
                     </div>
-                    <time class="date"><?php echo $reply['dt']; ?></time>
                 </div>
-                <a href="print.php?track=<?php echo $trackingId.$hesk_settings['e_query']; ?>" class="btn btn-action">
+                <a title="<?php echo $hesklang['btn_print']; ?>" href="print.php?track=<?php echo $trackingId.$hesk_settings['e_query']; ?>" target="_blank" class="btn btn-action tooltip">
                     <svg class="icon icon-print">
                         <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-print"></use>
                     </svg>
@@ -319,7 +340,7 @@ function displayReplies($replies, $trackingId) {
                             <?php echo $hesklang['yes_title_case']; ?>
                         </a>
                         <span>|</span>
-                        <a href="#" onclick="HESK_FUNCTIONS.rate('rate.php?rating=1&amp;id=<?php echo $reply['id']; ?>&amp;track=<?php echo $trackingId; ?>','rating<?php echo $reply['id']; ?>')" class="link">
+                        <a href="javascript:" onclick="HESK_FUNCTIONS.rate('rate.php?rating=1&amp;id=<?php echo $reply['id']; ?>&amp;track=<?php echo $trackingId; ?>','rating<?php echo $reply['id']; ?>')" class="link">
                             <?php echo $hesklang['no_title_case']; ?>
                         </a>
                     </div>
@@ -339,22 +360,27 @@ function listAttachments($attachments, $trackingId) {
     if (!$hesk_settings['attachments']['use'] || ! strlen($attachments) ) {
         return false;
     }
-
+    ?>
+    <div class="block--uploads">
+    <?php
     /* List attachments */
     $att=explode(',',substr($attachments, 0, -1));
     foreach ($att as $myatt) {
         list($att_id, $att_name) = explode('#', $myatt);
-    ?>
-        <div class="block--uploads">
-            <svg class="icon icon-attach">
-                <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-attach"></use>
-            </svg>
-            <a href="download_attachment.php?att_id=<?php echo $att_id; ?>&amp;track=<?php echo $trackingId.$hesk_settings['e_query']; ?>">
-                <?php echo $att_name; ?>
-            </a>
-        </div>
-    <?php
+        ?>
+        &raquo;
+        <svg class="icon icon-attach">
+            <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-attach"></use>
+        </svg>
+        <a title="<?php echo $hesklang['dnl']; ?>" href="download_attachment.php?att_id=<?php echo $att_id; ?>&amp;track=<?php echo $trackingId.$hesk_settings['e_query']; ?>">
+            <?php echo $att_name; ?>
+        </a>
+        <br>
+        <?php
     }
+    ?>
+    </div>
+    <?php
 
     return true;
 }

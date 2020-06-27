@@ -15,7 +15,7 @@
 if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
 
 // We will be installing this HESK version:
-define('HESK_NEW_VERSION','3.0.0');
+define('HESK_NEW_VERSION','3.1.1');
 define('REQUIRE_PHP_VERSION','5.3.0');
 define('REQUIRE_MYSQL_VERSION','5.0.7');
 
@@ -241,6 +241,8 @@ $hesk_settings[\'autoclose\']=' . $set['autoclose'] . ';
 $hesk_settings[\'max_open\']=' . $set['max_open'] . ';
 $hesk_settings[\'new_top\']=' . $set['new_top'] . ';
 $hesk_settings[\'reply_top\']=' . $set['reply_top'] . ';
+$hesk_settings[\'hide_replies\']=' . $set['hide_replies'] . ';
+$hesk_settings[\'limit_width\']=' . $set['limit_width'] . ';
 
 // --> Features
 $hesk_settings[\'autologin\']=' . $set['autologin'] . ';
@@ -383,6 +385,7 @@ $hesk_settings[\'updatedformat\']=' . $set['updatedformat'] . ';
 // --> Date & Time
 $hesk_settings[\'timezone\']=\'' . $set['timezone'] . '\';
 $hesk_settings[\'timeformat\']=\'' . $set['timeformat'] . '\';
+$hesk_settings[\'time_display\']=\'' . $set['time_display'] . '\';
 
 // --> Other
 $hesk_settings[\'ip_whois\']=\'' . $set['ip_whois'] . '\';
@@ -739,7 +742,7 @@ function hesk_iCheckSetup()
 	    'secimg.inc.php',
 
 	    // pre-2.4 files
-	    'hesk_style_v23.css','help_files/','TreeMenu.js',
+	    'hesk_style_v23.css','TreeMenu.js',
 
         // malicious files that were found on some websites illegally redistributing HESK
         'inc/tiny_mce/utils/r00t10.php', 'language/en/help_files/r00t10.php',
@@ -882,7 +885,6 @@ function hesk_iCheckSetup()
         'img/unlock.png',
         'img/vertical.jpg',
         'img/view.png',
-        'inc/calendar/'
 	    );
 
 	sort($old_files);
@@ -904,8 +906,33 @@ function hesk_iCheckSetup()
 	    }
 	}
 
+    $old_folders = array(
+        // pre-2.4 folders
+        'help_files/',
+
+        // pre-3.0 folders
+        'inc/calendar/',
+    );
+
+	foreach ($old_folders as $f)
+	{
+		if (is_dir(HESK_PATH . $f))
+	    {
+            //Try to remove the folder
+            hesk_rrmdir(HESK_PATH . $f);
+
+            // If not successful, ask the user to delete those folders
+            if (is_dir(HESK_PATH . $f))
+            {
+	    	    $still_exist[] = $f;
+            }
+	    }
+	}
+
 	if ( count($still_exist) )
 	{
+        sort(array_unique($still_exist));
+
 		$correct_these[] = '
 		Outdated files and folders<br /><br />
 		For security reasons please delete these legacy files and folders:<br />

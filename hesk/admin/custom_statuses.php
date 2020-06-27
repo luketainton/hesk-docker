@@ -68,7 +68,19 @@ if ($reached_status_limit && $action !== 'edit_status') {
 ?>
 <div class="main__content tools">
     <section class="tools__between-head">
-        <h2><?php echo $hesklang['statuses']; ?></h2>
+        <h2>
+            <?php echo $hesklang['statuses']; ?>
+            <div class="tooltype right out-close">
+                <svg class="icon icon-info">
+                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                </svg>
+                <div class="tooltype__content">
+                    <div class="tooltype__wrapper">
+                        <?php echo $hesklang['statuses_intro']; ?>
+                    </div>
+                </div>
+            </div>
+        </h2>
         <?php if (!$reached_status_limit && $action !== 'edit_status'): ?>
         <div class="btn btn--blue-border" ripple="ripple" data-action="create-custom-status">
             <?php echo $hesklang['new_status']; ?>
@@ -128,7 +140,7 @@ if ($reached_status_limit && $action !== 'edit_status') {
                     <tr <?php echo $table_row; ?>>
                         <td><?php echo $status['name']; ?></td>
                         <td><?php echo $status['color']; ?></td>
-                        <td><a href="show_tickets.php?<?php echo 's'.$tmp_id.'=1'; ?>&amp;s_my=1&amp;s_ot=1&amp;s_un=1" alt="<?php echo $hesklang['list_tkt_status']; ?>" title="<?php echo $hesklang['list_tkt_status']; ?>"><?php echo $status['tickets']; ?></a></td>
+                        <td><a class="tooltip" href="show_tickets.php?<?php echo 's'.$tmp_id.'=1'; ?>&amp;s_my=1&amp;s_ot=1&amp;s_un=1" alt="<?php echo $hesklang['list_tkt_status']; ?>" title="<?php echo $hesklang['list_tkt_status']; ?>"><?php echo $status['tickets']; ?></a></td>
                         <td><?php echo $status['can_customers_change']; ?></td>
                         <td class="nowrap buttons">
                             <?php $modal_id = hesk_generate_delete_modal($hesklang['confirm_deletion'],
@@ -136,7 +148,7 @@ if ($reached_status_limit && $action !== 'edit_status') {
                                 'custom_statuses.php?a=remove_status&amp;id='. $tmp_id .'&amp;token='. hesk_token_echo(0)); ?>
                             <p>
                             <?php if ($is_custom): ?>
-                                <a href="custom_statuses.php?a=edit_status&amp;id=<?php echo $tmp_id; ?>" class="edit" title="<?php echo $hesklang['edit']; ?>">
+                                <a href="custom_statuses.php?a=edit_status&amp;id=<?php echo $tmp_id; ?>" class="edit tooltip" title="<?php echo $hesklang['edit']; ?>">
                                     <svg class="icon icon-edit-ticket">
                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-edit-ticket"></use>
                                     </svg>
@@ -144,14 +156,14 @@ if ($reached_status_limit && $action !== 'edit_status') {
                                 <?php if ($status['tickets'] > 0): ?>
                                     <a onclick="alert('<?php echo hesk_makeJsString($hesklang['status_not_empty']); ?>');"
                                        style="cursor: not-allowed"
-                                       class="delete"
+                                       class="delete tooltip"
                                        title="<?php echo $hesklang['status_not_empty']; ?>">
                                         <svg class="icon icon-delete">
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-delete"></use>
                                         </svg>
                                     </a>
                                 <?php else: ?>
-                                    <a class="delete" href="javascript:" data-modal="[data-modal-id='<?php echo $modal_id; ?>']">
+                                    <a class="delete tooltip" title="<?php echo $hesklang['delete']; ?>" href="javascript:" data-modal="[data-modal-id='<?php echo $modal_id; ?>']">
                                         <svg class="icon icon-delete">
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-delete"></use>
                                         </svg>
@@ -214,7 +226,7 @@ if ($reached_status_limit && $action !== 'edit_status') {
                 foreach ($hesk_settings['languages'] as $lang => $info) { ?>
                     <div class="form-group">
                         <label><?php echo $lang; ?></label>
-                        <input type="text" class="form-control <?php echo in_array('names', $errors) ? 'isError' : ''; ?>" name="name[<?php echo $lang; ?>" value="<?php echo (isset($names[$lang]) ? $names[$lang] : ''); ?>">
+                        <input type="text" class="form-control <?php echo in_array('names', $errors) ? 'isError' : ''; ?>" name="name[<?php echo $lang; ?>]" value="<?php echo (isset($names[$lang]) ? $names[$lang] : ''); ?>">
                     </div>
                 <?php }
             } else { ?>

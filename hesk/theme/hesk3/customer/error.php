@@ -19,10 +19,15 @@ if (!defined('IN_SCRIPT')) {
     <title><?php echo $hesk_settings['hesk_title']; ?></title>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="" />
-    <meta name="theme-color" content="#fff" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo HESK_PATH; ?>img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo HESK_PATH; ?>img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo HESK_PATH; ?>img/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="<?php echo HESK_PATH; ?>img/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="<?php echo HESK_PATH; ?>img/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="shortcut icon" href="<?php echo HESK_PATH; ?>img/favicon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#2d89ef" />
+    <meta name="msapplication-config" content="<?php echo HESK_PATH; ?>img/favicon/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css" />
     <?php include(TEMPLATE_PATH . '../../head.txt'); ?>
@@ -62,26 +67,15 @@ if (!defined('IN_SCRIPT')) {
         </div>
         <div class="main__content">
             <div class="contr">
-                <div class="alert danger">
-                    <div class="alert__inner">
-                        <div class="alert__head">
-                            <svg class="icon icon-warning">
-                                <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-warning"></use>
-                            </svg>
-                            <h6 class="alert__title">
-                                <?php echo $hesklang['error']; ?>
-                            </h6>
-                        </div>
-                        <p class="alert__descr">
-                            <?php echo $error; ?>
-                        </p>
+                <div class="main__content notice-flash">
+                    <div class="notification red">
+                        <b><?php echo $hesklang['error']; ?>:</b> <?php echo $error; ?>
                         <?php if ($showDebugWarning): ?>
-                        <div class="alert__descr">
-                            <div style="color:red;font-weight:bold"><?php echo $hesklang['warn']; ?></div>
+                            <p style="color:red;font-weight:bold;margin-top:10px">&nbsp;<br><?php echo $hesklang['warn']; ?></p>
                             <?php echo $hesklang['dmod']; ?>
-                        </div>
                         <?php endif; ?>
-                        <p class="alert__descr text-center">
+                        <p class="text-center">
+                            &nbsp;<br>
                             <a class="link" href="javascript:history.go(-1)"><?php echo $hesklang['back']; ?></a>
                         </p>
                     </div>

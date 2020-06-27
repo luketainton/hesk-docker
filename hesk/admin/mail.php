@@ -646,7 +646,7 @@ EOC;
                             endif; // end PAGES > 1
                             ?>
 
-                <div class="actions" style="display: flex">
+                <div class="actions" style="display: flex; margin-top: 16px;">
                     <select name="a" id="email-batch-process" autocomplete="off">
                         <?php
                         if ($hesk_settings['mailtmp']['this'] == 'to')
@@ -660,7 +660,7 @@ EOC;
                         <option value="delete"><?php echo $hesklang['mo3']; ?></option>
                     </select>
                     <input type="hidden" name="token" value="<?php hesk_token_echo(); ?>" />
-                    <button style="margin-top: 16px; margin-left: 5px" class="btn btn-full" ripple="ripple" type="submit" onclick="Javascript:if (document.form1.a.value=='delete') return hesk_confirmExecute('<?php echo hesk_makeJsString($hesklang['mo3']); ?>?');">
+                    <button style="margin-left: 5px" class="btn btn-full" ripple="ripple" type="submit" onclick="Javascript:if (document.form1.a.value=='delete') return hesk_confirmExecute('<?php echo hesk_makeJsString($hesklang['mo3']); ?>?');">
                         <?php echo $hesklang['execute']; ?>
                     </button>
                 </div>

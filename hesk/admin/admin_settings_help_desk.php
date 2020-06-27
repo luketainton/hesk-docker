@@ -54,22 +54,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 // Demo mode? Hide values of sensitive settings
 if ( defined('HESK_DEMO') )
 {
-	$hesk_settings['db_host']			= $hesklang['hdemo'];
-	$hesk_settings['db_name']			= $hesklang['hdemo'];
-	$hesk_settings['db_user']			= $hesklang['hdemo'];
-	$hesk_settings['db_pass']			= $hesklang['hdemo'];
-	$hesk_settings['db_pfix']			= $hesklang['hdemo'];
-	$hesk_settings['smtp_host_name']	= $hesklang['hdemo'];
-	$hesk_settings['smtp_user']			= $hesklang['hdemo'];
-	$hesk_settings['smtp_password']		= $hesklang['hdemo'];
-	$hesk_settings['pop3_host_name']	= $hesklang['hdemo'];
-	$hesk_settings['pop3_user']			= $hesklang['hdemo'];
-	$hesk_settings['pop3_password']		= $hesklang['hdemo'];
-	$hesk_settings['imap_host_name']	= $hesklang['hdemo'];
-	$hesk_settings['imap_user']			= $hesklang['hdemo'];
-	$hesk_settings['imap_password']		= $hesklang['hdemo'];
-	$hesk_settings['recaptcha_public_key']	= $hesklang['hdemo'];
-	$hesk_settings['recaptcha_private_key']	= $hesklang['hdemo'];
+    require_once(HESK_PATH . 'inc/admin_settings_demo.inc.php');
 }
 
 /* This will handle error, success and notice messages */
@@ -133,94 +118,9 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') ) {
 }
 ?>
 <div class="main__content settings">
-    <div class="settings__status">
-        <h3><?php echo $hesklang['check_status']; ?></h3>
-        <ul class="settings__status_list">
-            <li>
-                <div class="list--name"><?php echo $hesklang['v']; ?></div>
-                <div class="list--status">
-                    <?php echo $hesk_settings['hesk_version']; ?>
-                    <?php
-                    if ($hesk_settings['check_updates']) {
-                        $latest = hesk_checkVersion();
 
-                        if ($latest === true) {
-                            echo ' - <span style="color:green">' . $hesklang['hud'] . '</span> ';
-                        } elseif ($latest != -1) {
-                            // Is this a beta/dev version?
-                            if (strpos($hesk_settings['hesk_version'], 'beta') || strpos($hesk_settings['hesk_version'], 'dev') || strpos($hesk_settings['hesk_version'], 'RC')) {
-                                echo ' <span style="color:darkorange">' . $hesklang['beta'] . '</span> '; ?><br><a href="https://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['check4updates']; ?></a><?php
-                            } else {
-                                echo ' - <span style="color:darkorange;font-weight:bold">' . $hesklang['hnw'] . '</span> '; ?><br><a href="https://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['getup']; ?></a><?php
-                            }
-                        } else {
-                            ?> - <a href="https://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['check4updates']; ?></a><?php
-                        }
-                    } else {
-                        ?> - <a href="https://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['check4updates']; ?></a><?php
-                    }
-                    ?>
-                </div>
-            </li>
-            <li>
-                <div class="list--name"><?php echo $hesklang['phpv']; ?></div>
-                <div class="list--status"><?php echo defined('HESK_DEMO') ? $hesklang['hdemo'] : PHP_VERSION . ' ' . (function_exists('mysqli_connect') ? '(MySQLi)' : '(MySQL)'); ?></div>
-            </li>
-            <li>
-                <div class="list--name"><?php echo $hesklang['mysqlv']; ?></div>
-                <div class="list--status"><?php echo defined('HESK_DEMO') ? $hesklang['hdemo'] : hesk_dbResult( hesk_dbQuery('SELECT VERSION() AS version') ); ?></div>
-            </li>
-            <li>
-                <div class="list--name">/hesk_settings.inc.php</div>
-                <div class="list--status">
-                    <?php
-                    if (is_writable(HESK_PATH . 'hesk_settings.inc.php')) {
-                        $enable_save_settings = 1;
-                        echo '<span class="success">'.$hesklang['exists'].'</span>, <span class="success">'.$hesklang['writable'].'</span>';
-                    } else {
-                        echo '<span class="success">'.$hesklang['exists'].'</span>, <span class="error">'.$hesklang['not_writable'].'</span><br>'.$hesklang['e_settings'];
-                    }
-                    ?>
-                </div>
-            </li>
-            <li>
-                <div class="list--name">/<?php echo $hesk_settings['attach_dir']; ?></div>
-                <div class="list--status">
-                    <?php
-                    if (is_dir(HESK_PATH . $hesk_settings['attach_dir'])) {
-                        echo '<span class="success">'.$hesklang['exists'].'</span>, ';
-                        if (is_writable(HESK_PATH . $hesk_settings['attach_dir'])) {
-                            $enable_use_attachments = 1;
-                            echo '<span class="success">'.$hesklang['writable'].'</span>';
-                        } else {
-                            echo '<span class="error">'.$hesklang['not_writable'].'</span><br>'.$hesklang['e_attdir'];
-                        }
-                    } else {
-                        echo '<span class="error">'.$hesklang['no_exists'].'</span>, <span class="error">'.$hesklang['not_writable'].'</span><br>'.$hesklang['e_attdir'];
-                    }
-                    ?>
-                </div>
-            </li>
-            <li>
-                <div class="list--name">/<?php echo $hesk_settings['cache_dir']; ?></div>
-                <div class="list--status">
-                    <?php
-                    if (is_dir(HESK_PATH . $hesk_settings['cache_dir'])) {
-                        echo '<span class="success">'.$hesklang['exists'].'</span>, ';
-                        if (is_writable(HESK_PATH . $hesk_settings['cache_dir'])) {
-                            $enable_use_attachments = 1;
-                            echo '<span class="success">'.$hesklang['writable'].'</span>';
-                        } else {
-                            echo '<span class="error">'.$hesklang['not_writable'].'</span><br>'.$hesklang['e_cdir'];
-                        }
-                    } else {
-                        echo '<span class="error">'.$hesklang['no_exists'].'</span>, <span class="error">'.$hesklang['not_writable'].'</span><br>'.$hesklang['e_cdir'];
-                    }
-                    ?>
-                </div>
-            </li>
-        </ul>
-    </div>
+    <?php require_once(HESK_PATH . 'inc/admin_settings_status.inc.php'); ?>
+
     <script language="javascript" type="text/javascript"><!--
         function hesk_checkFields() {
             var d = document.form1;
@@ -406,6 +306,69 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') ) {
                         <div class="radio-custom">
                             <input type="radio" id="s_reply_top0" name="s_reply_top" value="0" <?php echo $off; ?>>
                             <label for="s_reply_top0"><?php echo $hesklang['formbot']; ?></label>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                $no = $hesk_settings['hide_replies']==0 ? 'checked' : '';
+                $yes = $hesk_settings['hide_replies']>0 ? 'checked' : '';
+                $def = $hesk_settings['hide_replies']==-1 ? 'checked' : '';
+                ?>
+                <div class="radio-group">
+                    <h5>
+                        <span><?php echo $hesklang['hide_replies']; ?></span>
+                        <a onclick="hesk_window('<?php echo $help_folder; ?>helpdesk.html#78','400','500')">
+                            <div class="tooltype right">
+                                <svg class="icon icon-info">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                                </svg>
+                            </div>
+                        </a>
+                    </h5>
+                    <div class="radio-list">
+                        <div class="radio-custom">
+                            <input type="radio" id="s_hide_replies0" name="s_hide_replies" value="0" <?php echo $no; ?>>
+                            <label for="s_hide_replies0"><?php echo $hesklang['hide_replies_no']; ?></label>
+                        </div>
+                        <div class="radio-custom">
+                            <input type="radio" id="s_hide_replies-1" name="s_hide_replies" value="-1" <?php echo $def; ?>>
+                            <label for="s_hide_replies-1"><?php echo $hesklang['hide_replies_def']; ?></label>
+                        </div>
+                        <div class="radio-custom">
+                            <input type="radio" id="s_hide_replies1" name="s_hide_replies" value="1" <?php echo $yes; ?>>
+                            <label for="s_hide_replies1"><?php echo $hesklang['hide_replies_yes']; ?></label>
+                            <div class="form-group short" style="margin-bottom: 0px;">
+                                <input type="text" name="s_hide_replies_num" class="form-control" style="margin-left: 12px;" size="5" maxlength="4" value="<?php echo ($hesk_settings['hide_replies'] > 0 ? $hesk_settings['hide_replies'] : '10'); ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                $no = $hesk_settings['limit_width']==0 ? 'checked' : '';
+                $yes = $hesk_settings['limit_width']>0 ? 'checked' : '';
+                ?>
+                <div class="radio-group">
+                    <h5>
+                        <span><?php echo $hesklang['lwidth']; ?></span>
+                        <a onclick="hesk_window('<?php echo $help_folder; ?>helpdesk.html#79','400','500')">
+                            <div class="tooltype right">
+                                <svg class="icon icon-info">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                                </svg>
+                            </div>
+                        </a>
+                    </h5>
+                    <div class="radio-list">
+                        <div class="radio-custom">
+                            <input type="radio" id="s_limit_width0" name="s_limit_width" value="0" <?php echo $no; ?>>
+                            <label for="s_limit_width0"><?php echo $hesklang['lwidtall']; ?></label>
+                        </div>
+                        <div class="radio-custom">
+                            <input type="radio" id="s_limit_width1" name="s_limit_width" value="1" <?php echo $yes; ?>>
+                            <label for="s_limit_width1"><?php echo $hesklang['lwidtpx']; ?></label>
+                            <div class="form-group short" style="margin-bottom: 0px;">
+                                <input type="text" name="s_limit_width_num" class="form-control" style="margin-left: 12px;" size="5" maxlength="4" value="<?php echo ($hesk_settings['limit_width'] > 0 ? $hesk_settings['limit_width'] : '800'); ?>">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1270,86 +1233,6 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') ) {
         </div>
     </form>
 </div>
-
 <?php
 require_once(HESK_PATH . 'inc/footer.inc.php');
 exit();
-
-
-function hesk_checkVersion()
-{
-	global $hesk_settings;
-
-	if ($latest = hesk_getLatestVersion() )
-    {
-    	if ( strlen($latest) > 12 )
-        {
-        	return -1;
-        }
-		elseif ($latest == $hesk_settings['hesk_version'])
-        {
-        	return true;
-        }
-        else
-        {
-        	return $latest;
-        }
-    }
-    else
-    {
-		return -1;
-    }
-
-} // END hesk_checkVersion()
-
-
-function hesk_getLatestVersion()
-{
-	global $hesk_settings;
-
-	// Do we have a cached version file?
-	if ( file_exists(HESK_PATH . $hesk_settings['cache_dir'] . '/__latest.txt') )
-    {
-        if ( preg_match('/^(\d+)\|([\d.]+)+$/', @file_get_contents(HESK_PATH . $hesk_settings['cache_dir'] . '/__latest.txt'), $matches) && (time() - intval($matches[1])) < 3600  )
-        {
-			return $matches[2];
-        }
-    }
-
-	// No cached file or older than 3600 seconds, try to get an update
-    $hesk_version_url = 'http://hesk.com/version';
-
-	// Try using cURL
-	if ( function_exists('curl_init') )
-	{
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $hesk_version_url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 6);
-		$latest = curl_exec($ch);
-		curl_close($ch);
-		return hesk_cacheLatestVersion($latest);
-	}
-
-    // Try using a simple PHP function instead
-	if ($latest = @file_get_contents($hesk_version_url) )
-    {
-		return hesk_cacheLatestVersion($latest);
-    }
-
-	// Can't check automatically, will need a manual check
-    return false;
-
-} // END hesk_getLatestVersion()
-
-
-function hesk_cacheLatestVersion($latest)
-{
-	global $hesk_settings;
-
-	@file_put_contents(HESK_PATH . $hesk_settings['cache_dir'] . '/__latest.txt', time() . '|' . $latest);
-
-	return $latest;
-
-} // END hesk_cacheLatestVersion()
-?>

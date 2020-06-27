@@ -32,13 +32,20 @@ require_once(TEMPLATE_PATH . 'customer/util/rating.php');
     <title><?php echo $hesk_settings['hesk_title']; ?></title>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="" />
-    <meta name="theme-color" content="#fff" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo HESK_PATH; ?>img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo HESK_PATH; ?>img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo HESK_PATH; ?>img/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="<?php echo HESK_PATH; ?>img/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="<?php echo HESK_PATH; ?>img/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="shortcut icon" href="<?php echo HESK_PATH; ?>img/favicon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#2d89ef" />
+    <meta name="msapplication-config" content="<?php echo HESK_PATH; ?>img/favicon/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css" />
-
+    <!--[if IE]>
+    <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/ie9.css" />
+    <![endif]-->
     <style>
         <?php outputSearchStyling(); ?>
     </style>
@@ -167,23 +174,27 @@ require_once(TEMPLATE_PATH . 'customer/util/rating.php');
                                         <?php echo $article['content_preview']; ?>
                                     </p>
                                 </div>
-                                <div class="rate">
-                                    <?php
-                                    if ($hesk_settings['kb_rating']) {
-                                        echo hesk3_get_customer_rating($article['rating']);
-                                    }
-
-                                    if ($hesk_settings['kb_views'] && $hesk_settings['kb_rating']):
-                                        ?>
-                                        <span class="lightgrey">(<?php echo $article['views']; ?>)</span>
-                                    <?php elseif ($hesk_settings['kb_views']): ?>
-                                        <span class="lightgrey">
-                                            <?php echo $hesklang['views'] ?>:
-                                            <?php echo $article['views']; ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </div>
+                                <?php if ($hesk_settings['kb_views'] || $hesk_settings['kb_rating']): ?>
+                                    <div class="rate">
+                                        <?php if ($hesk_settings['kb_views']): ?>
+                                            <div style="margin-right: 10px; display: -ms-flexbox; display: flex;">
+                                                <svg class="icon icon-eye-close">
+                                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-eye-close"></use>
+                                                </svg>
+                                                <span class="lightgrey"><?php echo $article['views_formatted']; ?></span>
+                                            </div>
+                                        <?php
+                                        endif;
+                                        if ($hesk_settings['kb_rating']): ?>
+                                            <?php echo hesk3_get_customer_rating($article['rating']); ?>
+                                            <?php if ($hesk_settings['kb_views']) echo '<span class="lightgrey">('.$article['votes_formatted'].')</span>'; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
                             </a>
+                            <!--[if IE]>
+                                <p>&nbsp;</p>
+                            <![endif]-->
                             <?php endforeach; ?>
                         </div>
                         <?php
@@ -208,21 +219,27 @@ require_once(TEMPLATE_PATH . 'customer/util/rating.php');
                                             <?php echo $article['content_preview']; ?>
                                         </p>
                                     </div>
-                                    <div class="rate">
-                                        <?php
-                                        if ($hesk_settings['kb_rating']) {
-                                            echo hesk3_get_customer_rating($article['rating']);
-                                        }
-                                        if ($hesk_settings['kb_views'] && $hesk_settings['kb_rating']): ?>
-                                            <span class="lightgrey">(<?php echo $article['views']; ?>)</span>
-                                        <?php elseif ($hesk_settings['kb_views']): ?>
-                                            <span class="lightgrey">
-                                            <?php echo $hesklang['views'] ?>:
-                                            <?php echo $article['views']; ?>
-                                        </span>
-                                        <?php endif; ?>
-                                    </div>
+                                    <?php if ($hesk_settings['kb_views'] || $hesk_settings['kb_rating']): ?>
+                                        <div class="rate">
+                                            <?php if ($hesk_settings['kb_views']): ?>
+                                                <div style="margin-right: 10px; display: -ms-flexbox; display: flex;">
+                                                    <svg class="icon icon-eye-close">
+                                                        <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-eye-close"></use>
+                                                    </svg>
+                                                    <span class="lightgrey"><?php echo $article['views_formatted']; ?></span>
+                                                </div>
+                                            <?php
+                                            endif;
+                                            if ($hesk_settings['kb_rating']): ?>
+                                                <?php echo hesk3_get_customer_rating($article['rating']); ?>
+                                                <?php if ($hesk_settings['kb_views']) echo '<span class="lightgrey">('.$article['votes_formatted'].')</span>'; ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </a>
+                                <!--[if IE]>
+                                    <p>&nbsp;</p>
+                                <![endif]-->
                             <?php endforeach; ?>
                         </div>
                         <?php endif; ?>
@@ -269,11 +286,7 @@ END LICENSE CODE
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/hesk_functions.js"></script>
 <?php outputSearchJavascript(); ?>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/svg4everybody.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.scrollbar.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/selectize.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/datepicker.en.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.autocomplete.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.js"></script>
 </body>
 

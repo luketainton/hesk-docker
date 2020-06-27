@@ -73,7 +73,19 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
 
 <div class="main__content tools">
     <section class="tools__between-head wider">
-        <h2><?php echo $hesklang['tab_4']; ?></h2>
+        <h2>
+            <?php echo $hesklang['tab_4']; ?>
+            <div class="tooltype right out-close">
+                <svg class="icon icon-info">
+                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                </svg>
+                <div class="tooltype__content">
+                    <div class="tooltype__wrapper">
+                        <?php echo $hesklang['cf_intro']; ?>
+                    </div>
+                </div>
+            </div>
+        </h2>
         <?php if ($hesk_settings['num_custom_fields'] < 50 && $action !== 'edit_cf'): ?>
         <div class="btn btn--blue-border" ripple="ripple" data-action="create-custom-field">
             <?php echo $hesklang['new_cf']; ?>
@@ -203,7 +215,7 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                             </svg>
                                         </a>
-                                        <a href="custom_fields.php?a=order_cf&amp;id=<?php echo $tmp_id; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
+                                        <a class="tooltip" href="custom_fields.php?a=order_cf&amp;id=<?php echo $tmp_id; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
                                            title="<?php echo $hesklang['move_dn']; ?>">
                                             <svg class="icon icon-chevron-down">
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
@@ -214,7 +226,7 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
                                     elseif ($k == $hesk_settings['num_custom_fields'] || $k == $num_before)
                                     {
                                         ?>
-                                        <a href="custom_fields.php?a=order_cf&amp;id=<?php echo $tmp_id; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
+                                        <a class="tooltip" href="custom_fields.php?a=order_cf&amp;id=<?php echo $tmp_id; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
                                            title="<?php echo $hesklang['move_up']; ?>">
                                             <svg class="icon icon-chevron-up">
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
@@ -231,13 +243,13 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
                                     else
                                     {
                                         ?>
-                                        <a href="custom_fields.php?a=order_cf&amp;id=<?php echo $tmp_id; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
+                                        <a class="tooltip" href="custom_fields.php?a=order_cf&amp;id=<?php echo $tmp_id; ?>&amp;move=-15&amp;token=<?php hesk_token_echo(); ?>"
                                            title="<?php echo $hesklang['move_up']; ?>">
                                             <svg class="icon icon-chevron-up">
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
                                             </svg>
                                         </a>
-                                        <a href="custom_fields.php?a=order_cf&amp;id=<?php echo $tmp_id; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
+                                        <a class="tooltip" href="custom_fields.php?a=order_cf&amp;id=<?php echo $tmp_id; ?>&amp;move=15&amp;token=<?php hesk_token_echo(); ?>"
                                            title="<?php echo $hesklang['move_dn']; ?>">
                                             <svg class="icon icon-chevron-down">
                                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
@@ -249,7 +261,7 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
                                 ?>
                                 <a href="custom_fields.php?a=edit_cf&amp;id=<?php echo $tmp_id; ?>"
                                    title="<?php echo $hesklang['edit']; ?>"
-                                   class="edit">
+                                   class="edit tooltip">
                                     <svg class="icon icon-edit-ticket">
                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-edit-ticket"></use>
                                     </svg>
@@ -257,7 +269,7 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
                                 <a href="javascript:"
                                    data-modal="[data-modal-id='<?php echo $modal_id; ?>']"
                                    title="<?php echo $hesklang['delete']; ?>"
-                                   class="delete">
+                                   class="delete tooltip">
                                     <svg class="icon icon-delete">
                                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-delete"></use>
                                     </svg>
@@ -303,7 +315,7 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
                     <div class="form-group">
                         <label><?php echo $lang; ?></label>
                         <input type="text" name="name[<?php echo $lang; ?>]" class="form-control <?php echo in_array('name', $errors) ? 'isError' : ''; ?>"
-                               value="<?php (isset($names[$lang]) ? $names[$lang] : ''); ?>">
+                               value="<?php echo (isset($names[$lang]) ? $names[$lang] : ''); ?>">
                     </div>
                 <?php
                 endforeach;
