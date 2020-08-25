@@ -193,7 +193,7 @@ function hesk_profile_tab($session_array='new',$is_profile_page=true)
                     <div class="radio-list">
                         <div class="radio-custom">
                             <input type="radio" id="prof_afterreply0" name="afterreply" value="0" <?php if (!$_SESSION[$session_array]['afterreply']) {echo 'checked';} ?>>
-                            <label for="prof_afterreply0 ">
+                            <label for="prof_afterreply0">
                                 <?php echo $hesklang['showtic']; ?>
                             </label>
                         </div>

@@ -942,7 +942,7 @@ function remove_cf()
 		hesk_purge_cache('cf');
 
 		// Delete custom field data from tickets
-		hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `custom{$id}`=''");
+		hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `custom{$id}`='', `lastchange`=`lastchange` WHERE `custom{$id}`!=''");
 
 		// Show success message
 		hesk_process_messages($hesklang['cf_deleted'],'./custom_fields.php','SUCCESS');

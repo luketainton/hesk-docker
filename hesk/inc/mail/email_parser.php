@@ -289,7 +289,7 @@ function process_results($result,$tempdir)
 	// Convert to UTF-8 before processing further
 	if ($r["encoding"] != "" && $r["encoding"] != 'UTF-8')
 	{
-		$result["Data"] = $result["Data"] == "" ? "" : iconv($r["encoding"], 'UTF-8', $result["Data"]);
+		$result["Data"] = $result["Data"] == "" ? "" : (function_exists('iconv') ? iconv($r["encoding"], 'UTF-8', $result["Data"]) : utf8_encode($result["Data"]));
 		$r["encoding"] = 'UTF-8';
 	}
 

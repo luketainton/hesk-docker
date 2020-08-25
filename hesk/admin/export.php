@@ -446,19 +446,19 @@ if (isset($success_msg))
             <h3><?php echo $hesklang['priority']; ?></h3>
             <div class="checkbox-custom">
                 <input type="checkbox" name="p0" id="p0" value="1" <?php if (isset($priority[0])) {echo 'checked';} ?>>
-                <label for="p0"><?php echo $hesklang['critical']; ?></label>
+                <label for="p0"><span class="priority0"><?php echo $hesklang['critical']; ?></span></label>
             </div>
             <div class="checkbox-custom">
                 <input type="checkbox" name="p1" id="p1" value="1" <?php if (isset($priority[1])) {echo 'checked';} ?>>
-                <label for="p1"><?php echo $hesklang['high']; ?></label>
+                <label for="p1"><span class="priority1"><?php echo $hesklang['high']; ?></span></label>
             </div>
             <div class="checkbox-custom">
                 <input type="checkbox" name="p2" id="p2" value="1" <?php if (isset($priority[2])) {echo 'checked';} ?>>
-                <label for="p2"><?php echo $hesklang['medium']; ?></label>
+                <label for="p2"><span class="priority2"><?php echo $hesklang['medium']; ?></span></label>
             </div>
             <div class="checkbox-custom">
                 <input type="checkbox" name="p3" id="p3" value="1" <?php if (isset($priority[3])) {echo 'checked';} ?>>
-                <label for="p3"><?php echo $hesklang['low']; ?></label>
+                <label for="p3"><span class="priority3"><?php echo $hesklang['low']; ?></span></label>
             </div>
         </section>
         <section class="reports__checkbox">

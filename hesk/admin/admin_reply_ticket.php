@@ -71,6 +71,9 @@ $message = hesk_input(hesk_POST('message'));
 // Submit as customer?
 $submit_as_customer = isset($_POST['submit_as_customer']) ? true : false;
 
+// Load statuses
+require_once(HESK_PATH . 'inc/statuses.inc.php');
+
 if (strlen($message))
 {
 	// Save message for later and ignore the rest?
@@ -227,45 +230,6 @@ if ($ticket['locked'])
 {
 	$new_status = 3;
 }
-// -> Submit as: Resolved
-elseif ( isset($_POST['submit_as_resolved']) && hesk_checkPermission('can_resolve', 0) )
-{
-	$new_status = 3;
-
-	if ($ticket['status'] != $new_status)
-	{
-		$revision   = sprintf($hesklang['thist3'],hesk_date(),$_SESSION['name'].' ('.$_SESSION['user'].')');
-		$sql_status = " , `closedat`=NOW(), `closedby`=".intval($_SESSION['id']).", `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
-
-		// Lock the ticket if customers are not allowed to reopen tickets
-		if ($hesk_settings['custopen'] != 1)
-		{
-			$sql_status .= " , `locked`='1' ";
-		}
-	}
-}
-// -> Submit as: In Progress
-elseif ( isset($_POST['submit_as_in_progress']) )
-{
-	$new_status = 4;
-
-	if ($ticket['status'] != $new_status)
-	{
-		$revision   = sprintf($hesklang['thist9'],hesk_date(),$hesklang['in_progress'],$_SESSION['name'].' ('.$_SESSION['user'].')');
-		$sql_status = " , `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
-	}
-}
-// -> Submit as: On Hold
-elseif ( isset($_POST['submit_as_on_hold']) )
-{
-	$new_status = 5;
-
-	if ($ticket['status'] != $new_status)
-	{
-		$revision   = sprintf($hesklang['thist9'],hesk_date(),$hesklang['on_hold'],$_SESSION['name'].' ('.$_SESSION['user'].')');
-		$sql_status = " , `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
-	}
-}
 // -> Submit as Customer reply
 elseif ($submit_as_customer)
 {
@@ -277,10 +241,53 @@ elseif ($submit_as_customer)
 		$sql_status = " , `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
 	}
 }
-// -> Default: submit as "Replied by staff"
+// -> Submitted with a status change?
 else
 {
-	$new_status = 2;
+    $submit_as_status = false;
+
+    foreach ($hesk_settings['statuses'] as $id => $data)
+    {
+        if ( ! isset($_POST['submit_as-' . $id]))
+        {
+            continue;
+        }
+
+        // "Resolved" status needs special care
+        if ($id == 3)
+        {
+            // Permission to resolve?
+            if ( ! hesk_checkPermission('can_resolve', 0))
+            {
+                break;
+            }
+
+            // Lock the ticket if customers are not allowed to reopen tickets
+            if ($hesk_settings['custopen'] != 1)
+            {
+                $sql_status .= " , `locked`='1' ";
+            }
+        }
+
+        // Set the new status and log revision if modified
+        $new_status = $id;
+
+        if ($ticket['status'] != $new_status && $new_status != 2)
+        {
+            $revision   = sprintf($hesklang['thist9'],hesk_date(),$data['name'],$_SESSION['name'].' ('.$_SESSION['user'].')');
+            $sql_status .= " , `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
+        }
+
+        $submit_as_status = true;
+
+        break;
+    }
+
+    // Default: submit as "Replied by staff"
+    if ( ! $submit_as_status)
+    {
+        $new_status = 2;
+    }
 }
 
 $sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `status`='{$new_status}',";

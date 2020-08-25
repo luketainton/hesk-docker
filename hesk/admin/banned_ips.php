@@ -66,7 +66,7 @@ hesk_handle_messages();
     <form action="banned_ips.php" method="post" name="form1">
         <div class="tools__add-mail form">
             <div class="form-group">
-                <input type="text" name="ip" maxlength="255" placeholder="<?php echo $hesklang['bananip']; ?>" class="form-control">
+                <input type="text" name="ip" maxlength="255" placeholder="<?php echo $hesklang['bananip']; ?>" class="form-control" autofocus>
                 <input type="hidden" name="token" value="<?php hesk_token_echo(); ?>" />
                 <input type="hidden" name="a" value="ban" />
                 <button type="submit" class="btn btn--blue-border" ripple="ripple"><?php echo $hesklang['savebanip']; ?></button>

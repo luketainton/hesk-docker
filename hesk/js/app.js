@@ -576,6 +576,7 @@ $(document).ready(function () {
     };
     $('body').on('click', '[data-action="create-template"], [data-action="edit-template"]', function (e) {
         openCreateTemplate(e);
+        $('input:text:visible:first').focus();
         e.preventDefault();
     });
     $('.right-bar').click(function (e) {
@@ -900,6 +901,7 @@ $(document).ready(function () {
     $('[data-action="category-create"]').click(function (e) {
         $('.right-bar.category-create').fadeIn(150);
         $('body').addClass('noscroll');
+        $('input:text:visible:first').focus();
         e.preventDefault();
     });
 
@@ -910,6 +912,7 @@ $(document).ready(function () {
     $('[data-action="team-create"]').click(function (e) {
         $('.right-bar.team-create').fadeIn(150);
         $('body').addClass('noscroll');
+        $('input:text:visible:first').focus();
         e.preventDefault();
     });
     $('.right-bar.team-create [data-action="next"]').click(function (e) {
@@ -1095,8 +1098,9 @@ $(document).ready(function () {
     ============================================================*/
     $('[data-action="create-service-message"]').click(function (e) {
         console.log(e);
-        $('body').addClass('noscroll');
         $('.right-bar.service-message-create').fadeIn(150);
+        $('body').addClass('noscroll');
+        $('input:text:visible:first').focus();
     });
     $('.right-bar.service-message-create [data-action="back"]').click(function (e) {
         $('.right-bar.service-message-create .right-bar__body').attr('data-step', 1);
@@ -1124,6 +1128,7 @@ $(document).ready(function () {
     $('[data-action="create-custom-field"]').click(function (e) {
         $('.right-bar.create-custom-field').fadeIn(150);
         $('body').addClass('noscroll');
+        $('input:text:visible:first').focus();
     });
     $('.right-bar.create-custom-field [data-action="save"]').click(function (e) {
         // To do something
@@ -1134,6 +1139,7 @@ $(document).ready(function () {
     $('[data-action="create-custom-status"]').click(function (e) {
         $('.right-bar.create-status').fadeIn(150);
         $('body').addClass('noscroll');
+        $('input:text:visible:first').focus();
     });
     $('.right-bar.create-status [data-action="save"]').click(function (e) {
         // To do something

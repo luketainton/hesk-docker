@@ -4276,7 +4276,7 @@ li.ticket-new {
 .ticket__body_block .block--head .contact .dropdown .dropdown-list li .title {
     color: #959eb0;
     margin-right: 8px;
-    width: 36px;
+    min-width: 36px;
 }
 
 .ticket__body_block .block--head .contact .dropdown .dropdown-list li .value {

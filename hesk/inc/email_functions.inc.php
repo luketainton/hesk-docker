@@ -279,7 +279,7 @@ function hesk_mail($to,$subject,$message)
     // Setup "name <email>" for headers
     if ($hesk_settings['noreply_name'])
     {
-    	$hesk_settings['from_header'] = hesk_encodeIfNotAscii( hesk_html_entity_decode($hesk_settings['noreply_name']) ) . " <" . $hesk_settings['noreply_mail'] . ">";
+    	$hesk_settings['from_header'] = hesk_encodeIfNotAscii( hesk_html_entity_decode($hesk_settings['noreply_name']), true ) . " <" . $hesk_settings['noreply_mail'] . ">";
     }
     else
     {
@@ -620,12 +620,18 @@ function hesk_getEmailMessage($eml_file, $ticket, $is_admin=0, $is_ticket=1, $ju
 } // END hesk_getEmailMessage
 
 
-function hesk_encodeIfNotAscii($str)
+function hesk_encodeIfNotAscii($str, $escape_header = false)
 {
     // Match anything outside of ASCII range
     if (preg_match('/[^\x00-\x7F]/', $str))
     {
         return "=?UTF-8?B?" . base64_encode($str) . "?=";
+    }
+
+    // Do we need to wrap the header in double quotes?
+    if ($escape_header && preg_match("/[^-A-Za-z0-9!#$%&'*+\/=?^_`{|}~\\s]+/",$str))
+    {
+        return '"' . str_replace('"','\\"', $str) . '"';
     }
 
     return $str;

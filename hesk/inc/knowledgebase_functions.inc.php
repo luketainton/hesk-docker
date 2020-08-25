@@ -44,12 +44,14 @@ function hesk_kbCategoriesArray($public_only = true)
         $current_parrent = $category['parent'];
         $categories[$id]['parents'][] = $current_parrent;
 
-        while ($current_parrent > 0)
+        $i = 0;
+        while ($current_parrent > 0 && isset($categories[$current_parrent]) && $categories[$current_parrent]['id'] != $categories[$current_parrent]['parent'] && $i < 1000)
         {
             if (($current_parrent = $categories[$current_parrent]['parent']) > 0)
             {
                 $categories[$id]['parents'][] = $current_parrent;
             }
+            $i++;
         }
 
         $categories[$id]['parents'] = array_reverse($categories[$id]['parents']);

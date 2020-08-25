@@ -35,7 +35,7 @@ $onload='';
     <meta name="theme-color" content="#ffffff">
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" media="all" href="<?php echo HESK_PATH; ?>css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css?<?php echo $hesk_settings['hesk_version']; ?>">
-    <script src="<?php echo HESK_PATH; ?>js/jquery-3.4.1.min.js"></script>
+    <script src="<?php echo HESK_PATH; ?>js/jquery-3.5.1.min.js"></script>
 	<script type="text/javascript" src="<?php echo HESK_PATH; ?>js/hesk_javascript<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.js?<?php echo $hesk_settings['hesk_version']; ?>"></script>
     <script src="<?php echo HESK_PATH; ?>js/selectize.min.js"></script>
 
@@ -52,7 +52,7 @@ $onload='';
 	if (defined('WYSIWYG') && $hesk_settings['kb_wysiwyg'])
 	{
 		?>
-		<script type="text/javascript" src="<?php echo HESK_PATH; ?>inc/tiny_mce/5.2.0/tinymce.min.js"></script>
+		<script type="text/javascript" src="<?php echo HESK_PATH; ?>inc/tiny_mce/5.4.2/tinymce.min.js"></script>
 		<?php
 	}
 

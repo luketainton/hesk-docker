@@ -670,7 +670,7 @@ EOC;
 	} // END if total > 0
     else
     {
-    	echo '<i>' . $hesklang['npm'] . '</i> <p>&nbsp;</p>';
+        hesk_show_info($hesklang['npm']);
     }
 
 } // END mail_list_messages()

@@ -173,14 +173,19 @@ function hesk_isValidIP($ip)
 
 function hesk_setcookie($name, $value, $expire=0, $path="")
 {
-    if (HESK_SSL)
+    // PHP < 7.3 doesn't support the SameSite attribute, let's use a trick
+    if (PHP_VERSION_ID < 70300)
     {
-        setcookie($name, $value, $expire, $path, "", true, true);
+        setcookie($name, $value, $expire, $path . "; SameSite=Lax", null, HESK_SSL, true);
+        return true;
     }
-    else
-    {
-        setcookie($name, $value, $expire, $path, "", false, true);
-    }
+
+    setcookie($name, $value, array(
+        'expires' => $expire,
+        'path' => $path,
+        'secure' => HESK_SSL,
+        'samesite' => 'Lax',
+    ));
 
     return true;
 } // END hesk_setcookie()
@@ -2076,6 +2081,24 @@ function hesk_session_regenerate_id()
 function hesk_session_start()
 {
     session_name('HESK' . sha1(dirname(__FILE__) . '$r^k*Zkq|w1(G@!-D?3%') );
+
+    // PHP < 7.3 doesn't support the SameSite attribute, let's use a trick
+    if (PHP_VERSION_ID < 70300)
+    {
+        $currentCookieParams = session_get_cookie_params();
+        session_set_cookie_params(
+            $currentCookieParams['lifetime'],
+            $currentCookieParams['path'] . "; SameSite=Lax",
+            $currentCookieParams['domain'],
+            $currentCookieParams['secure'],
+            $currentCookieParams['httponly']
+        );
+    }
+    else
+    {
+        session_set_cookie_params(array('samesite' => 'Lax'));
+    }
+
 	session_cache_limiter('nocache');
     if ( @session_start() )
     {

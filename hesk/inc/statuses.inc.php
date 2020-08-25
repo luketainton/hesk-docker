@@ -246,6 +246,7 @@ function hesk_print_status_select_box_jquery()
                     $("#ticket-status-div > div.dropdown-select > div.label > span").filter(function () {
                         return $(this).text() == "'.addslashes($data['name']).'";
                     }).addClass("'.$data['class'].'");'."\n";
+                echo '$("#submit-as-div > ul.dropdown-list > li[data-option=\'submit_as-'.$id.'\']").addClass("'.$data['class'].'");'."\n";
                 continue;
             }
 
@@ -257,6 +258,7 @@ function hesk_print_status_select_box_jquery()
                     $("#ticket-status-div > div.dropdown-select > div.label > span").filter(function () {
                         return $(this).text() == "'.addslashes($data['name']).'";
                     }).css("color", "'.$data['color'].'");'."\n";
+                echo '$("#submit-as-div > ul.dropdown-list > li[data-option=\'submit_as-'.$id.'\']").css("color", "'.$data['color'].'");'."\n";
             }
         }
         ?>

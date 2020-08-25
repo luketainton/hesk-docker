@@ -379,6 +379,7 @@ if (!hesk_SESSION('error')) {
                 <input type="text"
                        name="name"
                        class="form-control"
+                       id="add_cat_name"
                        <?php if (isset($_SESSION['catname'])): ?>value="<?php echo $_SESSION['catname']; ?>"<?php endif; ?>>
             </div>
             <?php
@@ -388,7 +389,7 @@ if (!hesk_SESSION('error')) {
             ?>
             <div class="category-create__select">
                 <span><?php echo $hesklang['def_pri']; ?></span>
-                <div class="dropdown-select center out-close">
+                <div class="dropdown-select center out-close priority">
                     <select name="priority">
                         <?php foreach ($priorities as $id => $priority): ?>
                             <option value="<?php echo $priority['value']; ?>" <?php if ($_SESSION['cat_priority'] == $id): ?>selected<?php endif; ?>>

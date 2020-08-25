@@ -367,7 +367,7 @@ if ($hesk_settings['kb_wysiwyg'])
                             <select name="language">
                                 <option value=""><?php echo $hesklang['all']; ?></option>
                                 <?php foreach ($hesk_settings['languages'] as $lang => $v): ?>
-                                    <option <?php echo (isset($_SESSION['new_sm']['language']) && $_SESSION['new_sm']['language'] == $lang ? 'selected="selected"' : ''); ?>>
+                                    <option value="<?php echo hesk_htmlspecialchars($lang); ?>" <?php echo (isset($_SESSION['new_sm']['language']) && $_SESSION['new_sm']['language'] == $lang ? 'selected="selected"' : ''); ?>>
                                         <?php echo $lang; ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -429,6 +429,11 @@ function save_sm()
 	}
 
     $type  = empty($_POST['type']) ? 0 : 1;
+    $language = hesk_input( hesk_POST('language') );
+    if ( ! isset($hesk_settings['languages'][$language]))
+    {
+        $language = '';
+    }
     $title = hesk_input( hesk_POST('title') ) or $hesk_error_buffer[] = $hesklang['sm_e_title'];
 	$message = hesk_getHTML( hesk_POST('message') );
 
@@ -446,6 +451,7 @@ function save_sm()
 		'id' => $id,
 		'style' => $style,
 		'type' => $type,
+        'language' => $language,
 		'title' => $title,
 		'message' => hesk_input( hesk_POST('message') ),
         'errors' => array('title')
@@ -472,6 +478,7 @@ function save_sm()
 		'id' => $id,
 		'style' => $style,
 		'type' => $type,
+        'language' => $language,
 		'title' => $title,
 		'message' => $message
 		);
@@ -485,6 +492,7 @@ function save_sm()
 	`author` = '".intval($_SESSION['id'])."',
 	`title` = '".hesk_dbEscape($title)."',
 	`message` = '".hesk_dbEscape($message)."',
+    `language` = ".(strlen($language) ? "'".hesk_dbEscape($language)."'" : 'NULL').",
 	`style` = '{$style}',
 	`type` = '{$type}'
 	WHERE `id`={$id}");

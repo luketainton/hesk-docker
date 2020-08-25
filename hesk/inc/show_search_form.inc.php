@@ -120,19 +120,19 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
                     <div class="checkbox-list">
                         <div class="checkbox-custom">
                             <input type="checkbox" id="p0" name="p0" value="1" <?php if (isset($priority[0])) {echo 'checked';} ?>>
-                            <label for="p0"><span class="critical"><?php echo $hesklang['critical']; ?></span></label>
-                        </div>
-                        <div class="checkbox-custom">
-                            <input type="checkbox" id="p2" name="p2" value="1" <?php if (isset($priority[2])) {echo 'checked';} ?>>
-                            <label for="p2"><span class="medium"><?php echo $hesklang['medium']; ?></span></label>
+                            <label for="p0"><span class="priority0"><?php echo $hesklang['critical']; ?></span></label>
                         </div>
                         <div class="checkbox-custom">
                             <input type="checkbox" id="p1" name="p1" value="1" <?php if (isset($priority[1])) {echo 'checked';} ?>>
-                            <label for="p1"><span class="important"><?php echo $hesklang['high']; ?></span></label>
+                            <label for="p1"><span class="priority1"><?php echo $hesklang['high']; ?></span></label>
+                        </div>
+                        <div class="checkbox-custom">
+                            <input type="checkbox" id="p2" name="p2" value="1" <?php if (isset($priority[2])) {echo 'checked';} ?>>
+                            <label for="p2"><span class="priority2"><?php echo $hesklang['medium']; ?></span></label>
                         </div>
                         <div class="checkbox-custom">
                             <input type="checkbox" id="p3" name="p3" value="1" <?php if (isset($priority[3])) {echo 'checked';} ?>>
-                            <label for="p3"><span class="normal"><?php echo $hesklang['low']; ?></span></label>
+                            <label for="p3"><span class="priority3"><?php echo $hesklang['low']; ?></span></label>
                         </div>
                     </div>
                 </div>

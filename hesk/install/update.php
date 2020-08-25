@@ -1199,6 +1199,7 @@ function hesk_iUpdateTables()
     // 3.0.3 no changes
     // 3.1.0 no changes
     // 3.1.1 no changes
+    // 3.1.2 no changes
 
 	// Insert the "HESK updated to latest version" mail for the administrator
 	if ( file_exists(HESK_PATH.'hesk_license.php') )

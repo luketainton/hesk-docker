@@ -84,26 +84,6 @@ if (!isset($_SESSION['isnotice'])) {
 	$_SESSION['isnotice'] = array();
 }
 
-/* List of users */
-$admins = array();
-$result = hesk_dbQuery("SELECT `id`,`name`,`isadmin`,`categories`,`heskprivileges` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` ORDER BY `name` ASC");
-while ($row=hesk_dbFetchAssoc($result))
-{
-	/* Is this an administrator? */
-	if ($row['isadmin'])
-    {
-	    $admins[$row['id']]=$row['name'];
-	    continue;
-    }
-
-	/* Not admin, is user allowed to view tickets? */
-	if (strpos($row['heskprivileges'], 'can_view_tickets') !== false)
-	{
-		$admins[$row['id']]=$row['name'];
-		continue;
-	}
-}
-
 /* Print header */
 require_once(HESK_PATH . 'inc/header.inc.php');
 
@@ -115,16 +95,16 @@ $hesk_settings['categories'] = array();
 
 if (hesk_checkPermission('can_submit_any_cat', 0))
 {
-    $res = hesk_dbQuery("SELECT `id`, `name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` ORDER BY `cat_order` ASC");
+    $res = hesk_dbQuery("SELECT `id`, `name`, `priority` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` ORDER BY `cat_order` ASC");
 }
 else
 {
-    $res = hesk_dbQuery("SELECT `id`, `name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE ".hesk_myCategories('id')." ORDER BY `cat_order` ASC");
+    $res = hesk_dbQuery("SELECT `id`, `name`, `priority` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE ".hesk_myCategories('id')." ORDER BY `cat_order` ASC");
 }
 
 while ($row=hesk_dbFetchAssoc($res))
 {
-	$hesk_settings['categories'][$row['id']] = $row['name'];
+	$hesk_settings['categories'][$row['id']] = array('name' => $row['name'], 'priority' => $row['priority']);
 }
 
 $number_of_categories = count($hesk_settings['categories']);
@@ -146,6 +126,38 @@ else
 	{
 		return print_select_category($number_of_categories);
 	}
+}
+
+// List of users whom this ticket can be assigned to
+$admins = array();
+$res = hesk_dbQuery("SELECT `id`,`name`,`isadmin`,`categories`,`heskprivileges` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` ORDER BY `name` ASC");
+while ($row = hesk_dbFetchAssoc($res))
+{
+    // Is this an administrator?
+    if ($row['isadmin'])
+    {
+        $admins[$row['id']]=$row['name'];
+        continue;
+    }
+
+    // Not admin, is user allowed to view tickets?
+    if (strpos($row['heskprivileges'], 'can_view_tickets') !== false)
+    {
+        // Is user allowed to access this category?
+        $cat = substr($row['categories'], 0);
+        $row['categories'] = explode(',', $cat);
+        if (in_array($category, $row['categories']))
+        {
+            $admins[$row['id']] = $row['name'];
+            continue;
+        }
+    }
+}
+
+// Set the default category priority
+if ( ! isset($_SESSION['as_priority']))
+{
+    $_SESSION['as_priority'] = intval($hesk_settings['categories'][$category]['priority']);
 }
 ?>
 <div class="main__content categories ticket-create">
@@ -184,7 +196,7 @@ else
             <div id="email_suggestions"></div>
             <div class="form-group">
                 <label><?php echo $hesklang['priority']; ?>: <span class="important">*</span></label>
-                <div class="dropdown-select center out-close">
+                <div class="dropdown-select center out-close priority">
                     <select name="priority" <?php if (in_array('priority',$_SESSION['iserror'])) {echo ' class="isError" ';} ?> >
                         <?php
                         // Show the "Click to select"?
@@ -904,7 +916,7 @@ hesk_handle_messages();
                         }
                         foreach ($hesk_settings['categories'] as $k=>$v)
                         {
-                            echo '<option value="'.$k.'">'.$v.'</option>';
+                            echo '<option value="'.$k.'">'.$v['name'].'</option>';
                         }
                         ?>
                     </select>
@@ -925,7 +937,7 @@ hesk_handle_messages();
                     <?php
                     foreach ($hesk_settings['categories'] as $k=>$v)
                     {
-                        echo '<li><a ripple="ripple" href="new_ticket.php?a=add&amp;category='.$k.'">'.$v.'</a></li>';
+                        echo '<li><a ripple="ripple" href="new_ticket.php?a=add&amp;category='.$k.'">'.$v['name'].'</a></li>';
                     }
                     ?>
                 </ul>
@@ -971,6 +983,7 @@ hesk_handle_messages();
 
 	hesk_cleanSessionVars('iserror');
 	hesk_cleanSessionVars('isnotice');
+    hesk_cleanSessionVars('as_priority');
 
 	require_once(HESK_PATH . 'inc/footer.inc.php');
 	exit();

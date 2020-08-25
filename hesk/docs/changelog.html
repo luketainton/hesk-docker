@@ -9,13 +9,13 @@
 <body>
 <div id="wrapper">
 <div id="main">
-<h1><span class="dest">HESK&trade;</span> PHP Help Desk Software</h1>
+<h1><span class="dest">HESK</span><sup>&reg;</sup> PHP Help Desk Software</h1>
 
 <table width="100%">
 <tr>
 <td width="50%" style="text-align:left;vertical-align:top">
  <ul class="nobullets">
- <li>Version: 3.1.1 from 3rd May 2020</li>
+ <li>Version: 3.1.2 from 18th August 2020</li>
  <li>Developed by: Klemen Stirn, Mike Koch</li>
  <li><a href="https://www.hesk.com">Help Desk Software HESK</a></li>
  <li><a href="https://www.phpjunkyard.com">Free PHP Scripts</a></li>
@@ -32,13 +32,27 @@
 </tr>
 </table>
 
-<div class="notice">
-<p><b>Hey, you should probably read this...</b><p>
-<p>HESK version 3 features a brand new user interface. While we consider it stable enough for use it is likely that we didn't spot all the errors across various browsers and devices.</p>
-<p>We encourage you to report any problems and user-experience suggestions to our <a href="https://developers.phpjunkyard.com">support forum</a>.</p>
-</div>
-
 <h2>HESK 3 CHANGELOG</h2>
+
+<p><b>Changes in 3.1.2</b> - 18th August 2020<br />
+- the &quot;Submit as&quot; control in staff reply form now supports all statuses<br />
+- don't change the &quot;last updated&quot; value of tickets when deleting a custom field<br />
+- prevent a corrupted hesk_kb_categories table causing an infinite loop<br />
+- show ticket subject and notes at the top with &quot;Newest reply at top&quot; setting selected<br />
+- when submitting a ticket from the admin panel Hesk will now pre-select default category priority<br />
+- implemented SameSite cookie attribute support<br />
+- fix: the top &quot;Re-send email notification&quot; should send new ticket notification, not new reply<br />
+- fix: language string with a single quote breaks calendar translation<br />
+- fix: use quoting mechanism for special interpretation characters in mail from header<br />
+- fix: on Profile page cannot select &quot;Show the ticket I just replied to&quot;<br />
+- fix: contact details hidden in languages with a long title translation<br />
+- fix: cannot select a language for service messages<br />
+- fix: parsing of a non-utf8 email fails if Iconv functions are not available<br />
+- fix: only list users whom the ticket can be assigned to when submitting a new ticket<br />
+- updated third party libraries to the latest version<br />
+- minor styling and usability changes<br />
+</p>
+
 
 <p><b>Changes in 3.1.1</b> - 3rd May 2020<br />
 - knowledgebase now shows full category structure in breadcrumbs<br />
@@ -721,7 +735,8 @@
 
 <p>&nbsp;</p>
 
-<p style="text-align:center">&copy; Copyright <a href="https://www.hesk.com">HESK.COM</a> 2005-2020. All rights reserved.</p>
+<p style="text-align:center">&copy; Copyright <a href="https://www.hesk.com">HESK.COM</a> 2005-2020. All rights reserved.<br />
+&reg; HESK is a registered trademark of Klemen Stirn.</p>
 
 </div>
 </div>

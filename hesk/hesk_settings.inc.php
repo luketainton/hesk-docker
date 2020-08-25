@@ -1,5 +1,5 @@
 <?php
-// Settings file for HESK 3.1.1
+// Settings file for HESK 3.1.2
 
 // ==> GENERAL
 
@@ -200,7 +200,7 @@ $hesk_settings['check_updates']=1;
 #############################
 #     DO NOT EDIT BELOW     #
 #############################
-$hesk_settings['hesk_version']='3.1.1';
+$hesk_settings['hesk_version']='3.1.2';
 if ($hesk_settings['debug_mode'])
 {
     error_reporting(E_ALL);

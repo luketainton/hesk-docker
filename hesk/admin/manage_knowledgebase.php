@@ -505,6 +505,7 @@ if (!isset($_SESSION['hide']['new_article']))
             <input type="hidden" name="a" value="new_article">
             <input type="hidden" name="token" value="<?php hesk_token_echo(); ?>">
         </form>
+        <script>$('#add_subject').focus();</script>
     </div>
 	<?php
 } // END hide article
@@ -568,6 +569,7 @@ if (!isset($_SESSION['hide']['new_category']))
             echo '</div>';
         }
         ?>
+        <script>$('#add_cat_title').focus();</script>
     </div>
 	<?php
 } // END hide new category form
