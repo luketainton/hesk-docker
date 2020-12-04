@@ -1,0 +1,53 @@
+name: Build
+on:
+  push:
+    branches: main
+
+jobs:
+  release-on-push:
+    runs-on: ubuntu-latest
+    outputs: 
+      ver: ${{ steps.release.outputs.version }}
+      tag: ${{ steps.release.outputs.tag_name }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - id: release
+        uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: norelease
+          
+      - name: Check Output Parameters
+        run: |
+          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
+          echo "Got release version ${{ steps.release.outputs.version }}"
+          
+  docker-dh:
+    name: Push to Docker Hub
+    needs: [release-on-push]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Login to DockerHub Registry
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+    - name: Build image for Docker Hub
+      run: docker build . --file Dockerfile --build-arg VERSION=${{ needs.release-on-push.outputs.ver }} --tag luketainton/hesk-docker:${{ needs.release-on-push.outputs.tag }} --tag luketainton/hesk-docker:latest
+    - name: Push image to Docker Hub
+      run: |
+        docker push luketainton/hesk-docker:${{ needs.release-on-push.outputs.tag }} &&
+        docker push luketainton/hesk-docker:latest
+      
+  docker-ghr:
+    name: Push to GitHub Package Registry
+    needs: [release-on-push]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Login to DockerHub Registry
+      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login https://docker.pkg.github.com -u luketainton --password-stdin
+    - name: Build image for GitHub Package Registry
+      run: docker build . --file Dockerfile --build-arg VERSION=${{ needs.release-on-push.outputs.ver }} --tag docker.pkg.github.com/luketainton/hesk-docker/hesk-docker:latest --tag docker.pkg.github.com/luketainton/hesk-docker/hesk-docker:${{ needs.release-on-push.outputs.tag }}
+    - name: Push image to GitHub Package Registry
+      run: |
+        docker push docker.pkg.github.com/luketainton/hesk-docker/hesk-docker:${{ needs.release-on-push.outputs.tag }} &&
+        docker push docker.pkg.github.com/luketainton/hesk-docker/hesk-docker:latest
