@@ -44,16 +44,108 @@ $mysql_time = hesk_dbTime();
 
 /* Get number of tickets and page number */
 $result = hesk_dbQuery($sql_count);
-$total  = hesk_dbResult($result);
 
-// $header_text should come from the page including this (i.e. admin_main.php, show_tickets.php)
-echo str_replace('%%HESK_TICKET_COUNT%%', $total, $header_text);
+while ($row = hesk_dbFetchAssoc($result))
+{
+    // Total tickets found
+    $totals['filtered']['all'] += $row['cnt'];
 
-if ($total > 0)
+    // Total by status
+    if (isset($totals['filtered']['by_status'][$row['status']]))
+    {
+        $totals['filtered']['by_status'][$row['status']] += $row['cnt'];
+    }
+    else
+    {
+        $totals['filtered']['by_status'][$row['status']] = $row['cnt'];
+    }
+
+    // Count all filtered open tickets
+    if (isset($row['status']) && $row['status'] != 3)
+    {
+        $totals['filtered']['open'] += $row['cnt'];
+    }
+
+    // Totals by assigned to
+    if (isset($row['assigned_to'])):
+    switch ($row['assigned_to'])
+    {
+        case 1:
+            $totals['filtered']['assigned_to_me'] += $row['cnt'];
+            break;
+        case 2:
+            $totals['filtered']['assigned_to_others'] += $row['cnt'];
+            break;
+        case 3:
+            $totals['filtered']['assigned_to_others'] += $row['cnt'];
+            $totals['filtered']['assigned_to_others_by_me'] += $row['cnt'];
+            break;
+        default:
+            $totals['filtered']['unassigned'] += $row['cnt'];
+    }
+    endif;
+
+    // Total by due date; ignore for Resolved tickets
+    if ($row['status'] != 3)
+    {
+        switch ($row['due'])
+        {
+            case 1:
+                $totals['filtered']['due_soon'] += $row['cnt'];
+                break;
+            case 2:
+                $totals['filtered']['overdue'] += $row['cnt'];
+                break;
+        }
+    }
+}
+
+// Quick link: assigned to me
+if ($is_quick_link == 'my')
+{
+    $total = $totals['filtered']['assigned_to_me'];
+}
+// Quick link: assigned to other
+elseif ($is_quick_link == 'ot')
+{
+    $total = $totals['filtered']['assigned_to_others'];
+}
+// Quick link: unassigned
+elseif ($is_quick_link == 'un')
+{
+    $total = $totals['filtered']['unassigned'];
+}
+// Quick link: due soon
+elseif ($is_quick_link == 'due')
+{
+    $total = $totals['filtered']['due_soon'];
+}
+// Quick link: overdue
+elseif ($is_quick_link == 'ovr')
+{
+    $total = $totals['filtered']['overdue'];
+}
+// Quick link: all open
+elseif ($is_quick_link == 'alo')
+{
+    $total = $totals['open'];
+}
+// Quick link: all
+elseif ($is_quick_link == 'all')
+{
+    $total = $totals['all'];
+}
+// No quick link
+else
+{
+    $total = $totals['filtered']['all'];
+}
+
+if ($total > 0 || $is_quick_link)
 {
 
 	/* This query string will be used to browse pages */
-	if ($href == 'show_tickets.php')
+    if ($href == 'admin_main.php' || $href == 'show_tickets.php')
 	{
 		#$query  = 'status='.$status;
 
@@ -72,8 +164,6 @@ if ($total > 0)
 
 		$query .= '&amp;cot='.$cot;
 		$query .= '&amp;g='.$group;
-
-		$query .= '&amp;page=';
 	}
 	else
 	{
@@ -89,9 +179,16 @@ if ($total > 0)
 		$query .= '&amp;s_my='.$s_my[2];
 		$query .= '&amp;s_ot='.$s_ot[2];
 		$query .= '&amp;s_un='.$s_un[2];
-		$query .= '&amp;page=';
 	}
-	$query_for_pagination = $query;
+
+    $query_for_quick_links = $query;
+
+    if ($is_quick_link !== false)
+    {
+        $query .= '&amp;ql=' . $is_quick_link;
+    }
+
+    $query_for_pagination = $query . '&amp;page=';
 
 	$pages = ceil($total/$maxresults) or $pages = 1;
 	if ($page > $pages)
@@ -111,7 +208,7 @@ if ($total > 0)
     # echo "SQL: $sql\n<br>";
 
 	/* This query string will be used to order and reverse display */
-	if ($href == 'show_tickets.php')
+    if ($href == 'admin_main.php' || $href == 'show_tickets.php')
 	{
 		#$query  = 'status='.$status;
 
@@ -150,6 +247,11 @@ if ($total > 0)
 		#$query .= '&amp;sort=';
 	}
 
+    if ($is_quick_link !== false)
+    {
+        $query .= '&amp;ql=' . $is_quick_link;
+    }
+
     $query .= '&amp;asc=';
 
 	/* Print the table with tickets */
@@ -159,14 +261,61 @@ if ($total > 0)
         $hesklang['confirm_execute'],
     "javascript:document.getElementById('delete-tickets-form').submit()",
         $hesklang['confirm']);
-	?>
 
-	<form name="form1" id="delete-tickets-form" action="delete_tickets.php" method="post">
-
-    <?php
-    if (empty($group))
+    // Are some open tickets hidden?
+    if ($href != 'find_tickets.php' && $totals['filtered']['open'] != $totals['open'])
     {
-		hesk_print_list_head();
+        hesk_show_info($hesklang['not_aos'], ' ', false, 'no-padding-top');
+    }
+	?>
+    <section style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px">
+        <div class="filters__listing">
+            <!--
+            <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=all&amp;s_my=1&amp;s_ot=1&amp;s_un=1&amp;category=0'; ?>" class="btn btn-transparent <?php if ($is_quick_link == 'all') echo 'is-bold is-selected'; ?>"><span><?php echo $hesklang['ql_all']; ?></span> <span class="filters__btn-value"><?php echo $totals['all']; ?></span></a>
+            <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=alo&amp;s_my=1&amp;s_ot=1&amp;s_un=1&amp;category=0'; ?>" class="btn btn-transparent <?php if ($is_quick_link == 'alo') echo 'is-bold is-selected'; ?>"><span><?php echo $hesklang['ql_alo']; ?></span> <span class="filters__btn-value"><?php echo $totals['open']; ?></span></a>
+             -->
+            <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=&amp;s_my=1&amp;s_ot=1&amp;s_un=1'; ?>" class="btn btn-transparent <?php if (empty($is_quick_link)) echo 'is-bold is-selected'; ?>"><span><?php
+            if ($href == 'find_tickets.php') {
+                echo $hesklang['tickets_found'];
+            }
+            elseif ($totals['filtered']['open'] == $totals['open'] && $totals['filtered']['open'] == $totals['filtered']['all']) {
+                echo $hesklang['open_tickets'];
+            }
+            else {
+                echo $hesklang['ql_fit'];
+            }
+            ?></span> <span class="filters__btn-value"><?php echo $totals['filtered']['all']; ?></span></a>
+            <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=my'; ?>" class="btn btn-transparent <?php if ($is_quick_link == 'my') echo 'is-bold is-selected'; ?>"><span><?php echo $hesklang['ql_a2m']; ?></span> <span class="filters__btn-value"><?php echo $totals['filtered']['assigned_to_me']; ?></span></a>
+            <?php if ($can_view_ass_others || $can_view_ass_by): ?>
+            <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=ot'; ?>" class="btn btn-transparent <?php if ($is_quick_link == 'ot') echo 'is-bold is-selected'; ?>"><span><?php echo $hesklang['ql_a2o']; ?></span> <span class="filters__btn-value"><?php echo $totals['filtered']['assigned_to_others']; ?></span></a>
+            <?php endif; ?>
+            <?php if ($can_view_unassigned): ?>
+            <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=un'; ?>" class="btn btn-transparent <?php if ($is_quick_link == 'un') echo 'is-bold is-selected'; ?>"><span><?php echo $hesklang['ql_una']; ?></span> <span class="filters__btn-value"><?php echo $totals['filtered']['unassigned']; ?></span></a>
+            <?php endif; ?>
+            <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=due&amp;s_my=1&amp;s_ot=1&amp;s_un=1'; ?>" class="btn btn-transparent is-due-soon <?php if ($is_quick_link == 'due') echo 'is-bold is-selected'; ?>"><span><?php echo $hesklang['ql_due']; ?></span> <span class="filters__btn-value"><?php echo $totals['filtered']['due_soon']; ?></span></a>
+            <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=ovr&amp;s_my=1&amp;s_ot=1&amp;s_un=1'; ?>" class="btn btn-transparent is-overdue <?php if ($is_quick_link == 'ovr') echo 'is-bold is-selected'; ?>"><span><?php echo $hesklang['ql_ovr']; ?></span> <span class="filters__btn-value"><?php echo $totals['filtered']['overdue']; ?></span></a>
+        </div>
+
+        <div class="checkbox-custom">
+            <input type="checkbox" id="reloadCB" onclick="toggleAutoRefresh(this);">
+            <label for="reloadCB"><?php echo $hesklang['arp']; ?></label>&nbsp;<span id="timer"></span>
+            <script type="text/javascript">heskCheckReloading();</script>
+        </div>
+    </section>
+    <?php
+    if ($total > 0)
+    {
+        ?>
+        <form name="form1" id="delete-tickets-form" action="delete_tickets.php" method="post">
+        <?php
+        if (empty($group))
+        {
+            hesk_print_list_head();
+        }
+    }
+    else
+    {
+        hesk_show_info($hesklang['no_tickets_crit'], ' ', false);
     }
 
 	$checkall = '
@@ -292,8 +441,8 @@ if ($total > 0)
 		// Print ticket category
 		if ( hesk_show_column('category') )
 		{
-			$ticket['category'] = isset($hesk_settings['categories'][$ticket['category']]) ? $hesk_settings['categories'][$ticket['category']] : $hesklang['catd'];
-			echo '<td>'.$ticket['category'].'</td>';
+			$ticket['category_name'] = isset($hesk_settings['categories'][$ticket['category']]) ? $hesk_settings['categories'][$ticket['category']] : $hesklang['catd'];
+			echo '<td class="category-'.intval($ticket['category']).'">'.$ticket['category_name'].'</td>';
 		}
 
 		// Print customer name
@@ -368,6 +517,18 @@ if ($total > 0)
 			echo '<td>'.$ticket['time_worked'].'</td>';
 		}
 
+		// Print due date
+        if (hesk_show_column('due_date')) {
+            $dateformat = substr($hesk_settings['timeformat'], 0, strpos($hesk_settings['timeformat'], ' '));
+            $due_date = $hesklang['none'];
+            if ($ticket['due_date'] != null) {
+                $due_date = hesk_date($ticket['due_date'], false, true, false);
+                $due_date = date($dateformat, $due_date);
+            }
+
+            echo '<td>'.$due_date.'</td>';
+        }
+
 		// Print custom fields
 		foreach ($hesk_settings['custom_fields'] as $key => $value)
 		{
@@ -390,6 +551,10 @@ if ($total > 0)
 		';
 
 	} // End while
+
+    // Only show all this if we found any tickets
+    if ($total > 0)
+    {
 	?>
     </tbody>
 	</table>
@@ -399,11 +564,11 @@ if ($total > 0)
             <?php
             if ($pages > 1) {
                 /* List pages */
-                if ($pages > 7) {
+                if ($pages >= 7) {
                     if ($page > 2) {
                         echo '
                         <a href="'.$href.'?'.$query_for_pagination.'1" class="btn pagination__nav-btn">
-                            <svg class="icon icon-chevron-left">
+                            <svg class="icon icon-chevron-left" style="margin-right:-6px">
                               <use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-chevron-left"></use>
                             </svg>
                             <svg class="icon icon-chevron-left">
@@ -448,7 +613,7 @@ if ($total > 0)
                 }
                 echo '</ul>';
 
-                if ($pages > 7)
+                if ($pages >= 7)
                 {
                     if ($next_page)
                     {
@@ -469,7 +634,7 @@ if ($total > 0)
                             <svg class="icon icon-chevron-right">
                               <use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-chevron-right"></use>
                             </svg>
-                            <svg class="icon icon-chevron-right">
+                            <svg class="icon icon-chevron-right" style="margin-left:-6px">
                               <use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-chevron-right"></use>
                             </svg>
                         </a>';
@@ -516,7 +681,7 @@ if ($total > 0)
         </div>
         <div class="bulk-actions">
             <?php echo $hesklang['with_selected']; ?>
-            <div style="display: inline-block; vertical-align: bottom">
+            <div class="inline-bottom">
                 <select name="a">
                     <option value="low" selected="selected"><?php echo $hesklang['set_pri_to'].' '.$hesklang['low']; ?></option>
                     <option value="medium"><?php echo $hesklang['set_pri_to'].' '.$hesklang['medium']; ?></option>
@@ -583,10 +748,10 @@ if ($total > 0)
             if (hesk_checkPermission('can_assign_others',0))
             {
                 ?>
-                <br>
+                <div style="height:6px"></div>
 
                 <?php echo $hesklang['assign_selected']; ?>
-                <div style="display: inline-block; vertical-align: bottom">
+                <div class="inline-bottom">
                     <select name="owner">
                         <option value="" selected="selected"><?php echo $hesklang['select']; ?></option>
                         <option value="-1"> &gt; <?php echo $hesklang['unas']; ?> &lt; </option>
@@ -610,8 +775,8 @@ if ($total > 0)
     <input id="action-type" name="action-type" type="hidden" value="-1">
 	</form>
 	<?php
-
-} // END ticket list if total > 0
+    } // END ticket list if total > 0
+} // END ticket list if total > 0 or if this is a quick link
 else
 {
     if (isset($is_search) || $href == 'find_tickets.php')
@@ -644,9 +809,16 @@ function hesk_print_list_head()
         $sort_direction = '';
         if (isset($_GET['asc'])) {
             $sort_direction = intval($_GET['asc']) == 0 ? 'desc' : 'asc';
+        } else {
+            $sort_direction = 'asc';
         }
+
         foreach ($hesk_settings['ticket_list'] as $field)
         {
+            if (!key_exists($field, $hesk_settings['possible_ticket_list'])) {
+                continue;
+            }
+
             echo '<th class="sindu-handle '.($sort == $field ? $sort_direction : '').' '.($field == 'trackid' ? 'trackid' : '').'">
                 <a href="' . $href . '?' . $query . $sort_possible[$field] . '&amp;sort=' . $field . '">
                     <div class="sort">

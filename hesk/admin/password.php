@@ -317,6 +317,11 @@ $login_wrapper = true;
         </div>
     </div>
 
+    <script>
+    $(() => {
+        $('form :visible[class*=isError]:first').focus();
+    })
+    </script>
 <?php
 // Clean session errors
 hesk_cleanSessionVars('a_iserror');

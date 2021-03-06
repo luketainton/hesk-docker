@@ -34,6 +34,7 @@ $display = 'none';
 if ( ! empty($_GET['remind']) )
 {
     $display = 'block';
+    $my_email = hesk_emailCleanup( hesk_validateEmail( hesk_GET('e'), 'ERR' , 0) );
     print_form();
 }
 
@@ -282,6 +283,7 @@ function print_form()
         'trackingId' => $trackingID,
         'email' => $my_email,
         'rememberEmail' => $do_remember,
+        'displayForgotTrackingIdForm' => !empty($_GET['forgot']),
         'submittedForgotTrackingIdForm' => $display === 'block'
     ));
 

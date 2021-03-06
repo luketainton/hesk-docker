@@ -371,18 +371,7 @@ if (!isset($_SESSION['hide']['new_article']))
 
     if ($hesk_settings['kb_wysiwyg'])
     {
-        ?>
-        <script>
-            tinymce.init({
-                selector: '#content',
-                convert_urls: false,
-                branding: false,
-                browser_spellcheck: true,
-                toolbar: 'undo redo | styleselect fontselect fontsizeselect | bold italic underline | alignleft aligncenter alignright alignjustify | forecolor backcolor | bullist numlist outdent indent | link unlink image codesample code',
-                plugins: 'charmap code codesample image link lists table',
-            });
-        </script>
-        <?php
+        hesk_tinymce_init('#content');
     }
 
     // If a category is selected, use it as default for articles and parents
@@ -989,7 +978,7 @@ function remove_kb_att()
     $art = hesk_dbFetchAssoc($res);
 
     // Make log entry
-    $revision = sprintf($hesklang['thist12'],hesk_date(),$att['real_name'],$_SESSION['name'].' ('.$_SESSION['user'].')');
+    $revision = sprintf($hesklang['thist12'],hesk_date(),$att['real_name'],addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 
     // Remove attachment from article
     $art['attachments'] = str_replace($att_id.'#'.$att['real_name'].',','',$art['attachments']);
@@ -1216,7 +1205,7 @@ function save_article()
 	}
 
     /* Update article in the database */
-    $revision = sprintf($hesklang['revision2'],$now,$_SESSION['name'].' ('.$_SESSION['user'].')');
+    $revision = sprintf($hesklang['revision2'],$now,addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 
 	hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` SET
     `catid`=".intval($catid).",
@@ -1275,14 +1264,20 @@ function edit_article()
     }
     $article = hesk_dbFetchAssoc($result);
 
-    if ($hesk_settings['kb_wysiwyg'] || $article['html'])
+    // If we're in plain text mode, convert any HTML message safely to text
+    if ( ! $hesk_settings['kb_wysiwyg'] && ! $article['html'])
     {
-		$article['content'] = hesk_htmlspecialchars($article['content']);
+            // Clean the HTML code and set the plaintext version
+            require(HESK_PATH . 'inc/htmlpurifier/HeskHTMLPurifier.php');
+            require(HESK_PATH . 'inc/html2text/html2text.php');
+            $purifier = new HeskHTMLPurifier($hesk_settings['cache_dir']);
+            $article['content'] = $purifier->heskPurify($article['content']);
+
+            $article['content'] = convert_html_to_text($article['content']);
+            $article['content'] = fix_newlines($article['content']);
     }
-    else
-    {
-    	$article['content'] = hesk_msgToPlain($article['content']);
-    }
+
+    $article['content'] = hesk_htmlspecialchars($article['content']);
 
     $catid = $article['catid'];
 
@@ -1389,18 +1384,7 @@ function edit_article()
 
     if ($hesk_settings['kb_wysiwyg'])
     {
-    ?>
-    <script>
-        tinymce.init({
-            selector: '#content',
-            convert_urls: false,
-            branding: false,
-            browser_spellcheck: true,
-            toolbar: 'undo redo | styleselect fontselect fontsizeselect | bold italic underline | alignleft aligncenter alignright alignjustify | forecolor backcolor | bullist numlist outdent indent | link unlink image codesample code',
-            plugins: 'charmap code codesample image link lists table',
-        });
-    </script>
-    <?php
+        hesk_tinymce_init('#content');
     }
     ?>
 
@@ -2157,7 +2141,7 @@ function new_article()
     	hesk_process_messages($hesk_error_buffer,'manage_knowledgebase.php');
     }
 
-    $revision = sprintf($hesklang['revision1'],$now,$_SESSION['name'].' ('.$_SESSION['user'].')');
+    $revision = sprintf($hesklang['revision1'],$now,addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 
 	/* Add to database */
 	if ( ! empty($attachments))

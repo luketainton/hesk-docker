@@ -33,6 +33,10 @@ require_once(HESK_PATH . 'inc/custom_fields.inc.php');
 // Load calendar JS and CSS
 define('CALENDAR',1);
 
+if ($hesk_settings['staff_ticket_formatting'] == 2) {
+    define('WYSIWYG',1);
+}
+
 // Pre-populate fields
 // Customer name
 if (isset($_REQUEST['name'])) {
@@ -177,6 +181,22 @@ if ( ! isset($_SESSION['as_priority']))
         <h4><?php echo $hesklang['req_marked_with']; ?> <span class="important">*</span></h4>
 
         <form method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" action="admin_submit_ticket.php" name="form1" enctype="multipart/form-data">
+
+            <?php if ($number_of_categories > 1): ?>
+            <div class="form-group" style="margin-bottom: 0px;">
+                <label for="create_name" style="display: inline;">
+                    <?php echo $hesklang['category']; ?>:
+                </label>
+                &nbsp;
+                <button type="submit" class="btn btn--blue-border change_category" name="change_category" value="1" title="<?php echo $hesklang['chg_cat']; ?>"><?php echo hesk_getCategoryName($category); ?>
+                    &nbsp;
+                    <svg class="icon icon-edit">
+                        <use xlink:href="../img/sprite.svg#icon-edit"></use>
+                    </svg>
+                </button>
+            </div>
+            <?php endif; ?>
+
             <div class="form-group">
                 <label for="create_name">
                     <?php echo $hesklang['name']; ?>: <span class="important">*</span>
@@ -443,11 +463,12 @@ if ( ! isset($_SESSION['as_priority']))
                     mySubjectTxt[0]='';
 
                     <?php
-                    while ($mysaved = hesk_dbFetchRow($res))
+                    while ($mysaved = hesk_dbFetchAssoc($res))
                     {
-                        $can_options .= '<option value="' . $mysaved[0] . '">' . $mysaved[1]. "</option>\n";
-                        echo 'myMsgTxt['.$mysaved[0].']=\''.str_replace("\r\n","\\r\\n' + \r\n'", addslashes($mysaved[2]))."';\n";
-                        echo 'mySubjectTxt['.$mysaved[0].']=\''.str_replace("\r\n","\\r\\n' + \r\n'", addslashes($mysaved[1]))."';\n";
+                        $can_options .= '<option value="' . $mysaved['id'] . '">' . $mysaved['title']. "</option>\n";
+                        $message_text = $hesk_settings['staff_ticket_formatting'] == 2 ? $mysaved['message_html'] : $mysaved['message'];
+                        echo 'myMsgTxt['.$mysaved['id'].']=\''.preg_replace("/\r?\n|\r/","\\r\\n' + \r\n'", addslashes($message_text))."';\n";
+                        echo 'mySubjectTxt['.$mysaved['id'].']=\''.preg_replace("/\r?\n|\r/","\\r\\n' + \r\n'", addslashes($mysaved['title']))."';\n";
                     }
 
                     ?>
@@ -461,7 +482,11 @@ if ( ! isset($_SESSION['as_priority']))
                         {
                             if (document.form1.mode[1].checked)
                             {
+                            <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
+                                tinymce.get("message").setContent('');
+                            <?php else: ?>
                                 document.getElementById('message').value = '';
+                            <?php endif; ?>
                                 document.getElementById('subject').value = '';
                             }
                             return true;
@@ -470,13 +495,24 @@ if ( ! isset($_SESSION['as_priority']))
                         {
                             if (document.getElementById('moderep').checked)
                             {
+                                <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
+                                tinymce.get("message").setContent('');
+                                tinymce.get("message").execCommand('mceInsertRawHTML', false, myMsg);
+                                <?php else: ?>
                                 document.getElementById('HeskMsg').innerHTML='<textarea style="height: inherit" class="form-control" name="message" id="message" rows="12" cols="60">'+myMsg+'</textarea>';
+                                <?php endif; ?>
                                 document.getElementById('HeskSub').innerHTML='<input class="form-control" type="text" name="subject" id="subject" maxlength="70" value="'+mySubject+'">';
                             }
                             else
                             {
-                                var oldMsg = document.getElementById('message').value;
+                                <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
+                                var oldMsg = tinymce.get("message").getContent();
+                                tinymce.get("message").setContent('');
+                                tinymce.get("message").execCommand('mceInsertRawHTML', false, oldMsg + myMsg);
+                                <?php else: ?>
+                                var oldMsg = escapeHtml(document.getElementById('message').value);
                                 document.getElementById('HeskMsg').innerHTML='<textarea style="height: inherit" class="form-control" name="message" id="message" rows="12" cols="60">'+oldMsg+myMsg+'</textarea>';
+                                <?php endif; ?>
                                 if (document.getElementById('subject').value == '')
                                 {
                                     document.getElementById('HeskSub').innerHTML='<input class="form-control" type="text" name="subject" id="subject" maxlength="70" value="'+mySubject+'">';
@@ -558,11 +594,12 @@ if ( ! isset($_SESSION['as_priority']))
                               name="message" id="message" rows="12" cols="60"><?php if (isset($_SESSION['as_message'])) {echo stripslashes(hesk_input($_SESSION['as_message']));} ?></textarea>
                 </span>
             </div>
-
-            <!-- START CUSTOM AFTER -->
             <?php
-            /* custom fields AFTER comments */
+            if ($hesk_settings['staff_ticket_formatting'] == 2) {
+                hesk_tinymce_init('#message');
+            }
 
+            /* custom fields AFTER comments */
             foreach ($hesk_settings['custom_fields'] as $k=>$v)
             {
                 if ($v['use'] && $v['place']==1 && hesk_is_custom_field_in_category($k, $category) )
@@ -809,12 +846,59 @@ if ( ! isset($_SESSION['as_priority']))
                         <input type="checkbox" id="create_notify1" name="notify" value="1" <?php echo empty($_SESSION['as_notify']) ? '' : 'checked'; ?>>
                         <label for="create_notify1"><?php echo $hesklang['seno']; ?></label>
                     </div>
+                    <?php if (hesk_checkPermission('can_view_tickets',0)): ?>
                     <div class="checkbox-custom">
                         <input type="checkbox" id="create_show1" name="show" value="1" <?php echo (!isset($_SESSION['as_show']) || !empty($_SESSION['as_show'])) ? 'checked' : ''; ?>>
                         <label for="create_show1"><?php echo $hesklang['otas']; ?></label>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
+            <section class="param calendar">
+                <label><?php echo $hesklang['due_date']; ?>:</label>
+                <div class="calendar--button">
+                    <button type="button">
+                        <svg class="icon icon-calendar">
+                            <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-calendar"></use>
+                        </svg>
+                    </button>
+                    <input name="due_date"
+                           value="<?php if (isset($_SESSION['as_due_date'])) {echo stripslashes(hesk_input($_SESSION['as_due_date']));} ?>"
+                           type="text" class="datepicker">
+                </div>
+                <div class="calendar--value" style="<?php echo empty($_SESSION['as_due_date']) ? '' : 'display: block'; ?>">
+                <span><?php echo isset($_SESSION['as_due_date']) ? stripslashes($_SESSION['as_due_date']) : ''; ?></span>
+                <i class="close">
+                    <svg class="icon icon-close">
+                        <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-close"></use>
+                    </svg>
+                </i>
+                </div>
+            </section>
+            <br>
+            <?php if ($hesk_settings['can_sel_lang']): ?>
+            <div class="form-group">
+                <label for="as_language"><?php echo $hesklang['tlan']; ?>:</label>
+                <select name="as_language" id="as_language">
+                    <?php
+                        if (isset($_SESSION['as_language']) && isset($hesk_settings['languages'][$_SESSION['as_language']]))
+                        {
+                            $hesk_settings['language_copy'] = $hesk_settings['language'];
+                            $hesk_settings['language'] = $_SESSION['as_language'];
+                            hesk_listLanguages();
+                            $hesk_settings['language'] = $hesk_settings['language_copy'];
+                        }
+                        else
+                        {
+                            hesk_listLanguages();
+                        }
+                    ?>
+                </select>
+            </div>
+            <script>
+                $('#as_language').selectize();
+            </script>
+            <?php endif; ?>
             <?php if (hesk_checkPermission('can_assign_others',0)) { ?>
                 <div class="form-group">
                     <label><?php echo $hesklang['asst2']; ?>:</label>

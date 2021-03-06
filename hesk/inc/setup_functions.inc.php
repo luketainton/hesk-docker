@@ -265,6 +265,12 @@ function hesk_testPOP3($check_old_settings=false)
 	$set['pop3_user']		= hesk_input( hesk_POST('s_pop3_user') );
 	$set['pop3_password']	= hesk_input( hesk_POST('s_pop3_password') );
 
+    // For compatibility with PHP 5.3 magic quotes...
+    if (HESK_SLASH === false)
+    {
+        $set['pop3_password'] = str_replace('\\&quot;', '&quot;', $set['pop3_password']);
+    }
+
 	// Are new settings the same as old? If yes, skip testing connection, assume it works
 	if ($check_old_settings)
 	{
@@ -274,6 +280,12 @@ function hesk_testPOP3($check_old_settings=false)
 		$set['tmp_pop3_keep']		= empty($_POST['tmp_pop3_keep']) ? 0 : 1;
 		$set['tmp_pop3_user']		= hesk_input( hesk_POST('tmp_pop3_user') );
 		$set['tmp_pop3_password']	= hesk_input( hesk_POST('tmp_pop3_password') );
+
+        // For compatibility with PHP 5.3 magic quotes...
+        if (HESK_SLASH === false)
+        {
+            $set['tmp_pop3_password'] = str_replace('\\&quot;', '&quot;', $set['tmp_pop3_password']);
+        }
 
 		if (
 			$set['tmp_pop3_host_name'] != 'mail.example.com'      && // Default setting
@@ -341,6 +353,12 @@ function hesk_testSMTP($check_old_settings=false)
 	$set['smtp_user']		= hesk_input( hesk_POST('s_smtp_user') );
 	$set['smtp_password']	= hesk_input( hesk_POST('s_smtp_password') );
 
+    // For compatibility with PHP 5.3 magic quotes...
+    if (HESK_SLASH === false)
+    {
+        $set['smtp_password'] = str_replace('\\&quot;', '&quot;', $set['smtp_password']);
+    }
+
 	// Are new settings the same as old? If yes, skip testing connection, assume it works
 	if ($check_old_settings)
 	{
@@ -351,6 +369,12 @@ function hesk_testSMTP($check_old_settings=false)
 		$set['tmp_smtp_tls']		= empty($_POST['tmp_smtp_tls']) ? 0 : 1;
 		$set['tmp_smtp_user']		= hesk_input( hesk_POST('tmp_smtp_user') );
 		$set['tmp_smtp_password']	= hesk_input( hesk_POST('tmp_smtp_password') );
+
+        // For compatibility with PHP 5.3 magic quotes...
+        if (HESK_SLASH === false)
+        {
+            $set['tmp_smtp_password'] = str_replace('\\&quot;', '&quot;', $set['tmp_smtp_password']);
+        }
 
 		if (
 			$set['tmp_smtp_host_name'] != 'mail.example.com'      && // Default setting
@@ -417,9 +441,16 @@ function hesk_testIMAP($check_old_settings=false)
 	$set['imap_host_port']	= intval( hesk_POST('s_imap_host_port', 993) );
 	$set['imap_enc']		= hesk_POST('s_imap_enc');
 	$set['imap_enc']        = ($set['imap_enc'] == 'ssl' || $set['imap_enc'] == 'tls') ? $set['imap_enc'] : '';
+	$set['imap_noval_cert'] = empty($_POST['s_imap_noval_cert']) ? 0 : 1;
 	$set['imap_keep']		= empty($_POST['s_imap_keep']) ? 0 : 1;
 	$set['imap_user']		= hesk_input( hesk_POST('s_imap_user') );
 	$set['imap_password']	= hesk_input( hesk_POST('s_imap_password') );
+
+    // For compatibility with PHP 5.3 magic quotes...
+    if (HESK_SLASH === false)
+    {
+        $set['imap_password'] = str_replace('\\&quot;', '&quot;', $set['imap_password']);
+    }
 
 	// Are new settings the same as old? If yes, skip testing connection, assume it works
 	if ($check_old_settings)
@@ -428,15 +459,23 @@ function hesk_testIMAP($check_old_settings=false)
 		$set['tmp_imap_host_port']	= intval( hesk_POST('tmp_imap_host_port', 993) );
 		$set['tmp_imap_enc']		= hesk_POST('s_imap_enc');
 		$set['tmp_imap_enc']        = ($set['tmp_imap_enc'] == 'ssl' || $set['tmp_imap_enc'] == 'tls') ? $set['tmp_imap_enc'] : '';
+        $set['tmp_imap_noval_cert'] = empty($_POST['tmp_imap_noval_cert']) ? 0 : 1;
 		$set['tmp_imap_keep']		= empty($_POST['tmp_imap_keep']) ? 0 : 1;
 		$set['tmp_imap_user']		= hesk_input( hesk_POST('tmp_imap_user') );
 		$set['tmp_imap_password']	= hesk_input( hesk_POST('tmp_imap_password') );
+
+        // For compatibility with PHP 5.3 magic quotes...
+        if (HESK_SLASH === false)
+        {
+            $set['tmp_imap_password'] = str_replace('\\&quot;', '&quot;', $set['tmp_imap_password']);
+        }
 
 		if (
 			$set['tmp_imap_host_name'] != 'mail.example.com'      && // Default setting
 			$set['tmp_imap_host_name'] == $set['imap_host_name'] &&
 			$set['tmp_imap_host_port'] == $set['imap_host_port'] &&
 			$set['tmp_imap_enc']       == $set['imap_enc']       &&
+			$set['tmp_imap_noval_cert'] == $set['imap_noval_cert'] &&
 			$set['tmp_imap_keep']      == $set['imap_keep']      &&
 			$set['tmp_imap_user']      == $set['imap_user']      &&
 			$set['tmp_imap_password']  == $set['imap_password']
@@ -454,19 +493,17 @@ function hesk_testIMAP($check_old_settings=false)
     switch ($set['imap_enc'])
     {
         case 'ssl':
-            $set['imap_mailbox'] = '{'.$set['imap_host_name'].':'.$set['imap_host_port'].'/imap/ssl/novalidate-cert}';
+            $set['imap_mailbox'] = '{'.$set['imap_host_name'].':'.$set['imap_host_port'].'/imap/ssl'.($set['imap_noval_cert'] ? '/novalidate-cert' : '').'}';
             break;
         case 'tls':
-            $set['imap_mailbox'] = '{'.$set['imap_host_name'].':'.$set['imap_host_port'].'/imap/tls/novalidate-cert}';
+            $set['imap_mailbox'] = '{'.$set['imap_host_name'].':'.$set['imap_host_port'].'/imap/tls'.($set['imap_noval_cert'] ? '/novalidate-cert' : '').'}';
             break;
         default:
             $set['imap_mailbox'] = '{'.$set['imap_host_name'].':'.$set['imap_host_port'].'}';
     }
 
-    $set['imap_password'] = hesk_htmlspecialchars_decode(stripslashes($set['imap_password']));
-
     // Connect to IMAP
-    $imap = @imap_open($set['imap_mailbox'], $set['imap_user'], $set['imap_password']);
+    $imap = @imap_open($set['imap_mailbox'], $set['imap_user'], hesk_htmlspecialchars_decode(stripslashes($set['imap_password'])));
 
     // Connection successful?
     if ($imap !== false)

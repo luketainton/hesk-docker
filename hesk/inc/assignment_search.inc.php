@@ -22,6 +22,50 @@ $s_ot[$fid] = empty($_GET['s_ot']) ? 0 : 1;
 // -> UNASSIGNED
 $s_un[$fid] = empty($_GET['s_un']) ? 0 : 1;
 
+// Overwrite by quick links? Ignore for ticket searches
+if ( ! isset($is_quick_link))
+{
+    $is_quick_link = false;
+}
+// Quick link: assigned to me
+elseif ($is_quick_link == 'my')
+{
+    $s_my[$fid] = 1;
+    $s_ot[$fid] = 0;
+    $s_un[$fid] = 0;
+}
+// Quick link: assigned to other
+elseif ($is_quick_link == 'ot')
+{
+    $s_my[$fid] = 0;
+    $s_ot[$fid] = 1;
+    $s_un[$fid] = 0;
+}
+// Quick link: unassigned
+elseif ($is_quick_link == 'un')
+{
+    $s_my[$fid] = 0;
+    $s_ot[$fid] = 0;
+    $s_un[$fid] = 1;
+}
+
+// Is assignment selection the same as a quick link?
+if ($is_quick_link === false)
+{
+    if ($s_my[$fid] == 1 && $s_ot[$fid] == 0 && $s_un[$fid] == 0)
+    {
+        $is_quick_link = 'my';
+    }
+    elseif ($s_my[$fid] == 0 && $s_ot[$fid] == 1 && $s_un[$fid] == 0)
+    {
+        $is_quick_link = 'ot';
+    }
+    elseif ($s_my[$fid] == 0 && $s_ot[$fid] == 0 && $s_un[$fid] == 1)
+    {
+        $is_quick_link = 'un';
+    }
+}
+
 // -> Setup SQL based on selected ticket assignments
 
 /* Make sure at least one is chosen */

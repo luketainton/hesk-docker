@@ -97,6 +97,7 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
             <table id="default-table" class="table sindu-table">
                 <thead>
                 <tr>
+                    <th><?php echo $hesklang['id']; ?></th>
                     <th><?php echo $hesklang['custom_n']; ?></th>
                     <th><?php echo $hesklang['s_type']; ?></th>
                     <th><?php echo $hesklang['visibility']; ?></th>
@@ -108,7 +109,7 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
                 <tbody>
                 <?php if ($hesk_settings['num_custom_fields'] < 1): ?>
                 <tr>
-                    <td colspan="6">
+                    <td colspan="7">
                         <?php echo $hesklang['no_cf']; ?>
                     </td>
                 </tr>
@@ -142,14 +143,14 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
                     if ($first_before_custom_field && $cf['place'] == 0) {
                         ?>
                         <tr class="title">
-                            <td colspan="6"><?php echo $hesklang['place_before']; ?></td>
+                            <td colspan="7"><?php echo $hesklang['place_before']; ?></td>
                         </tr>
                         <?php
                         $first_before_custom_field = false;
                     } elseif ($first_after_custom_field && $cf['place'] == 1) {
                         ?>
                         <tr class="title">
-                            <td colspan="6"><?php echo $hesklang['place_after']; ?></td>
+                            <td colspan="7"><?php echo $hesklang['place_after']; ?></td>
                         </tr>
                         <?php
                         $after = false;
@@ -173,6 +174,7 @@ if ($hesk_settings['num_custom_fields'] >= 50 && $action !== 'edit_cf')
 
                     ?>
                     <tr <?php echo $table_row; ?>>
+                        <td><?php echo $tmp_id; ?></td>
                         <td><?php echo $cf['name']; ?></td>
                         <td><?php echo $cf['type']; ?></td>
                         <td><?php echo $cf['use']; ?></td>

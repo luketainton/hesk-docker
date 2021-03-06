@@ -41,6 +41,9 @@ $set_priority = -1;
 //                         END OPTIONAL MODIFICATIONS                         //
 //============================================================================//
 
+// Do we require a key if not accessed over CLI?
+hesk_authorizeNonCLI();
+
 // Is this feature enabled?
 if (empty($hesk_settings['email_piping']))
 {

@@ -4,6 +4,7 @@ global $hesk_settings, $hesklang;
  * @var string $trackingId
  * @var string $email
  * @var boolean $rememberEmail
+ * @var boolean $displayForgotTrackingIdForm
  * @var boolean $submittedForgotTrackingIdForm
  */
 
@@ -41,6 +42,7 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
             width: 200px;
         }
     </style>
+    <link rel="stylesheet" href="<?php echo TEMPLATE_PATH; ?>customer/css/jquery.modal.css" />
     <?php include(TEMPLATE_PATH . '../../head.txt'); ?>
 </head>
 
@@ -95,7 +97,9 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
             <div class="contr">
                 <div style="margin-bottom: 20px;">
                     <?php
-                    hesk3_show_messages($messages);
+                    if (!$submittedForgotTrackingIdForm) {
+                        hesk3_show_messages($messages);
+                    }
                     ?>
                 </div>
                 <h3 class="article__heading article__heading--form">
@@ -137,19 +141,24 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
                     </section>
                     <div class="form-footer">
                         <button type="submit" class="btn btn-full" ripple="ripple"><?php echo $hesklang['view_ticket']; ?></button>
-                        <a href="javascript:" onclick="$('#forgot').toggle()" class="link"><?php echo $hesklang['forgot_tid']; ?></a>
+                        <a href="ticket.php?forgot=1#modal-contents" data-modal="#forgot-modal" class="link"><?php echo $hesklang['forgot_tid']; ?></a>
                     </div>
                     </form>
 
                     <!-- Start ticket reminder form -->
-                    <div id="forgot" style="display: <?php echo $submittedForgotTrackingIdForm ? 'block' : 'none'; ?>;">
-                        <div class="notification orange" style="margin-bottom:0px;">
+                    <div id="forgot-modal" class="<?php echo !$displayForgotTrackingIdForm ? 'modal' : ''; ?>">
+                        <div id="modal-contents" class="<?php echo !$displayForgotTrackingIdForm ? '' : 'notification orange'; ?>" style="padding-bottom:15px">
+                            <?php
+                            if ($submittedForgotTrackingIdForm) {
+                                hesk3_show_messages($messages);
+                            }
+                            ?>
                             <b><?php echo $hesklang['forgot_tid']; ?></b><br><br>
                             <?php echo $hesklang['tid_mail']; ?>
                             <form action="index.php" method="post" name="form1" class="form">
                                 <div class="form-group">
                                     <label class="label" style="display: none"><?php echo $hesklang['email']; ?></label>
-                                    <input type="email" class="form-control" name="email" value="<?php echo $email; ?>">
+                                    <input id="forgot-email" type="email" class="form-control" name="email" value="<?php echo $email; ?>">
                                 </div>
                                 <div class="form-group">
                                     <div class="radio-custom">
@@ -166,6 +175,7 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
                                     </div>
                                 </div>
                                 <input type="hidden" name="a" value="forgot_tid">
+                                <input type="hidden" id="js" name="forgot" value="<?php echo (hesk_GET('forgot') ? '1' : '0'); ?>">
                                 <button id="forgot-tid-submit" type="submit" class="btn btn-full"><?php echo $hesklang['tid_send']; ?></button>
                             </form>
                         </div>
@@ -201,9 +211,18 @@ END LICENSE CODE
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/hesk_functions.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/svg4everybody.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/selectize.min.js"></script>
+<script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery.modal.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#select_category').selectize();
+        $('a[data-modal]').on('click', function() {
+            $($(this).data('modal')).modal();
+            return false;
+        });
+        <?php if ($submittedForgotTrackingIdForm) { ?>
+            $('#forgot-modal').modal();
+            $('#forgot-email').select();
+        <?php } ?>
     });
 </script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.js"></script>

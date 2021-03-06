@@ -58,10 +58,10 @@ if ($section === 'GENERAL') {
 	/* --> General settings */
 	$set['site_title']		= hesk_input( hesk_POST('s_site_title'), $hesklang['err_sname']);
 	$set['site_title']		= str_replace('\\&quot;','&quot;',$set['site_title']);
-	$set['site_url']		= hesk_input( hesk_POST('s_site_url'), $hesklang['err_surl']);
+	$set['site_url']		= hesk_validateURL( hesk_POST('s_site_url'), $hesklang['err_surl']);
 	$set['hesk_title']		= hesk_input( hesk_POST('s_hesk_title'), $hesklang['err_htitle']);
 	$set['hesk_title']		= str_replace('\\&quot;','&quot;',$set['hesk_title']);
-	$set['hesk_url']		= rtrim( hesk_input( hesk_POST('s_hesk_url'), $hesklang['err_hurl']), '/');
+	$set['hesk_url']		= rtrim( hesk_validateURL( hesk_POST('s_hesk_url'), $hesklang['err_hurl']), '/');
 	$set['webmaster_mail']	= hesk_validateEmail( hesk_POST('s_webmaster_mail'), $hesklang['err_wmmail']);
 	$set['noreply_mail']	= hesk_validateEmail( hesk_POST('s_noreply_mail'), $hesklang['err_nomail']);
 	$set['noreply_name']	= hesk_input( hesk_POST('s_noreply_name') );
@@ -74,6 +74,12 @@ if ($section === 'GENERAL') {
 	    $set['site_theme'] = $theme;
     } else {
 	    hesk_error($hesklang['err_site_theme']);
+    }
+    $set['admin_css']     = empty($_POST['s_admin_css']) ? 0 : 1;
+    $set['admin_css_url'] = hesk_validateURL( hesk_POST('s_admin_css_url', 'https://www.example.com/hesk-style.css'));
+    if ($set['admin_css_url'] == '' || $set['admin_css_url'] == 'https://www.example.com/hesk-style.css') {
+        $set['admin_css'] = 0;
+        $set['admin_css_url'] = 'https://www.example.com/hesk-style.css';
     }
 
 	/* --> Language settings */
@@ -134,6 +140,7 @@ if ($section === 'GENERAL') {
 	$set['print_font_size']	= hesk_checkMinMax( intval( hesk_POST('s_print_font_size') ) , 1, 99, 12);
 	$set['autoclose']		= hesk_checkMinMax( intval( hesk_POST('s_autoclose') ) , 0, 999, 7);
 	$set['max_open']		= hesk_checkMinMax( intval( hesk_POST('s_max_open') ) , 0, 999, 0);
+	$set['due_soon']		= hesk_checkMinMax( intval( hesk_POST('s_due_soon') ) , 1, 999, 7);
 	$set['new_top']			= empty($_POST['s_new_top']) ? 0 : 1;
 	$set['reply_top']		= empty($_POST['s_reply_top']) ? 0 : 1;
     $set['hide_replies']	= hesk_checkMinMax( intval( hesk_POST('s_hide_replies') ) , -1, 1, -1);
@@ -167,6 +174,11 @@ if ($section === 'GENERAL') {
 	$set['select_cat']		= empty($_POST['s_select_cat']) ? 0 : 1;
 	$set['select_pri']		= empty($_POST['s_select_pri']) ? 0 : 1;
 	$set['cat_show_select'] = hesk_checkMinMax( intval( hesk_POST('s_cat_show_select') ) , 0, 999, 10);
+    $set['staff_ticket_formatting']	= hesk_checkMinMax( intval( hesk_POST('s_ticket_formatting_staff') ) , 0, 2, 0);
+    // Temporary until Markdown support
+    if ($set['staff_ticket_formatting'] == 1) {
+        $set['staff_ticket_formatting'] = 0;
+    }
 
 	/* --> SPAM prevention */
 	$set['secimg_use']		= empty($_POST['s_secimg_use']) ? 0 : ( hesk_POST('s_secimg_use') == 2 ? 2 : 1);
@@ -189,9 +201,14 @@ if ($section === 'GENERAL') {
 		$set['attempt_limit']++;
 	}
 	$set['attempt_banmin']	= hesk_checkMinMax( intval( hesk_POST('s_attempt_banmin') ) , 5, 99999, 60);
+    $set['flood'] = hesk_checkMinMax( intval( hesk_POST('s_flood') ) , 0, 999, 3);
 	$set['reset_pass'] = empty($_POST['s_reset_pass']) ? 0 : 1;
 	$set['email_view_ticket'] = ($set['require_email'] == 0) ? 0 : (empty($_POST['s_email_view_ticket']) ? 0 : 1);
 	$set['x_frame_opt'] = empty($_POST['s_x_frame_opt']) ? 0 : 1;
+    $set['samesite'] = hesk_POST('s_samesite', 'Lax');
+    if ( ! in_array($set['samesite'], array('Strict', 'Lax', 'None'))) {
+        $set['samesite'] = 'Lax';
+    }
 	$set['force_ssl'] = HESK_SSL && isset($_POST['s_force_ssl']) && $_POST['s_force_ssl'] == 1 ? 1 : 0;
 
     // Make sure help desk URL starts with https if forcing SSL
@@ -199,6 +216,9 @@ if ($section === 'GENERAL') {
 	{
 		$set['hesk_url'] = preg_replace('/^http:/i', 'https:', hesk_getProperty($set, 'hesk_url') );
 	}
+
+    $set['url_key'] = hesk_input( hesk_POST('s_url_key') );
+    $set['url_key'] = preg_replace('/[^a-zA-Z0-9_.-]/', '', $set['url_key']);
 
 	/* --> Attachments */
 	$set['attachments']['use'] = empty($_POST['s_attach_use']) ? 0 : 1;
@@ -212,7 +232,7 @@ if ($section === 'GENERAL') {
 		$set['attachments']['max_size'] = hesk_formatUnits($size . ' ' . $unit);
 
 		$set['attachments']['allowed_types'] = isset($_POST['s_allowed_types']) && ! is_array($_POST['s_allowed_types']) && strlen($_POST['s_allowed_types']) ? explode(',', strtolower( preg_replace('/[^a-zA-Z0-9,]/', '', $_POST['s_allowed_types']) ) ) : array();
-		$set['attachments']['allowed_types'] = array_diff($set['attachments']['allowed_types'], array('php', 'php4', 'php3', 'php5', 'phps', 'phtml', 'shtml', 'shtm', 'cgi', 'pl') );
+		$set['attachments']['allowed_types'] = array_diff($set['attachments']['allowed_types'], array('php', 'php4', 'php3', 'php5', 'php7', 'php8', 'phps', 'phar', 'phtml', 'shtml', 'shtm', 'cgi', 'pl') );
 
 		if (count($set['attachments']['allowed_types']))
 		{
@@ -338,6 +358,7 @@ if ($section === 'GENERAL') {
 		$set['imap_host_port']	= intval( hesk_POST('tmp_imap_host_port', 110) );
 		$set['imap_enc']		= hesk_POST('tmp_imap_enc');
 		$set['imap_enc']		= ($set['imap_enc'] == 'ssl' || $set['imap_enc'] == 'tls') ? $set['imap_enc'] : '';
+		$set['imap_noval_cert'] = empty($_POST['tmp_imap_noval_cert']) ? 0 : 1;
 		$set['imap_keep']		= empty($_POST['tmp_imap_keep']) ? 0 : 1;
 		$set['imap_user']		= hesk_input( hesk_POST('tmp_imap_user') );
 		$set['imap_password']	= hesk_input( hesk_POST('tmp_imap_password') );
@@ -472,12 +493,12 @@ if ($section === 'GENERAL') {
     $set['time_display']    = empty($_POST['s_time_display']) ? 0 : 1;
 
 	/* --> Other */
-	$set['ip_whois']		= hesk_input( hesk_POST('s_ip_whois_url', 'https://whois.domaintools.com/{IP}') );
+	$set['ip_whois']		= hesk_validateURL( hesk_POST('s_ip_whois_url', 'https://whois.domaintools.com/{IP}') );
 
 // If no {IP} tag append it to the end
 	if ( strlen($set['ip_whois']) == 0 )
 	{
-		$set['ip_whois'] = 'http://whois.domaintools.com/{IP}';
+		$set['ip_whois'] = 'https://whois.domaintools.com/{IP}';
 	}
 	elseif ( strpos($set['ip_whois'], '{IP}') === false )
 	{
@@ -509,6 +530,8 @@ $hesk_settings[\'webmaster_mail\']=\'' . hesk_getProperty($set, 'webmaster_mail'
 $hesk_settings[\'noreply_mail\']=\'' . hesk_getProperty($set, 'noreply_mail') . '\';
 $hesk_settings[\'noreply_name\']=\'' . hesk_getProperty($set, 'noreply_name') . '\';
 $hesk_settings[\'site_theme\']=\'' . hesk_getProperty($set, 'site_theme') . '\';
+$hesk_settings[\'admin_css\']=' . hesk_getProperty($set, 'admin_css') . ';
+$hesk_settings[\'admin_css_url\']=\'' . hesk_getProperty($set, 'admin_css_url') . '\';
 
 // --> Language settings
 $hesk_settings[\'can_sel_lang\']=' . hesk_getProperty($set, 'can_sel_lang') . ';
@@ -535,6 +558,7 @@ $hesk_settings[\'max_listings\']=' . hesk_getProperty($set, 'max_listings') . ';
 $hesk_settings[\'print_font_size\']=' . hesk_getProperty($set, 'print_font_size') . ';
 $hesk_settings[\'autoclose\']=' . hesk_getProperty($set, 'autoclose') . ';
 $hesk_settings[\'max_open\']=' . hesk_getProperty($set, 'max_open') . ';
+$hesk_settings[\'due_soon\']=' . hesk_getProperty($set, 'due_soon') . ';
 $hesk_settings[\'new_top\']=' . hesk_getProperty($set, 'new_top') . ';
 $hesk_settings[\'reply_top\']=' . hesk_getProperty($set, 'reply_top') . ';
 $hesk_settings[\'hide_replies\']=' . hesk_getProperty($set, 'hide_replies') . ';
@@ -560,6 +584,7 @@ $hesk_settings[\'short_link\']=' . hesk_getProperty($set, 'short_link') . ';
 $hesk_settings[\'select_cat\']=' . hesk_getProperty($set, 'select_cat') . ';
 $hesk_settings[\'select_pri\']=' . hesk_getProperty($set, 'select_pri') . ';
 $hesk_settings[\'cat_show_select\']=' . hesk_getProperty($set, 'cat_show_select') . ';
+$hesk_settings[\'staff_ticket_formatting\']=' . hesk_getProperty($set, 'staff_ticket_formatting') . ';
 
 // --> SPAM Prevention
 $hesk_settings[\'secimg_use\']=' . hesk_getProperty($set, 'secimg_use') . ';
@@ -574,10 +599,13 @@ $hesk_settings[\'question_ans\']=\'' . hesk_getProperty($set, 'question_ans') . 
 // --> Security
 $hesk_settings[\'attempt_limit\']=' . hesk_getProperty($set, 'attempt_limit') . ';
 $hesk_settings[\'attempt_banmin\']=' . hesk_getProperty($set, 'attempt_banmin') . ';
+$hesk_settings[\'flood\']=' . hesk_getProperty($set, 'flood') . ';
 $hesk_settings[\'reset_pass\']=' . hesk_getProperty($set, 'reset_pass') . ';
 $hesk_settings[\'email_view_ticket\']=' . hesk_getProperty($set, 'email_view_ticket') . ';
 $hesk_settings[\'x_frame_opt\']=' . hesk_getProperty($set, 'x_frame_opt') . ';
+$hesk_settings[\'samesite\']=\'' . hesk_getProperty($set, 'samesite') . '\';
 $hesk_settings[\'force_ssl\']=' . hesk_getProperty($set, 'force_ssl') . ';
+$hesk_settings[\'url_key\']=\'' . hesk_getProperty($set, 'url_key') . '\';
 
 // --> Attachments
 $hesk_settings[\'attachments\']=array (
@@ -640,6 +668,7 @@ $hesk_settings[\'imap_job_wait\']=' . hesk_getProperty($set, 'imap_job_wait') . 
 $hesk_settings[\'imap_host_name\']=\'' . hesk_getProperty($set, 'imap_host_name') . '\';
 $hesk_settings[\'imap_host_port\']=' . hesk_getProperty($set, 'imap_host_port') . ';
 $hesk_settings[\'imap_enc\']=\'' . hesk_getProperty($set, 'imap_enc') . '\';
+$hesk_settings[\'imap_noval_cert\']=' . hesk_getProperty($set, 'imap_noval_cert') . ';
 $hesk_settings[\'imap_keep\']=' . hesk_getProperty($set, 'imap_keep') . ';
 $hesk_settings[\'imap_user\']=\'' . hesk_getProperty($set, 'imap_user') . '\';
 $hesk_settings[\'imap_password\']=\'' . hesk_getProperty($set, 'imap_password') . '\';

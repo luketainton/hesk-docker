@@ -66,6 +66,7 @@ function hesk_anonymizeTicket($id, $trackingID = null, $have_ticket = false)
     `email`   = '".hesk_dbEscape($hesklang['anon_email'])."',
     `subject` = '".hesk_dbEscape($hesklang['anon_subject'])."',
     `message` = '".hesk_dbEscape($hesklang['anon_message'])."',
+    `message_html` = '".hesk_dbEscape($hesklang['anon_message'])."',
     `ip`      = '".hesk_dbEscape($hesklang['anon_IP'])."',
     ";
     for($i=1; $i<=50; $i++)
@@ -75,12 +76,12 @@ function hesk_anonymizeTicket($id, $trackingID = null, $have_ticket = false)
     $sql .= "
     attachments='',
     `history`=REPLACE(`history`, ' ".hesk_dbEscape(addslashes($ticket['name']))."</li>', ' ".hesk_dbEscape($hesklang['anon_name'])."</li>'),
-    `history`=CONCAT(`history`,'".hesk_dbEscape(sprintf($hesklang['thist18'],hesk_date(),$_SESSION['name'].' ('.$_SESSION['user'].')'))."')
+    `history`=CONCAT(`history`,'".hesk_dbEscape(sprintf($hesklang['thist18'],hesk_date(),addslashes($_SESSION['name']).' ('.$_SESSION['user'].')'))."')
     WHERE `id`='".intval($ticket['id'])."'";
 	hesk_dbQuery($sql);
 
     // Anonymize replies
-	hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` SET `name` = '".hesk_dbEscape($hesklang['anon_name'])."', `message` = '".hesk_dbEscape($hesklang['anon_message'])."', attachments='' WHERE `replyto`='".intval($ticket['id'])."'");
+	hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` SET `name` = '".hesk_dbEscape($hesklang['anon_name'])."', `message` = '".hesk_dbEscape($hesklang['anon_message'])."', `message_html` = '".hesk_dbEscape($hesklang['anon_message'])."', attachments='' WHERE `replyto`='".intval($ticket['id'])."'");
 
     // Delete ticket notes
 	hesk_dbQuery("DELETE FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."notes` WHERE `ticket`='".intval($ticket['id'])."'");

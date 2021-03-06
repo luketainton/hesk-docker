@@ -1,53 +1,33 @@
 name: Build
 on:
   push:
-    branches: main
+    tags: '*'
 
 jobs:
-  release-on-push:
+  prepare-data:
+    name: Prepare Data
     runs-on: ubuntu-latest
-    outputs: 
-      ver: ${{ steps.release.outputs.version }}
-      tag: ${{ steps.release.outputs.tag_name }}
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      tag: ${{ steps.prepare.outputs.SOURCE_TAG }}
     steps:
-      - id: release
-        uses: rymndhng/release-on-push-action@master
-        with:
-          bump_version_scheme: norelease
-          
-      - name: Check Output Parameters
+      - id: prepare
+        name: Prepare environment variables
         run: |
-          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
-          echo "Got release version ${{ steps.release.outputs.version }}"
-          
-  docker-dh:
-    name: Push to Docker Hub
-    needs: [release-on-push]
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+
+  build:
+    name: GitHub Package Registry
     runs-on: ubuntu-latest
+    needs: [prepare-data]
     steps:
     - uses: actions/checkout@v2
-    - name: Login to DockerHub Registry
-      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-    - name: Build image for Docker Hub
-      run: docker build . --file Dockerfile --build-arg VERSION=${{ needs.release-on-push.outputs.ver }} --tag luketainton/hesk-docker:${{ needs.release-on-push.outputs.tag }} --tag luketainton/hesk-docker:latest
-    - name: Push image to Docker Hub
-      run: |
-        docker push luketainton/hesk-docker:${{ needs.release-on-push.outputs.tag }} &&
-        docker push luketainton/hesk-docker:latest
-      
-  docker-ghr:
-    name: Push to GitHub Package Registry
-    needs: [release-on-push]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Login to DockerHub Registry
-      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login https://docker.pkg.github.com -u luketainton --password-stdin
+    - name: Login to GitHub Package Registry
+      run: echo ${{ secrets.PAT }} | docker login ghcr.io -u luketainton --password-stdin
     - name: Build image for GitHub Package Registry
-      run: docker build . --file Dockerfile --build-arg VERSION=${{ needs.release-on-push.outputs.ver }} --tag docker.pkg.github.com/luketainton/hesk-docker/hesk-docker:latest --tag docker.pkg.github.com/luketainton/hesk-docker/hesk-docker:${{ needs.release-on-push.outputs.tag }}
+      run: docker build . --file Dockerfile --tag ghcr.io/luketainton/hesk:${{ needs.prepare-data.outputs.tag }} --tag ghcr.io/luketainton/hesk:latest
     - name: Push image to GitHub Package Registry
       run: |
-        docker push docker.pkg.github.com/luketainton/hesk-docker/hesk-docker:${{ needs.release-on-push.outputs.tag }} &&
-        docker push docker.pkg.github.com/luketainton/hesk-docker/hesk-docker:latest
+        docker push ghcr.io/luketainton/hesk:latest
+        docker push ghcr.io/luketainton/hesk:${{ needs.prepare-data.outputs.tag }}

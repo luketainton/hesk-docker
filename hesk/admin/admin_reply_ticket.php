@@ -39,6 +39,19 @@ hesk_session_start();
 hesk_dbConnect();
 hesk_isLoggedIn();
 
+// Prevent flooding - multiple replies within a few seconds are probably not valid
+if ($hesk_settings['flood'])
+{
+    if (isset($_SESSION['last_reply_timestamp']) && (time() - $_SESSION['last_reply_timestamp']) < $hesk_settings['flood'])
+    {
+        hesk_error($hesklang['e_flood']);
+    }
+    else
+    {
+        $_SESSION['last_reply_timestamp'] = time();
+    }
+}
+
 /* Check permissions for this feature */
 hesk_checkPermission('can_reply_tickets');
 
@@ -76,6 +89,29 @@ require_once(HESK_PATH . 'inc/statuses.inc.php');
 
 if (strlen($message))
 {
+    $message_html = $message;
+
+    // Handle rich-text tickets
+    if ($hesk_settings['staff_ticket_formatting'] == 2) {
+        // Decode the message we encoded earlier
+        $message_html = hesk_html_entity_decode($message_html);
+
+        // Clean the HTML code and set the plaintext version
+        require(HESK_PATH . 'inc/htmlpurifier/HeskHTMLPurifier.php');
+        require(HESK_PATH . 'inc/html2text/html2text.php');
+        $purifier = new HeskHTMLPurifier($hesk_settings['cache_dir']);
+        $message_html = $purifier->heskPurify($message_html);
+
+        $message = convert_html_to_text($message_html);
+        $message = fix_newlines($message);
+
+        // Re-encode the message
+        $message = hesk_htmlspecialchars($message);
+    } elseif ($hesk_settings['staff_ticket_formatting'] == 0) {
+        $message_html = hesk_makeURL($message_html);
+        $message_html = nl2br($message_html);
+    }
+
 	// Save message for later and ignore the rest?
 	if ( isset($_POST['save_reply']) )
 	{
@@ -83,7 +119,7 @@ if (strlen($message))
 		hesk_dbQuery("DELETE FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."reply_drafts` WHERE `owner`=".intval($_SESSION['id'])." AND `ticket`=".intval($ticket['id']));
 
 		// Save the message draft
-		hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."reply_drafts` (`owner`, `ticket`, `message`) VALUES (".intval($_SESSION['id']).", ".intval($ticket['id']).", '".hesk_dbEscape($message)."')");
+		hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."reply_drafts` (`owner`, `ticket`, `message`, `message_html`) VALUES (".intval($_SESSION['id']).", ".intval($ticket['id']).", '".hesk_dbEscape($message)."', '".hesk_dbEscape($message_html)."')");
 
 		/* Set reply submitted message */
 		$_SESSION['HESK_SUCCESS'] = TRUE;
@@ -97,7 +133,7 @@ if (strlen($message))
 		elseif ($_SESSION['afterreply'] == 2)
 		{
 			/* Get the next open ticket that needs a reply */
-			$res  = hesk_dbQuery("SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` WHERE `owner` IN ('0','".intval($_SESSION['id'])."') AND " . hesk_myCategories() . " AND `status` IN ('0','1') ORDER BY `owner` DESC, `priority` ASC LIMIT 1");
+			$res  = hesk_dbQuery("SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` WHERE `owner` IN ('0','".intval($_SESSION['id'])."') AND " . hesk_myCategories() . " AND `status` IN ('0','1') AND `id` != ".intval($ticket['id']). " ORDER BY `owner` DESC, `priority` ASC LIMIT 1");
 
 			if (hesk_dbNumRows($res) == 1)
 			{
@@ -121,6 +157,14 @@ if (strlen($message))
 	if ( ! $submit_as_customer && ! empty($_POST['signature']) && strlen($_SESSION['signature']))
 	{
 	    $message .= "\n\n" . addslashes($_SESSION['signature']) . "\n";
+
+        // Make signature links clickable
+        $signature = hesk_makeURL($_SESSION['signature']);
+
+        // Turn newlines into <br /> tags
+        $signature = nl2br($signature);
+
+        $message_html .= "<br/><br/>" . addslashes($signature) . "<br/>";
 	}
 
     // Make links clickable
@@ -188,11 +232,11 @@ if ($hesk_settings['attachments']['use'] && !empty($attachments))
 // Add reply
 if ($submit_as_customer)
 {
-	hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (`replyto`,`name`,`message`,`dt`,`attachments`) VALUES ('".intval($replyto)."','".hesk_dbEscape(addslashes($ticket['name']))."','".hesk_dbEscape($message."<br /><br /><i>{$hesklang['creb']} {$_SESSION['name']}</i>")."',NOW(),'".hesk_dbEscape($myattachments)."')");
+	hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (`replyto`,`name`,`message`,`message_html`,`dt`,`attachments`) VALUES ('".intval($replyto)."','".hesk_dbEscape(addslashes($ticket['name']))."','".hesk_dbEscape($message."<br /><br /><i>{$hesklang['creb']} ".addslashes($_SESSION['name'])."</i>")."','".hesk_dbEscape($message_html."<br /><br /><i>{$hesklang['creb']} ".addslashes($_SESSION['name'])."</i>")."',NOW(),'".hesk_dbEscape($myattachments)."')");
 }
 else
 {
-	hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (`replyto`,`name`,`message`,`dt`,`attachments`,`staffid`) VALUES ('".intval($replyto)."','".hesk_dbEscape(addslashes($_SESSION['name']))."','".hesk_dbEscape($message)."',NOW(),'".hesk_dbEscape($myattachments)."','".intval($_SESSION['id'])."')");
+	hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (`replyto`,`name`,`message`,`message_html`,`dt`,`attachments`,`staffid`) VALUES ('".intval($replyto)."','".hesk_dbEscape(addslashes($_SESSION['name']))."','".hesk_dbEscape($message)."','".hesk_dbEscape($message_html)."',NOW(),'".hesk_dbEscape($myattachments)."','".intval($_SESSION['id'])."')");
 }
 
 /* Track ticket status changes for history */
@@ -214,7 +258,7 @@ if ( ! empty($_POST['set_priority']) )
 		3 => $hesklang['low']
 	);
 
-    $revision = sprintf($hesklang['thist8'],hesk_date(),$options[$priority],$_SESSION['name'].' ('.$_SESSION['user'].')');
+    $revision = sprintf($hesklang['thist8'],hesk_date(),$options[$priority],addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 
     $priority_sql = ",`priority`='$priority', `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
 }
@@ -237,7 +281,7 @@ elseif ($submit_as_customer)
 
 	if ($ticket['status'] != $new_status)
 	{
-		$revision   = sprintf($hesklang['thist9'],hesk_date(),$hesklang['wait_reply'],$_SESSION['name'].' ('.$_SESSION['user'].')');
+		$revision   = sprintf($hesklang['thist9'],hesk_date(),$hesklang['wait_reply'],addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 		$sql_status = " , `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
 	}
 }
@@ -274,7 +318,7 @@ else
 
         if ($ticket['status'] != $new_status && $new_status != 2)
         {
-            $revision   = sprintf($hesklang['thist9'],hesk_date(),$data['name'],$_SESSION['name'].' ('.$_SESSION['user'].')');
+            $revision   = sprintf($hesklang['thist9'],hesk_date(),addslashes($data['name']),addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
             $sql_status .= " , `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
         }
 
@@ -314,7 +358,7 @@ else
 
 if ( ! empty($_POST['assign_self']) && hesk_checkPermission('can_assign_self',0))
 {
-	$revision = sprintf($hesklang['thist2'],hesk_date(),$_SESSION['name'].' ('.$_SESSION['user'].')',$_SESSION['name'].' ('.$_SESSION['user'].')');
+	$revision = sprintf($hesklang['thist2'],hesk_date(),addslashes($_SESSION['name']).' ('.$_SESSION['user'].')',addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
     $sql .= " , `owner`=".intval($_SESSION['id']).", `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
 }
 
@@ -355,6 +399,7 @@ $info = array(
 'attachments'	=> $myattachments,
 'dt'			=> hesk_date($ticket['dt'], true),
 'lastchange'	=> hesk_date($ticket['lastchange'], true),
+'due_date'      => hesk_format_due_date($ticket['due_date']),
 'id'			=> $ticket['id'],
 'language'		=> $ticket['language'],
 'time_worked'   => $ticket['time_worked'],

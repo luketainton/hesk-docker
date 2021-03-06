@@ -311,7 +311,7 @@ $my_cat = array();
 $res2 = hesk_dbQuery("SELECT `id`, `name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE " . hesk_myCategories('id') . " ORDER BY `cat_order` ASC");
 while ($row=hesk_dbFetchAssoc($res2))
 {
-	$my_cat[$row['id']] = hesk_msgToPlain($row['name'], 1);
+	$my_cat[$row['id']] = hesk_msgToPlain($row['name'], 1, 0);
 	$row['name'] = (hesk_mb_strlen($row['name']) > 50) ? hesk_mb_substr($row['name'],0,50) . '...' : $row['name'];
 	$cat_selected = ($row['id'] == $category) ? 'selected="selected"' : '';
 	$category_options .= '<option value="'.$row['id'].'" '.$cat_selected.'>'.$row['name'].'</option>';

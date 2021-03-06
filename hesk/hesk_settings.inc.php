@@ -1,5 +1,5 @@
 <?php
-// Settings file for HESK 3.1.2
+// Settings file for HESK 3.2.0
 
 // ==> GENERAL
 
@@ -12,12 +12,14 @@ $hesk_settings['webmaster_mail']='support@example.com';
 $hesk_settings['noreply_mail']='support@example.com';
 $hesk_settings['noreply_name']='Help Desk';
 $hesk_settings['site_theme']='hesk3';
+$hesk_settings['admin_css']=0;
+$hesk_settings['admin_css_url']='https://www.example.com/hesk-style.css';
 
 // --> Language settings
 $hesk_settings['can_sel_lang']=0;
 $hesk_settings['language']='English';
 $hesk_settings['languages']=array(
-'English' => array('folder'=>'en','hr'=>'------ Reply above this line ------'),
+    'English' => array('folder'=>'en','hr'=>'------ Reply above this line ------'),
 );
 
 // --> Database settings
@@ -39,9 +41,10 @@ $hesk_settings['max_listings']=20;
 $hesk_settings['print_font_size']=12;
 $hesk_settings['autoclose']=0;
 $hesk_settings['max_open']=0;
+$hesk_settings['due_soon']=7;
 $hesk_settings['new_top']=0;
 $hesk_settings['reply_top']=0;
-$hesk_settings['hide_replies']=-1;
+$hesk_settings['hide_replies']=0;
 $hesk_settings['limit_width']=800;
 
 // --> Features
@@ -64,6 +67,7 @@ $hesk_settings['short_link']=0;
 $hesk_settings['select_cat']=0;
 $hesk_settings['select_pri']=0;
 $hesk_settings['cat_show_select']=15;
+$hesk_settings['staff_ticket_formatting']=0;
 
 // --> SPAM Prevention
 $hesk_settings['secimg_use']=1;
@@ -78,17 +82,20 @@ $hesk_settings['question_ans']='PB6YM';
 // --> Security
 $hesk_settings['attempt_limit']=6;
 $hesk_settings['attempt_banmin']=60;
+$hesk_settings['flood']=3;
 $hesk_settings['reset_pass']=1;
 $hesk_settings['email_view_ticket']=1;
 $hesk_settings['x_frame_opt']=1;
+$hesk_settings['samesite']='Lax';
 $hesk_settings['force_ssl']=0;
+$hesk_settings['url_key']='';
 
 // --> Attachments
 $hesk_settings['attachments']=array (
-'use' => 1,
-'max_number' => 2,
-'max_size' => 2097152,
-'allowed_types' => array('.gif','.jpg','.png','.zip','.rar','.csv','.doc','.docx','.xls','.xlsx','.txt','.pdf')
+    'use' => 1,
+    'max_number' => 2,
+    'max_size' => 2097152,
+    'allowed_types' => array('.gif','.jpg','.png','.zip','.rar','.csv','.doc','.docx','.xls','.xlsx','.txt','.pdf')
 );
 
 
@@ -144,6 +151,7 @@ $hesk_settings['imap_job_wait']=15;
 $hesk_settings['imap_host_name']='mail.example.com';
 $hesk_settings['imap_host_port']=993;
 $hesk_settings['imap_enc']='ssl';
+$hesk_settings['imap_noval_cert']=0;
 $hesk_settings['imap_keep']=0;
 $hesk_settings['imap_user']='';
 $hesk_settings['imap_password']='';
@@ -200,7 +208,7 @@ $hesk_settings['check_updates']=1;
 #############################
 #     DO NOT EDIT BELOW     #
 #############################
-$hesk_settings['hesk_version']='3.1.2';
+$hesk_settings['hesk_version']='3.2.0';
 if ($hesk_settings['debug_mode'])
 {
     error_reporting(E_ALL);

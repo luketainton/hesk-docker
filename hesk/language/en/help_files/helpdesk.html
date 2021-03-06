@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<!-- next: 80 -->
+<!-- next: 85 -->
 
 <h3>Interactive help for Hesk settings</h3>
 
@@ -106,6 +106,27 @@ until existing ones are resolved. Affects only tickets submitted via online form
 <p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
 
 <p>&nbsp;</p>
+
+<a name="84"></a><p class="title">Show as &quot;due soon&quot;</p>
+
+<p>Set the number of days before the due date when a ticket will show as &quot;Due soon&quot; in the list of tickets.</p>
+
+<p>Can be set to a value between 1 and 999 days. Default setting: 7 days.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
 
 <a name="59"></a><p class="title">Reply order</p>
 <p>Choose whether you want most recent replies to appear at top or at bottom of the ticket page.</p>
@@ -430,6 +451,25 @@ select a ticket category.</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 
+<a name="80"></a><p class="title">Ticket Formatting</p>
+<p>Sets the type of editor when creating / editing tickets.</p>
+
+<p>
+    Plaintext = Plain text (default)<br />
+    Rich Text (HTML) = Allows rich text (bold, lists, etc) via a WYSIWYG editor
+</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
 <a name="13"></a><p class="title">Use anti-SPAM image</p>
 <p>Toggles use of the anti-SPAM security image (captcha).</p>
 
@@ -556,6 +596,28 @@ use HTML code in the question. Answers are not CaSe SeNSiTiVe. Some examples:</p
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="81"></a><p class="title">Flood limit (seconds)</p>
+<p>This feature helps prevent submitting too many ticket replies (accidental or malicious reply flooding).</p>
+
+<p>Set to the minimum number of seconds that must pass between two ticket replies from the same person.</p>
+
+<p>To disable this feature, set the value to <b>0</b>.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 
 <a name="69"></a><p class="title">Password reset</p>
 <p>If enabled, users will be able to reset their forgotten password over email.</p>
@@ -593,6 +655,33 @@ If disabled, only entering ticket tracking ID will suffice.</p>
 
 <p>If you want to display HESK inside a frame on a website under a different domain name than the one HESK is installed under, disable this feature.</p>
 
+<p>In the case above, you may also need to set <b>Cookies</b> setting to <b>None</b> and use <b>https://</b> connections!</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<a name="82"></a><p class="title">Cookies</p>
+
+<!-- do not translate values inside <b> </b> in this section -->
+
+<p>This setting controls the <b>SameSite</b> attribute of HTTP cookies. For a detailed explanation, please see <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite" rel="nofollow">this article</a>.</p>
+
+<p>In short:</p>
+
+<p><b>Strict</b> - cookies will only be sent to requests under your domain name. Following an email link, for example, may force you to log in again.</p>
+<p><b>Lax</b> - default Hesk value. Cookies are not sent on normal cross-site subrequests (for example, to load images or frames into a third-party site) but are sent when a user is navigating to the origin site (i.e., when following a link).</p>
+<p><b>None</b> - cookies will be sent to any request, but only under a secure (<b>https://</b>) connection. Use this setting if you show Hesk in a frame on a third-party domain.</p>
+
+<p>If you want to display HESK inside a frame on a website under a different domain name than the one HESK is installed under, set it to <b>None</b> and use <b>https://</b> connections.</p>
+
 <p>&nbsp;</p>
 
 <p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
@@ -623,6 +712,35 @@ If disabled, only entering ticket tracking ID will suffice.</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
+
+<a name="83"></a><p class="title">URL Access Key</p>
+<p>Use the URL Access Key to prevent unauzhorized web-access to your Hesk cron files, such as:<br>
+- /inc/mail/hesk_imap.php,<br>
+- /inc/mail/hesk_pop3.php,<br>
+- /cron/email_overdue_tickets.php, etc.<br>
+</p>
+
+<p>When an access key is set and someone wants to access any of those files via an URL address (web browser), they will need to specify the correct key by appending <b>?key=XXXXXXXX</b> to the URL address. Example:</p>
+
+<p>https://example.com/hesk/inc/mail/hesk_imap.php<b>?key=<span class="correct">XXXXXXXX</span></b></p>
+
+<p>Your access key should be a random string at least 20 chars long. Valid access key chars are: a-z A-Z 0-9 _ . -</b>
+
+<p>The access key is not used when cron files are accessed over command-line interface, only when served over http(s).</p>
+
+<p>If you leave the URL Access Key empty, it will not be required/used.</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
 
 <span class="section">&raquo; Attachments</span>
 

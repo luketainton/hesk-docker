@@ -308,6 +308,23 @@ function hesk_profile_tab($session_array='new',$is_profile_page=true)
                 </div>
             <?php
                 echo '</section>';
+                echo '<section class="item--section">';
+                if (!$is_profile_page || $can_view_unassigned) { ?>
+                    <div class="checkbox-custom">
+                        <input type="checkbox" id="prof_notify_overdue_unassigned" name="notify_overdue_unassigned" value="1"
+                            <?php if (!empty($_SESSION[$session_array]['notify_overdue_unassigned'])) {echo 'checked';}?>>
+                        <label for="prof_notify_overdue_unassigned"><?php echo $hesklang['ntoverdue']; ?> <?php echo $hesklang['unas']; ?>*</label>
+                    </div>
+            <?php
+                }
+                ?>
+                <div class="checkbox-custom">
+                    <input type="checkbox" id="prof_notify_overdue_my" name="notify_overdue_my" value="1"
+                        <?php if (!empty($_SESSION[$session_array]['notify_overdue_my'])) {echo 'checked';}?>>
+                    <label for="prof_notify_overdue_my"><?php echo $hesklang['ntoverdue']; ?> <?php echo $hesklang['s_my']; ?>*</label>
+                </div>
+            <?php
+                echo '</section>';
             ?>
             <section class="item--section">
                 <div class="checkbox-custom">
@@ -328,12 +345,21 @@ function hesk_profile_tab($session_array='new',$is_profile_page=true)
                     <label for="prof_notify_pm"><?php echo $hesklang['npms']; ?></label>
                 </div>
             </section>
+            <?php hesk_show_notice($hesklang['ovdcron'] . ' <a href="https://www.hesk.com/knowledgebase/?article=103" target="_blank">'.$hesklang['instructions'].'</a>', '*', false); ?>
         </div>
     </div>
 
-	<script language="Javascript" type="text/javascript"><!--
-	hesk_checkPassword(document.form1.newpass.value);
-	//-->
-	</script>
+    <script>
+    hesk_checkPassword(document.form1.newpass.value);
+
+    $(document).ready(function() {
+        $('#can_reply_tickets').click(function() {
+            if($(this).prop("checked") == true) {
+                $('#can_view_tickets').prop("checked", true);
+            }
+        });
+    });
+
+    </script>
 	<?php
 } // END hesk_profile_tab()

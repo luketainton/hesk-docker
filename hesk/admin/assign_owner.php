@@ -55,7 +55,7 @@ $owner = intval( hesk_REQUEST('owner') );
 /* If ID is -1 the ticket will be unassigned */
 if ($owner == -1)
 {
-	$revision = sprintf($hesklang['thist2'],hesk_date(),'<i>'.$hesklang['unas'].'</i>',$_SESSION['name'].' ('.$_SESSION['user'].')');
+	$revision = sprintf($hesklang['thist2'],hesk_date(),'<i>'.$hesklang['unas'].'</i>',addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 	$res = hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `owner`=0, `assignedby`=NULL, `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') WHERE `trackid`='".hesk_dbEscape($trackingID)."'");
 
     hesk_process_messages($hesklang['tunasi2'],$_SERVER['PHP_SELF'],'SUCCESS');
@@ -115,7 +115,7 @@ if ($can_assign_others || ($owner == $_SESSION['id'] && $can_assign_self))
          $assignedby = '';
     }
 
-	$revision = sprintf($hesklang['thist2'],hesk_date(),$row['name'].' ('.$row['user'].')',$_SESSION['name'].' ('.$_SESSION['user'].')');
+	$revision = sprintf($hesklang['thist2'],hesk_date(),addslashes($row['name']).' ('.$row['user'].')',addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 	$res = hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `owner`={$owner} {$assignedby}, `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') WHERE `trackid`='".hesk_dbEscape($trackingID)."'");
 
     if ($owner != $_SESSION['id'] && !hesk_checkPermission('can_view_ass_others',0))
@@ -146,6 +146,7 @@ $info = array(
 'attachments'	=> $ticket['attachments'],
 'dt'			=> hesk_date($ticket['dt'], true),
 'lastchange'	=> hesk_date($ticket['lastchange'], true),
+'due_date'      => hesk_format_due_date($ticket['due_date']),
 'id'			=> $ticket['id'],
 'time_worked'   => $ticket['time_worked'],
 'last_reply_by' => hesk_getReplierName($ticket),

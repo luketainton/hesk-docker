@@ -313,13 +313,15 @@ function update_profile() {
     }
 
     /* Notifications */
-    $_SESSION['new']['notify_new_unassigned']	= empty($_POST['notify_new_unassigned']) || ! $can_view_unassigned ? 0 : 1;
-    $_SESSION['new']['notify_new_my'] 			= empty($_POST['notify_new_my']) ? 0 : 1;
-    $_SESSION['new']['notify_reply_unassigned'] = empty($_POST['notify_reply_unassigned']) || ! $can_view_unassigned ? 0 : 1;
-    $_SESSION['new']['notify_reply_my']			= empty($_POST['notify_reply_my']) ? 0 : 1;
-    $_SESSION['new']['notify_assigned']			= empty($_POST['notify_assigned']) ? 0 : 1;
-    $_SESSION['new']['notify_note']				= empty($_POST['notify_note']) ? 0 : 1;
-    $_SESSION['new']['notify_pm']				= empty($_POST['notify_pm']) ? 0 : 1;
+    $_SESSION['new']['notify_new_unassigned']       = empty($_POST['notify_new_unassigned']) || ! $can_view_unassigned ? 0 : 1;
+    $_SESSION['new']['notify_overdue_unassigned']   = empty($_POST['notify_overdue_unassigned']) || !$can_view_unassigned ? 0 : 1;
+    $_SESSION['new']['notify_new_my'] 			    = empty($_POST['notify_new_my']) ? 0 : 1;
+    $_SESSION['new']['notify_overdue_my']           = empty($_POST['notify_overdue_my']) ? 0 : 1;
+    $_SESSION['new']['notify_reply_unassigned']     = empty($_POST['notify_reply_unassigned']) || ! $can_view_unassigned ? 0 : 1;
+    $_SESSION['new']['notify_reply_my']			    = empty($_POST['notify_reply_my']) ? 0 : 1;
+    $_SESSION['new']['notify_assigned']			    = empty($_POST['notify_assigned']) ? 0 : 1;
+    $_SESSION['new']['notify_note'] 				= empty($_POST['notify_note']) ? 0 : 1;
+    $_SESSION['new']['notify_pm']	    			= empty($_POST['notify_pm']) ? 0 : 1;
 
     /* Any errors? */
     if (strlen($hesk_error_buffer))
@@ -348,7 +350,9 @@ function update_profile() {
 		`notify_customer_reply`='".($_SESSION['new']['notify_customer_reply'])."' ,
 		`show_suggested`='".($_SESSION['new']['show_suggested'])."' ,
 		`notify_new_unassigned`='".($_SESSION['new']['notify_new_unassigned'])."' ,
+		`notify_overdue_unassigned`='".($_SESSION['new']['notify_overdue_unassigned'])."' ,
 		`notify_new_my`='".($_SESSION['new']['notify_new_my'])."' ,
+		`notify_overdue_my`='".($_SESSION['new']['notify_overdue_my'])."' ,
 		`notify_reply_unassigned`='".($_SESSION['new']['notify_reply_unassigned'])."' ,
 		`notify_reply_my`='".($_SESSION['new']['notify_reply_my'])."' ,
 		`notify_assigned`='".($_SESSION['new']['notify_assigned'])."' ,

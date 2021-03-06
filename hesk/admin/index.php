@@ -292,7 +292,7 @@ function print_login()
                                 <label for="regInputUsername"><?php echo $hesklang['username']; ?></label>
                                 <?php
 
-                                $cls = in_array('user',$_SESSION['a_iserror']) ? ' class="isError" ' : '';
+                                $cls = in_array('user',$_SESSION['a_iserror']) ? 'isError' : '';
 
                                 if ( defined('HESK_DEMO')) {
                                     $savedUser = 'Demo';
@@ -322,7 +322,7 @@ function print_login()
                                 }
 
                                 if ($hesk_settings['list_users']) {
-                                    echo '<select name="user" '.$cls.'>';
+                                    echo '<select name="user" class="'.$cls.'">';
                                     $res = hesk_dbQuery('SELECT `user` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` ORDER BY `user` ASC');
                                     while ($row=hesk_dbFetchAssoc($res))
                                     {
@@ -332,7 +332,7 @@ function print_login()
                                     echo '</select>';
 
                                 } else {
-                                    echo '<input type="text" class="form-control" id="regInputUsername" name="user" value="'.$savedUser.'" '.$cls.' required>';
+                                    echo '<input type="text" class="form-control '.$cls.'" id="regInputUsername" name="user" value="'.$savedUser.'" required>';
                                 }
                                 ?>
                                 <div class="form-control__error"><?php echo $hesklang['this_field_is_required']; ?></div>
@@ -445,6 +445,11 @@ function print_login()
                 </div>
             </div>
 
+        <script>
+        $(() => {
+            $('form :visible[class*=isError]:first').focus();
+        })
+        </script>
 	<?php
 	hesk_cleanSessionVars('a_iserror');
 

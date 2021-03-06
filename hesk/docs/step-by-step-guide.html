@@ -15,7 +15,7 @@
 <tr>
 <td width="50%" style="text-align:left;vertical-align:top">
  <ul class="nobullets">
- <li>Version: 3.1.2 from 18th August 2020</li>
+ <li>Version: 3.2.0 from 28th February 2021</li>
  <li>Developed by: Klemen Stirn, Mike Koch</li>
  <li><a href="https://www.hesk.com">Help Desk Software HESK</a></li>
  <li><a href="https://www.phpjunkyard.com">Free PHP Scripts</a></li>
@@ -43,14 +43,14 @@
 <h2 id="install">&raquo; Install HESK</h2>
 
 <div class="error">
-<p style="font-weight:bold">Please take 5 minutes to read the installation instructions carefully and completely! This will ensure a proper and easy installation.</p>
+<p style="font-weight:bold">Please take 5 minutes to read the installation instructions carefully and thoroughly! Doing so will ensure a proper and easy installation.</p>
 </div>
 
 &nbsp;
 
 <div class="notice">
-<p>Before installing HESK you will need to obtain your MySQL database information, such as <b>database name</b>, <b>database user</b> and <b>password</b>.
-You need to get this information from your HOSTING COMPANY, HESK CANNOT help you find it.</p>
+<p>Before installing HESK, you will need to obtain your MySQL database information, such as <b>database name</b>, <b>user</b>, and <b>password</b>.
+You need to get this information from your HOSTING COMPANY; HESK cannot help you find it.</p>
 </div>
 
 <p>&nbsp;<br /><span class="tip">TIP:</span> Want a hassle-free help desk working in minutes? Sign up for <a href="https://www.hesk.com/remote-help-desk.php"><b>HESK Cloud</b></a> instead.<br />&nbsp;</p>
@@ -60,13 +60,14 @@ You need to get this information from your HOSTING COMPANY, HESK CANNOT help you
 <ol>
 <li><p>Connect with FTP to the <i>public folder</i> of your server where the rest of your Web site is.</p>
 <p><span class="tip">TIP:</span> The public folder is usually called &quot;<b>public_html</b>&quot;, &quot;www&quot;, &quot;site&quot; or &quot;htdocs&quot;.</p>
-<p><span class="tip">TIP:</span> Learn how to FTP files, read my simple <a href="https://www.phpjunkyard.com/tutorials/ftp-chmod-tutorial.php">FTP and CHMOD tutorial</a></p>
+<p><span class="tip">TIP:</span> Learn how to FTP files by reading this <a href="https://www.phpjunkyard.com/tutorials/ftp-chmod-tutorial.php">FTP and CHMOD tutorial</a></p>
 </li>
 <li><p>Create a new folder where you will install HESK. Name it anything you like, for example, &quot;helpdesk&quot; or &quot;support&quot;.<br />
 Example: /public_html/helpdesk<br />
 Corresponding URL: https://www.example.com/helpdesk</p></li>
 <li><p>Upload all HESK files to your server. PHP files must be transferred in ASCII mode and images in BINARY mode.</p>
-<p><span class="tip">TIP:</span> Most FTP clients will select the proper transfer mode automatically so you needn't worry about this.</li>
+<p><span class="tip">TIP:</span> Most FTP clients will automatically select the proper transfer mode, so you needn't worry about it.</p>
+</li>
 <li>
 <p>Open <b>hesk/install</b> in your browser, for example (modify to your URL):<br />
 https://www.example.com/helpdesk/install</p>
@@ -76,13 +77,13 @@ https://www.example.com/helpdesk/install</p>
    <ul>
    <li><b>STEP 1: License agreement</b> - read the HESK License agreement and confirm that you agree with the terms.</li>
    <li><b>STEP 2: Check setup</b> - the script will test your server to see if all required settings are correct and advise solutions to any problems.</li>
-   <li><b>STEP 3: Database settings</b> - enter your MySQL database settings and the setup script will test them.<br />
+   <li><b>STEP 3: Database settings</b> - enter your MySQL database settings, and the setup script will test them.<br />
        <span class="dest">You need to get the correct MySQL database information from your hosting company!</span></li>
-   <li><b>STEP 4: Setup database tables</b> - everything OK, the script will install MySQL tables.<br />&nbsp;</li>
+   <li><b>STEP 4: Setup database tables</b> - everything OK; the script will install MySQL tables.<br />&nbsp;</li>
    </ul>
 </li>
 <li>
-<p style="font-weight:bold">Before closing the upgrade script <span class="dest">DELETE the &quot;install&quot; directory from your server!</span></p>
+<p style="font-weight:bold">Before closing the installation script, <span class="dest">DELETE the &quot;install&quot; directory from your server!</span></p>
 </li>
 <li>
 <p>Well done, now it's time to set up your help desk! Click the Continue link in the install script or open the <b>admin</b> folder in your browser, for example:<br />
@@ -94,8 +95,8 @@ https://www.example.com/helpdesk/admin/</p>
 <li><p>Click the <b>Settings</b> link in the top menu to get to the settings page (if not there already)</p></li>
 
 <li>
-<p>Take some time and get familiar with all the available settings. Most should be self-explanatory, for additional information
-about each setting click the [<a href="Javascript:void(0)"><b>?</b></a>] link for help about the current setting.</p>
+<p>Take some time and get familiar with all the available settings. Most should be self-explanatory; for additional information
+about each setting, click the [<a href="Javascript:void(0)"><b>?</b></a>] link for help about the current setting.</p>
 <p>Don't forget to click the <b>Save changes</b> button at the bottom of the settings page to save your settings!</p>
 </li>
 <li>
@@ -105,13 +106,13 @@ about each setting click the [<a href="Javascript:void(0)"><b>?</b></a>] link fo
 
 <li><p>Click the &quot;Profile&quot; link to set your name, e-mail, signature, and password.</p></li>
 
-<li><p>Add new categories (departments) on the &quot;Categories&quot; page. The default category cannot be deleted, but it can be renamed.</p></li>
+<li><p>Add new categories (departments) on the &quot;Categories&quot; page. You cannot delete the default category, but you can rename it.</p></li>
 
-<li><p>To create additional staff accounts visit the &quot;Users&quot; page. The default user (Administrator) cannot be deleted.</p></li>
+<li><p>To create additional staff accounts, visit the &quot;Team&quot; page. You cannot delete the default user (Administrator), but you can change the username.</p></li>
 
 <li><p>You can create canned responses on the &quot;Canned&quot; page. These are pre-written replies to common support questions.</p></li>
 
-<li><p>To access and manage your knowledgebase click the &quot;Knowledgebase&quot; link.</p>
+<li><p>To access and manage your knowledgebase, click the &quot;Knowledgebase&quot; link.</p>
 
 <p>The knowledgebase is a collection of answers to frequently asked questions (FAQ) and articles which provide self-help resources to your customers. You can arrange articles into categories and subcategories.</p>
 
@@ -126,7 +127,7 @@ about each setting click the [<a href="Javascript:void(0)"><b>?</b></a>] link fo
 <li><p>Customers can submit tickets and browse knowledgebase by visiting the main HESK folder, for example:<br />
 <b>https://www.example.com/helpdesk</b></p></li>
 
-<li><p style="font-weight:bold"><span class="dest">If you have problems/questions see the &quot;HELP and Troubleshooting&quot; section further down.</span></p></li>
+<li><p style="font-weight:bold"><span class="dest">If you have problems/questions, see the &quot;HELP and Troubleshooting&quot; section further down.</span></p></li>
 
 <li><p>Support HESK development by <a href="https://www.hesk.com/buy.php">purchasing a license</a></p></li>
 <li><p>Good luck with using HESK!<br />&nbsp;</p></li>
@@ -135,15 +136,14 @@ about each setting click the [<a href="Javascript:void(0)"><b>?</b></a>] link fo
 <h2 id="upgrade">&raquo; Upgrading from old versions</h2>
 
 <div class="error">
-<p style="font-weight:bold">Please take 5 minutes to read the upgrade instructions carefully and completely! This will ensure a proper and easy upgrade.</p>
+<p style="font-weight:bold">Please take 5 minutes to read the installation instructions carefully and thoroughly! Doing so will ensure a proper and easy installation.</p>
 </div>
 
 <p><b>Known upgrade issues</b></p>
 
 <ul>
-<li>HESK language may be reset to English if new text was added.</li>
-<li>Passwords may not work after upgrade from very old versions (<a href="https://www.hesk.com/knowledgebase/?article=22">reset password</a>).</li>
-<li>If you purchased a license you may need to <a href="https://www.hesk.com/license">download a new license</a>.</li>
+<li>HESK language will be reset to English if new text was added.</li>
+<li>When upgrading from very old versions, you might need to <a href="https://www.hesk.com/knowledgebase/?article=22">reset your password</a>.</li>
 </ul>
 
 <p><span class="tip">TIP:</span> Perform the upgrade in low-traffic hours when your Web site receives the least amount of visits.</p>
@@ -168,7 +168,7 @@ about each setting click the [<a href="Javascript:void(0)"><b>?</b></a>] link fo
 
 <p>Your HESK directory now contains the updated files you require for updating your copy of HESK.</p>
 
-<p><span class="tip">TIP:</span> Images must be transferred to your server in binary mode and all other HESK files in ASCII mode. Most FTP clients will select the correct transfer mode automatically.</p>
+<p><span class="tip">TIP:</span> You must transfer images in BINARY and all other files in ASCII mode. Most FTP clients will automatically select the proper transfer mode, so you needn't worry about it.</p>
 
 <div class="notice">
 <p><b>Did you rename your HESK's <i>/admin</i> folder?</b> If yes, don't forget to move files from the new version's <i>/admin</i> folder into your renamed folder.</p>
@@ -184,18 +184,18 @@ https://www.example.com/helpdesk/install</p>
    <ul>
    <li><b>STEP 1: License agreement</b> - read the HESK License agreement and confirm that you agree with the terms.</li>
    <li><b>STEP 2: Check setup</b> - the script will test your server to see if all required settings are correct and advise solutions to any problems.</li>
-   <li><b>STEP 3: Database settings</b> - check your MySQL database settings and the script will test them.<br />
+   <li><b>STEP 3: Database settings</b> - check your MySQL database settings, and the script will test them.<br />
        <span class="dest">The settings must be the same as with your old HESK installation</span></li>
-   <li><b>STEP 4: Update database tables</b> - everything OK, the script will update existing MySQL tables.<br />&nbsp;</li>
+   <li><b>STEP 4: Update database tables</b> - everything OK; the script will update existing MySQL tables.<br />&nbsp;</li>
    </ul>
 </li>
 <li>
 <p style="font-weight:bold">Before closing the upgrade script, <span class="dest">DELETE the &quot;install&quot; directory on your server!</span></p>
 </li>
-<li><p>Open the admin panel (https://www.example.com/helpdesk/admin) and log in with your username. If the password doesn't work anymore try <a href="https://www.hesk.com/knowledgebase/?article=22">resetting it</a>.</p></li>
+<li><p>Open the admin panel (https://www.example.com/helpdesk/admin) and log in with your username. If your password doesn't work anymore, <a href="https://www.hesk.com/knowledgebase/?article=22">reset it</a>.</p></li>
 <li><p>Test HESK to make sure the upgrade was successful and everything works. You may need to modify your Help Desk title and Custom field settings if they are not displaying correctly.</p></li>
 <li>
-<p>If you own a HESK license you might need to <a href="https://www.hesk.com/license">download a new one</a>.</p>
+<p>If you own a HESK license, you might need to <a href="https://www.hesk.com/license">download a new one</a>.</p>
 <p>If not, consider supporting HESK by <a href="https://www.hesk.com/buy.php">purchasing a license</a>.</p></li>
 <li><p>Good luck with using HESK!<br />&nbsp;</p></li>
 </ol>
@@ -203,7 +203,7 @@ https://www.example.com/helpdesk/install</p>
 <h2 id="help">&raquo; HELP and Troubleshooting</h2>
 
 <div class="notice" style="font-size:15px">
-<p style="text-align:center">For comprehensive and up-to-date help and troubleshooting guides please visit:<br />
+<p style="text-align:center">For comprehensive and up-to-date help and troubleshooting guides, please visit:<br />
 <a href="https://www.hesk.com/knowledgebase/"><b>HESK Knowledgebase</b></a></p>
 </div>
 
@@ -219,7 +219,7 @@ https://www.example.com/helpdesk/install</p>
 
 <p>&nbsp;</p>
 
-<p style="text-align:center">&copy; Copyright <a href="https://www.hesk.com">HESK.COM</a> 2005-2020. All rights reserved.<br />
+<p style="text-align:center">&copy; Copyright <a href="https://www.hesk.com">HESK.COM</a> 2005-2021. All rights reserved.<br />
 &reg; HESK is a registered trademark of Klemen Stirn.</p>
 
 </div>

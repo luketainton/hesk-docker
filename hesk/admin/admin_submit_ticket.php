@@ -39,6 +39,32 @@ if ( empty($_POST) && ! empty($_SERVER['CONTENT_LENGTH']) )
 	hesk_error($hesklang['maxpost']);
 }
 
+// Changing category? Remember data and redirect to category select page
+if (hesk_POST('change_category') == 1)
+{
+    $_SESSION['as_name']     = hesk_POST('name');
+    $_SESSION['as_email']    = hesk_POST('email');
+    $_SESSION['as_priority'] = hesk_POST('priority');
+    $_SESSION['as_subject']  = hesk_POST('subject');
+    $_SESSION['as_message']  = hesk_POST('message');
+    $_SESSION['as_due_date'] = hesk_POST('due_date');
+    $_SESSION['as_owner']    = hesk_POST('owner');
+    $_SESSION['as_notify']   = hesk_POST('notify');
+    $_SESSION['as_show']     = hesk_POST('show');
+    $_SESSION['as_language'] = hesk_POST('as_language');
+
+    foreach ($hesk_settings['custom_fields'] as $k=>$v)
+    {
+        if ($v['use'] && ! in_array($v['type'], array('date', 'email')))
+        {
+            $_SESSION["as_$k"] = ($v['type'] == 'checkbox') ? hesk_POST_array($k) : hesk_POST($k);
+        }
+    }
+
+    header('Location: new_ticket.php');
+    exit();
+}
+
 $hesk_error_buffer = array();
 
 $tmpvar['name']	    = hesk_input( hesk_POST('name') ) or $hesk_error_buffer['name']=$hesklang['enter_your_name'];
@@ -214,11 +240,16 @@ foreach ($hesk_settings['custom_fields'] as $k=>$v)
     }
 }
 
+$tmpvar['due_date'] = hesk_input(hesk_POST('due_date'));
+if ($tmpvar['due_date'] != '' && !preg_match("/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/", $tmpvar['due_date'])) {
+    $hesk_error_buffer['due_date'] = $hesklang['invalid_due_date'];
+}
+
 // Generate tracking ID
 $tmpvar['trackid'] = hesk_createID();
 
 // Log who submitted ticket
-$tmpvar['history'] = sprintf($hesklang['thist7'], hesk_date(), $_SESSION['name'].' ('.$_SESSION['user'].')');
+$tmpvar['history'] = sprintf($hesklang['thist7'], hesk_date(), addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 $tmpvar['openedby'] = $_SESSION['id'];
 
 // Owner
@@ -239,7 +270,7 @@ if (hesk_checkPermission('can_assign_others',0))
 		if ($autoassign_owner)
 		{
 			$tmpvar['owner']    = intval($autoassign_owner['id']);
-			$tmpvar['history'] .= sprintf($hesklang['thist10'],hesk_date(),$autoassign_owner['name'].' ('.$autoassign_owner['user'].')');
+			$tmpvar['history'] .= sprintf($hesklang['thist10'],hesk_date(),addslashes($autoassign_owner['name']).' ('.$autoassign_owner['user'].')');
 		}
         else
         {
@@ -254,7 +285,7 @@ if (hesk_checkPermission('can_assign_others',0))
     else
     {
 	    // Has the new owner access to the selected category?
-		$res = hesk_dbQuery("SELECT `name`,`isadmin`,`categories` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` WHERE `id`='{$tmpvar['owner']}' LIMIT 1");
+		$res = hesk_dbQuery("SELECT `name`,`user`,`isadmin`,`categories` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` WHERE `id`='{$tmpvar['owner']}' LIMIT 1");
 	    if (hesk_dbNumRows($res) == 1)
 	    {
 	    	$row = hesk_dbFetchAssoc($res);
@@ -267,6 +298,7 @@ if (hesk_checkPermission('can_assign_others',0))
 					$hesk_error_buffer['owner']=$hesklang['onasc'];
 				}
 	        }
+            $tmpvar['history'] .= sprintf($hesklang['thist2'],hesk_date(),addslashes($row['name']).' ('.$row['user'].')',addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 	    }
 	    else
 	    {
@@ -285,6 +317,16 @@ $notify = ! empty($_POST['notify']) ? 1 : 0;
 
 // Show ticket after submission?
 $show = ! empty($_POST['show']) ? 1 : 0;
+
+// Is the ticket language different than current language?
+if ($hesk_settings['can_sel_lang'])
+{
+    $new_lang = hesk_POST('as_language');
+    if (isset($hesk_settings['languages'][$new_lang]))
+    {
+        $hesklang['LANGUAGE'] = $new_lang;
+    }
+}
 
 // Attachments
 if ($hesk_settings['attachments']['use'])
@@ -310,14 +352,16 @@ if (count($hesk_error_buffer)!=0)
 {
 	$_SESSION['iserror'] = array_keys($hesk_error_buffer);
 
-    $_SESSION['as_name']     =  hesk_POST('name');
-    $_SESSION['as_email']    =  hesk_POST('email');
+    $_SESSION['as_name']     = hesk_POST('name');
+    $_SESSION['as_email']    = hesk_POST('email');
     $_SESSION['as_priority'] = $tmpvar['priority'];
-    $_SESSION['as_subject']  =  hesk_POST('subject');
-    $_SESSION['as_message']  =  hesk_POST('message');
+    $_SESSION['as_subject']  = hesk_POST('subject');
+    $_SESSION['as_message']  = hesk_POST('message');
+    $_SESSION['as_due_date'] = hesk_POST('due_date');
     $_SESSION['as_owner']    = $tmpvar['owner'];
     $_SESSION['as_notify']   = $notify;
     $_SESSION['as_show']     = $show;
+    $_SESSION['as_language'] = hesk_POST('as_language');
 
 	foreach ($hesk_settings['custom_fields'] as $k=>$v)
 	{
@@ -353,8 +397,29 @@ if ($hesk_settings['attachments']['use'] && !empty($attachments))
     }
 }
 
-$tmpvar['message']=hesk_makeURL($tmpvar['message']);
-$tmpvar['message']=nl2br($tmpvar['message']);
+$tmpvar['message_html'] = $tmpvar['message'];
+
+if ($hesk_settings['staff_ticket_formatting'] == 2) {
+    // Decode the message we encoded earlier
+    $tmpvar['message_html'] = hesk_html_entity_decode($tmpvar['message_html']);
+
+    // Clean the HTML code and set the plaintext version
+    require(HESK_PATH . 'inc/htmlpurifier/HeskHTMLPurifier.php');
+    require(HESK_PATH . 'inc/html2text/html2text.php');
+    $purifier = new HeskHTMLPurifier($hesk_settings['cache_dir']);
+    $tmpvar['message_html'] = $purifier->heskPurify($tmpvar['message_html']);
+
+    $tmpvar['message'] = convert_html_to_text($tmpvar['message_html']);
+    $tmpvar['message'] = fix_newlines($tmpvar['message']);
+
+    // Re-encode the message
+    $tmpvar['message'] = hesk_htmlspecialchars($tmpvar['message']);
+} else {
+    // `message` already contains a HTML friendly version. May as well just re-use it
+    $tmpvar['message'] = hesk_makeURL($tmpvar['message']);
+    $tmpvar['message'] = nl2br($tmpvar['message']);
+    $tmpvar['message_html'] = $tmpvar['message'];
+}
 
 // Track who assigned the ticket
 if ($tmpvar['owner'] > 0)
@@ -403,6 +468,8 @@ hesk_cleanSessionVars('as_message');
 hesk_cleanSessionVars('as_owner');
 hesk_cleanSessionVars('as_notify');
 hesk_cleanSessionVars('as_show');
+hesk_cleanSessionVars('as_due_date');
+hesk_cleanSessionVars('as_language');
 foreach ($hesk_settings['custom_fields'] as $k=>$v)
 {
     hesk_cleanSessionVars("as_$k");
@@ -422,5 +489,6 @@ if ($show)
 }
 else
 {
-	hesk_process_messages($hesklang['new_ticket_submitted'].'. <a href="admin_ticket.php?track=' . $ticket['trackid'] . '&Refresh=' . mt_rand(10000,99999) . '">' . $hesklang['view_ticket'] . '</a>', 'new_ticket.php', 'SUCCESS');
+    $link = hesk_checkPermission('can_view_tickets',0) ? '<a href="admin_ticket.php?track=' . $ticket['trackid'] . '&Refresh=' . mt_rand(10000,99999) . '">' . $hesklang['view_ticket'] . '</a>' : '';
+    hesk_process_messages($hesklang['new_ticket_submitted'].'. ' . $link, 'new_ticket.php', 'SUCCESS');
 }

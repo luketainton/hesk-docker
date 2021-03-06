@@ -47,7 +47,7 @@ $options = array(
 	3 => $hesklang['low']
 );
 
-$revision = sprintf($hesklang['thist8'],hesk_date(),$options[$priority],$_SESSION['name'].' ('.$_SESSION['user'].')');
+$revision = sprintf($hesklang['thist8'],hesk_date(),$options[$priority],addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 
 hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `priority`='{$priority}', `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') WHERE `trackid`='".hesk_dbEscape($trackingID)."'");
 if (hesk_dbAffectedRows() != 1)

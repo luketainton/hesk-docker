@@ -50,6 +50,9 @@ $hesk_settings['pop3_password']  = 'password';
 //                         END OPTIONAL MODIFICATIONS                         //
 //============================================================================//
 
+// Do we require a key if not accessed over CLI?
+hesk_authorizeNonCLI();
+
 // Is this feature enabled?
 if (empty($hesk_settings['pop3']))
 {

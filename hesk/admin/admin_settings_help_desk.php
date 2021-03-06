@@ -159,6 +159,17 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') ) {
             }
             return true;
         }
+
+        function hesk_generateUrlAccessKey(fID) {
+            var length           = Math.random() * (30 - 20) + 20;
+            var result           = '';
+            var characters       = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ1234567890-_.';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            $('#' + fID).val(result);
+        }
         //-->
     </script>
     <form method="post" action="admin_settings_save.php" name="form1" onsubmit="return hesk_checkFields()">
@@ -256,6 +267,20 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') ) {
                         </a>
                     </label>
                     <input type="text" class="form-control" name="s_max_open" size="5" maxlength="3" value="<?php echo $hesk_settings['max_open']; ?>">
+                </div>
+                <div class="form-group short">
+                    <label>
+                        <span><?php echo $hesklang['set_ds']; ?></span>
+                        <a onclick="hesk_window('<?php echo $help_folder; ?>helpdesk.html#84','400','500')">
+                            <div class="tooltype right">
+                                <svg class="icon icon-info">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                                </svg>
+                            </div>
+                        </a>
+                    </label>
+                    <input type="text" class="form-control" name="s_due_soon" size="5" maxlength="3" value="<?php echo $hesk_settings['due_soon']; ?>">
+                    <span><?php echo $hesklang['set_ds2']; ?></span>
                 </div>
                 <div class="radio-group mt24">
                     <h5>
@@ -844,6 +869,32 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') ) {
                     <input type="text" class="form-control" name="s_cat_show_select" maxlength="3" value="<?php echo $hesk_settings['cat_show_select']; ?>">
                     <span><?php echo $hesklang['scat2']; ?></span>
                 </div>
+                <?php
+                $plain = $hesk_settings['staff_ticket_formatting']==0 ? 'checked' : '';
+                $html = $hesk_settings['staff_ticket_formatting']==2 ? 'checked' : '';
+                ?>
+                <div class="radio-group">
+                    <h5>
+                        <span><?php echo $hesklang['ticket_formatting_staff']; ?></span>
+                        <a onclick="hesk_window('<?php echo $help_folder; ?>helpdesk.html#80','400','500')">
+                            <div class="tooltype right">
+                                <svg class="icon icon-info">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                                </svg>
+                            </div>
+                        </a>
+                    </h5>
+                    <div class="radio-list">
+                        <div class="radio-custom">
+                            <input type="radio" id="s_ticket_formatting_staff0" name="s_ticket_formatting_staff" value="0" <?php echo $plain; ?>>
+                            <label for="s_ticket_formatting_staff0"><?php echo $hesklang['ticket_formatting_plaintext']; ?></label>
+                        </div>
+                        <div class="radio-custom">
+                            <input type="radio" id="s_ticket_formatting_staff2" name="s_ticket_formatting_staff" value="2" <?php echo $html; ?>>
+                            <label for="s_ticket_formatting_staff2"><?php echo $hesklang['ticket_formatting_rich_text']; ?></label>
+                        </div>
+                    </div>
+                </div>
             </section>
             <section class="settings__form_block">
                 <h3><?php echo $hesklang['sp']; ?></h3>
@@ -1032,6 +1083,20 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') ) {
                     </label>
                     <input type="text" class="form-control" name="s_attempt_banmin" maxlength="3" value="<?php echo $hesk_settings['attempt_banmin']; ?>">
                 </div>
+                <div class="form-group short">
+                    <label>
+                        <span><?php echo $hesklang['flood']; ?></span>
+                        <a onclick="hesk_window('<?php echo $help_folder; ?>helpdesk.html#81','400','500')">
+                            <div class="tooltype right">
+                                <svg class="icon icon-info">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                                </svg>
+                            </div>
+                        </a>
+                    </label>
+                    <input type="text" class="form-control" name="s_flood" maxlength="3" value="<?php echo $hesk_settings['flood']; ?>">
+                    <span><?php echo $hesklang['seconds']; ?></span>
+                </div>
                 <div class="checkbox-group">
                     <h5>
                         <span><?php echo $hesklang['passr']; ?></span>
@@ -1080,6 +1145,29 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') ) {
                         <label for="s_x_frame_opt"><?php echo $hesklang['frames2']; ?></label>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>
+                        <span><?php echo $hesklang['cookies']; ?></span>
+                        <a onclick="hesk_window('<?php echo $help_folder; ?>helpdesk.html#82','400','500')">
+                            <div class="tooltype right">
+                                <svg class="icon icon-info">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                                </svg>
+                            </div>
+                        </a>
+                    </label>
+                    <div class="dropdown-select center out-close">
+                        <select name="s_samesite" id="samesite-select">
+                        <?php
+                        $samesite_options = array('Strict', 'Lax', 'None');
+                        foreach ($samesite_options as $samesite_option)
+                        {
+                            echo '<option value="' . $samesite_option . '"' . ($hesk_settings['samesite'] == $samesite_option ? ' selected' : '') . '>' . $samesite_option . '</option>';
+                        }
+                        ?>
+                        </select>
+                    </div>
+                </div>
                 <div class="checkbox-group">
                     <h5>
                         <span><?php echo $hesklang['ssl']; ?></span>
@@ -1098,6 +1186,27 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') ) {
                         <?php else: ?>
                             <label for="s_force_ssl"><?php echo $hesklang['d_ssl']; ?></label>
                         <?php endif; ?>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="s_url_key">
+                            <span><?php echo $hesklang['ukey']; ?></span>
+                            <a onclick="hesk_window('<?php echo $help_folder; ?>helpdesk.html#83','400','500')">
+                                <div class="tooltype right">
+                                    <svg class="icon icon-info">
+                                        <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                                    </svg>
+                                </div>
+                            </a>
+                        </label>
+                        <input class="form-control" type="text" id="url_key" name="s_url_key" value="<?php echo hesk_htmlentities($hesk_settings['url_key']); ?>">
+                    </div>
+                    <div class="form-group">
+                        <h5></h5>
+                        <button style="margin-left: 24px" type="button" class="btn btn--blue-border" onclick="Javascript:hesk_generateUrlAccessKey('url_key')">
+                            <?php echo $hesklang['ukeyg']; ?>
+                        </button>
                     </div>
                 </div>
             </section>

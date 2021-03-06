@@ -137,7 +137,7 @@ if ( isset($_POST['action-type']) && $_POST['action-type'] == 'assi')
 
 			$this_id = intval($this_id) or hesk_error($hesklang['id_not_valid']);
 
-			$revision = sprintf($hesklang['thist2'],hesk_date(),'<i>'.$hesklang['unas'].'</i>',$_SESSION['name'].' ('.$_SESSION['user'].')');
+			$revision = sprintf($hesklang['thist2'],hesk_date(),'<i>'.$hesklang['unas'].'</i>',addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 			$res = hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `owner`=0 , `assignedby`=NULL , `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') WHERE `id`={$this_id} LIMIT 1");
 
 			$end_message[] = sprintf($hesklang['assign_2'], $this_id);
@@ -181,7 +181,7 @@ if ( isset($_POST['action-type']) && $_POST['action-type'] == 'assi')
 		}
 		if ( $owner_data['isadmin'] || in_array($ticket['category'],$owner_data['categories']))
 		{
-			$revision = sprintf($hesklang['thist2'],hesk_date(),$owner_data['name'].' ('.$owner_data['user'].')',$_SESSION['name'].' ('.$_SESSION['user'].')');
+			$revision = sprintf($hesklang['thist2'],hesk_date(),addslashes($owner_data['name']).' ('.$owner_data['user'].')',addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 			hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `owner`={$owner} , `assignedby`=".intval($_SESSION['id']).", `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') WHERE `id`={$this_id} LIMIT 1");
 
 			$end_message[] = sprintf($hesklang['assign_4'], $ticket['trackid'], $owner_data['name']);
@@ -205,6 +205,7 @@ if ( isset($_POST['action-type']) && $_POST['action-type'] == 'assi')
             'attachments'	=> $ticket['attachments'],
             'dt'			=> hesk_date($ticket['dt'], true),
             'lastchange'	=> hesk_date($ticket['lastchange'], true),
+            'due_date'      => hesk_format_due_date($ticket['due_date']),
             'id'			=> $ticket['id'],
             'time_worked'   => $ticket['time_worked'],
             'last_reply_by' => hesk_getReplierName($ticket),
@@ -267,7 +268,7 @@ if ( array_key_exists($_POST['a'], $priorities) )
 
 		hesk_okCategory($ticket['category']);
 
-		$revision = sprintf($hesklang['thist8'],hesk_date(),$priority['formatted'],$_SESSION['name'].' ('.$_SESSION['user'].')');
+		$revision = sprintf($hesklang['thist8'],hesk_date(),$priority['formatted'],addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 		hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `priority`='{$priority['value']}', `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') WHERE `id`={$this_id}");
 
 		$i++;
@@ -574,7 +575,7 @@ else
 		require(HESK_PATH . 'inc/email_functions.inc.php');
 	}
 
-    $revision = sprintf($hesklang['thist3'],hesk_date(),$_SESSION['name'].' ('.$_SESSION['user'].')');
+    $revision = sprintf($hesklang['thist3'],hesk_date(),addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 
 	foreach ($_POST['id'] as $this_id)
 	{

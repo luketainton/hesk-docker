@@ -15,7 +15,7 @@
 if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
 
 // We will be installing this HESK version:
-define('HESK_NEW_VERSION','3.1.2');
+define('HESK_NEW_VERSION','3.2.0');
 define('REQUIRE_PHP_VERSION','5.3.0');
 define('REQUIRE_MYSQL_VERSION','5.0.7');
 
@@ -32,6 +32,11 @@ $hesk_settings['languages']=array('English' => array('folder'=>'en','hr'=>'-----
 if (!isset($hesk_settings['x_frame_opt']))
 {
     $hesk_settings['x_frame_opt'] = 1;
+}
+
+if (!isset($hesk_settings['samesite']))
+{
+    $hesk_settings['samesite'] = 'Lax';
 }
 
 if (!isset($hesk_settings['force_ssl']))
@@ -212,6 +217,8 @@ $hesk_settings[\'webmaster_mail\']=\'' . $set['webmaster_mail'] . '\';
 $hesk_settings[\'noreply_mail\']=\'' . $set['noreply_mail'] . '\';
 $hesk_settings[\'noreply_name\']=\'' . $set['noreply_name'] . '\';
 $hesk_settings[\'site_theme\']=\'' . $set['site_theme'] . '\';
+$hesk_settings[\'admin_css\']=' . $set['admin_css'] . ';
+$hesk_settings[\'admin_css_url\']=\'' . $set['admin_css_url'] . '\';
 
 // --> Language settings
 $hesk_settings[\'can_sel_lang\']=' . $set['can_sel_lang'] . ';
@@ -239,6 +246,7 @@ $hesk_settings[\'max_listings\']=' . $set['max_listings'] . ';
 $hesk_settings[\'print_font_size\']=' . $set['print_font_size'] . ';
 $hesk_settings[\'autoclose\']=' . $set['autoclose'] . ';
 $hesk_settings[\'max_open\']=' . $set['max_open'] . ';
+$hesk_settings[\'due_soon\']=' . $set['due_soon'] . ';
 $hesk_settings[\'new_top\']=' . $set['new_top'] . ';
 $hesk_settings[\'reply_top\']=' . $set['reply_top'] . ';
 $hesk_settings[\'hide_replies\']=' . $set['hide_replies'] . ';
@@ -264,6 +272,7 @@ $hesk_settings[\'short_link\']=' . $set['short_link'] . ';
 $hesk_settings[\'select_cat\']=' . $set['select_cat'] . ';
 $hesk_settings[\'select_pri\']=' . $set['select_pri'] . ';
 $hesk_settings[\'cat_show_select\']=' . $set['cat_show_select'] . ';
+$hesk_settings[\'staff_ticket_formatting\']=' . $set['staff_ticket_formatting'] . ';
 
 // --> SPAM Prevention
 $hesk_settings[\'secimg_use\']=' . $set['secimg_use'] . ';
@@ -278,10 +287,13 @@ $hesk_settings[\'question_ans\']=\'' . $set['question_ans'] . '\';
 // --> Security
 $hesk_settings[\'attempt_limit\']=' . $set['attempt_limit'] . ';
 $hesk_settings[\'attempt_banmin\']=' . $set['attempt_banmin'] . ';
+$hesk_settings[\'flood\']=' . $set['flood'] . ';
 $hesk_settings[\'reset_pass\']=' . $set['reset_pass'] . ';
 $hesk_settings[\'email_view_ticket\']=' . $set['email_view_ticket'] . ';
 $hesk_settings[\'x_frame_opt\']=' . $set['x_frame_opt'] . ';
+$hesk_settings[\'samesite\']=\'' . $set['samesite'] . '\';
 $hesk_settings[\'force_ssl\']=' . $set['force_ssl'] . ';
+$hesk_settings[\'url_key\']=\'' . $set['url_key'] . '\';
 
 // --> Attachments
 $hesk_settings[\'attachments\']=array (
@@ -344,6 +356,7 @@ $hesk_settings[\'imap_job_wait\']=' . $set['imap_job_wait'] . ';
 $hesk_settings[\'imap_host_name\']=\'' . $set['imap_host_name'] . '\';
 $hesk_settings[\'imap_host_port\']=' . $set['imap_host_port'] . ';
 $hesk_settings[\'imap_enc\']=\'' . $set['imap_enc'] . '\';
+$hesk_settings[\'imap_noval_cert\']=' . $set['imap_noval_cert'] . ';
 $hesk_settings[\'imap_keep\']=' . $set['imap_keep'] . ';
 $hesk_settings[\'imap_user\']=\'' . $set['imap_user'] . '\';
 $hesk_settings[\'imap_password\']=\'' . $set['imap_password'] . '\';
@@ -604,7 +617,12 @@ function hesk_iCheckSetup()
 		';
     }
 
-    // 2. File hesk_settings.inc.php must be writable
+    // 2. json_encode / json_decode must be available
+    if (!extension_loaded('json')) {
+        $correct_these[] = 'The JSON PHP extension is required. Ask your hosting company about how to have the JSON extension enabled.';
+    }
+
+    // 3. File hesk_settings.inc.php must be writable
 	if ( ! is__writable(HESK_PATH . 'hesk_settings.inc.php') )
 	{
 		// -> try to CHMOD it
@@ -626,7 +644,7 @@ function hesk_iCheckSetup()
 		}
 	}
 
-    // 3. Folder attachments must exist
+    // 4. Folder attachments must exist
     $hesk_settings['attach_dir_name'] = isset($hesk_settings['attach_dir']) ? $hesk_settings['attach_dir'] : 'attachments';
     $hesk_settings['attach_dir'] = HESK_PATH . $hesk_settings['attach_dir_name'];
 
@@ -667,7 +685,7 @@ function hesk_iCheckSetup()
 		';
 	}
 
-	// 3.2 Folder cache must exist
+	// 4.2 Folder cache must exist
 	$hesk_settings['cache_dir_name'] = isset($hesk_settings['cache_dir']) ? $hesk_settings['cache_dir'] : 'cache';
 	$hesk_settings['cache_dir'] = HESK_PATH . $hesk_settings['cache_dir_name'];
 
@@ -708,7 +726,7 @@ function hesk_iCheckSetup()
 		';
 	}
 
-    // 4. MySQL must be available
+    // 5. MySQL must be available
 	if ( ! function_exists('mysql_connect') && ! function_exists('mysqli_connect') )
 	{
 		$correct_these[] = '
@@ -718,10 +736,10 @@ function hesk_iCheckSetup()
 		';
 	}
 
-    // 5. Can we use GD library?
+    // 6. Can we use GD library?
 	$GD_LIB = ( extension_loaded('gd') && function_exists('gd_info') ) ? true : false;
 
-	// 6. Make sure old files are deleted
+	// 7. Make sure old files are deleted
 	$hesk_settings['admin_dir'] = isset($hesk_settings['admin_dir']) ? $hesk_settings['admin_dir'] : 'admin';
 	$old_files = array(
 

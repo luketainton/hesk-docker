@@ -41,6 +41,10 @@ require(TEMPLATE_PATH . 'customer/view-ticket/partial/add-reply.php');
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css" />
     <link rel="stylesheet" href="./css/zebra_tooltips.css">
+    <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
+        <script type="text/javascript" src="<?php echo HESK_PATH; ?>js/prism.js?<?php echo $hesk_settings['hesk_version']; ?>"></script>
+        <link rel="stylesheet" media="all" href="<?php echo HESK_PATH; ?>css/prism.css?<?php echo $hesk_settings['hesk_version']; ?>">
+    <?php endif; ?>
     <?php include(TEMPLATE_PATH . '../../head.txt'); ?>
 </head>
 
@@ -137,10 +141,10 @@ require(TEMPLATE_PATH . 'customer/view-ticket/partial/add-reply.php');
                             </div>
                             <?php
                             hesk3_output_custom_fields_for_display($customFieldsBeforeMessage);
-                            if ($ticket['message'] != ''):
+                            if ($ticket['message_html'] != ''):
                                 ?>
-                            <div class="block--description">
-                                <p><?php echo $ticket['message']; ?></p>
+                            <div class="block--description browser-default">
+                                <p><?php echo $ticket['message_html']; ?></p>
                             </div>
                             <?php
                             endif;
@@ -153,7 +157,7 @@ require(TEMPLATE_PATH . 'customer/view-ticket/partial/add-reply.php');
                             displayReplies($replies, $trackingID);
                         }
 
-                        if ($ticket['locked'] != 1 && $ticket['status'] != 3 && !$hesk_settings['reply_top']) {
+                        if ($ticket['locked'] != 1 && $ticket['status'] != 3 && !$hesk_settings['reply_top'] && !$ticketJustReopened) {
                             showReplyForm($trackingID, $email, false);
                         }
                         ?>
@@ -322,8 +326,8 @@ function displayReplies($replies, $trackingId) {
                     </svg>
                 </a>
             </div>
-            <div class="block--description">
-                <p><?php echo $reply['message']; ?></p>
+            <div class="block--description browser-default">
+                <p><?php echo $reply['message_html']; ?></p>
             </div>
             <?php listAttachments($reply['attachments'], $trackingId); ?>
             <?php if ($hesk_settings['rating'] && $reply['staffid']): ?>

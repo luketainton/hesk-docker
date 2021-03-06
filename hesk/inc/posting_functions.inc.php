@@ -12,7 +12,7 @@
  */
 
 /* Check if this is a valid include */
-if (!defined('IN_SCRIPT')) {die('Invalid attempt');} 
+if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
 
 /*** FUNCTIONS ***/
 
@@ -27,7 +27,16 @@ function hesk_newTicket($ticket)
     }
 
 	// If language is not set or default, set it to NULL
-    $language = ( ! $hesk_settings['can_sel_lang'] || $hesklang['LANGUAGE'] == HESK_DEFAULT_LANGUAGE ) ? "NULL" : "'" . hesk_dbEscape($hesklang['LANGUAGE']) . "'";
+    if ( ! $hesk_settings['can_sel_lang'] || $hesklang['LANGUAGE'] == HESK_DEFAULT_LANGUAGE)
+    {
+        $ticket['language'] = HESK_DEFAULT_LANGUAGE;
+        $language = "NULL";
+    }
+    else
+    {
+        $ticket['language'] = $hesklang['LANGUAGE'];
+        $language = "'" . hesk_dbEscape($hesklang['LANGUAGE']) . "'";
+    }
 
 	// Prepare SQL for custom fields
 	$custom_where = '';
@@ -51,6 +60,15 @@ function hesk_newTicket($ticket)
         $ab_what  = '';
     }
 
+    if (isset($ticket['due_date']) && $ticket['due_date'] != '') {
+        $date = new DateTime($ticket['due_date'] . 'T00:00:00');
+        $formatted_date = $date->format('Y-m-d');
+        $due_date = "'" . hesk_dbEscape($formatted_date) . "'";
+    } else {
+        $due_date = 'NULL';
+        $ticket['due_date'] = '';
+    }
+
 	// Insert ticket into database
 	hesk_dbQuery("
 	INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets`
@@ -62,6 +80,7 @@ function hesk_newTicket($ticket)
 		`priority`,
 		`subject`,
 		`message`,
+		`message_html`,
 		`dt`,
 		`lastchange`,
 		`articles`,
@@ -71,7 +90,8 @@ function hesk_newTicket($ticket)
 		`owner`,
 		`attachments`,
 		`merged`,
-		`history`
+		`history`,
+		`due_date`
 		{$custom_where}
         {$ab_where}
 	)
@@ -84,6 +104,7 @@ function hesk_newTicket($ticket)
 		'".intval($ticket['priority'])."',
 		'".hesk_dbEscape( hesk_mb_substr($ticket['subject'], 0, 255) )."',
 		'".hesk_dbEscape($ticket['message'])."',
+		'".hesk_dbEscape($ticket['message_html'])."',
 		NOW(),
 		NOW(),
 		".( isset($ticket['articles']) ? "'{$ticket['articles']}'" : 'NULL' ).",
@@ -93,7 +114,8 @@ function hesk_newTicket($ticket)
 		'".intval($ticket['owner'])."',
 		'".hesk_dbEscape($ticket['attachments'])."',
 		'',
-		'".hesk_dbEscape($ticket['history'])."'
+		'".hesk_dbEscape($ticket['history'])."',
+		{$due_date}
 		{$custom_what}
         {$ab_what}
 	)
@@ -114,8 +136,10 @@ function hesk_newTicket($ticket)
 	'attachments'	=> $ticket['attachments'],
 	'dt'			=> hesk_date(),
 	'lastchange'	=> hesk_date(),
+    'due_date'      => hesk_format_due_date($ticket['due_date']),
 	'id'			=> hesk_dbInsertID(),
     'time_worked'   => '00:00:00',
+    'language'      => $ticket['language'],
 	);
 
 	// Add custom fields to the array

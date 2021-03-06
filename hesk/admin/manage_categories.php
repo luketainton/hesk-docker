@@ -84,6 +84,7 @@ if (!hesk_SESSION('error')) {
             <table id="default-table" class="table sindu-table">
                 <thead>
                 <tr>
+                    <th><?php echo $hesklang['id']; ?></th>
                     <th><?php echo $hesklang['cat_name']; ?></th>
                     <th>
                         <span><?php echo $hesklang['priority']; ?></span>
@@ -167,6 +168,7 @@ if (!hesk_SESSION('error')) {
 
                     ?>
                     <tr <?php echo $table_row; ?> data-category-id="<?php echo $mycat['id']; ?>">
+                        <td><?php echo $mycat['id']; ?></td>
                         <td>
                             <span class="category-name"><?php echo $mycat['name']; ?></span>
                             <div class="rename-link tooltype right out-close" data-modal=".rename-category" data-callback="initRenameCategoryModal">
@@ -210,10 +212,10 @@ if (!hesk_SESSION('error')) {
                             <div class="dropdown-select center out-close">
                                 <form action="manage_categories.php" method="get">
                                     <select name="s" onchange="this.form.submit()">
-                                        <option value="0" <?php if ($mycat['type']): ?>selected<?php endif; ?>>
+                                        <option value="0" <?php if ($mycat['type'] == 0): ?>selected<?php endif; ?>>
                                             <?php echo $hesklang['cat_public']; ?>
                                         </option>
-                                        <option value="1" <?php if ($mycat['type']): ?>selected<?php endif; ?>>
+                                        <option value="1" <?php if ($mycat['type'] == 1): ?>selected<?php endif; ?>>
                                             <?php echo $hesklang['cat_private']; ?>
                                         </option>
                                     </select>
@@ -243,7 +245,10 @@ if (!hesk_SESSION('error')) {
                         </td>
                         <?php endif; ?>
                         <td class="nowrap generate">
-                            <a href="javascript:" data-action="generate-link" data-link="<?php echo htmlspecialchars($hesk_settings['hesk_url']) . '/index.php?a=add&catid=' . intval($mycat['id']); ?>"><?php echo $hesklang['geco']; ?></a>
+                            <a href="javascript:"
+                               <?php echo $mycat['type'] == 1 ? 'style="visibility: hidden"' : '' ?>
+                               data-action="generate-link"
+                               data-link="<?php echo htmlspecialchars($hesk_settings['hesk_url']) . '/index.php?a=add&catid=' . intval($mycat['id']); ?>"><?php echo $hesklang['geco']; ?></a>
                             <?php
                             if ($num > 1) {
                                 if ($j == 1) {
@@ -336,13 +341,13 @@ if (!hesk_SESSION('error')) {
             <h3><?php echo $hesklang['ren_cat']; ?></h3>
             <div class="modal__description form">
                 <div class="form-group">
-                    <label style="text-align: left"><?php echo $hesklang['cat_name']; ?> (<?php echo $hesklang['max_chars']; ?>):</label>
+                    <label style="text-align: left"><?php echo $hesklang['cat_name']; ?>:</label>
                     <input type="text"
                            name="name"
                            id="renamecat"
                            class="form-control"
                            size="40"
-                           maxlength="40"
+                           maxlength="100"
                            <?php if (isset($_SESSION['catname2'])): ?>value="<?php echo $_SESSION['catname2']; ?>"<?php endif; ?>>
                     <input type="hidden" name="catid">
                     <input type="hidden" name="a" value="rename">
@@ -375,11 +380,12 @@ if (!hesk_SESSION('error')) {
             }
             ?>
             <div class="form-group">
-                <label><?php echo $hesklang['cat_name']; ?> (<?php echo $hesklang['max_chars']; ?>):</label>
+                <label><?php echo $hesklang['cat_name']; ?>:</label>
                 <input type="text"
                        name="name"
                        class="form-control"
                        id="add_cat_name"
+                       maxlength="100"
                        <?php if (isset($_SESSION['catname'])): ?>value="<?php echo $_SESSION['catname']; ?>"<?php endif; ?>>
             </div>
             <?php
@@ -593,6 +599,9 @@ function remove()
     	hesk_error("$hesklang[int_error]: $hesklang[cat_not_found].");
     }
 
+    // Don't update resolved tickets "Last modified"
+    hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `category`=1, `lastchange`=`lastchange` WHERE `category`='".intval($mycat)."' AND `status` = '3'");
+    // For unresolved tickets, update the "Last modified"
 	hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `category`=1 WHERE `category`='".intval($mycat)."'");
 
     hesk_process_messages($hesklang['cat_removed_db'],$_SERVER['PHP_SELF'],'SUCCESS');

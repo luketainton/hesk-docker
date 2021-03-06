@@ -28,7 +28,7 @@ function hesk_export_to_XML($sql, $export_selected = false)
 	$result = hesk_dbQuery("SELECT `id`,`name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` ORDER BY `name` ASC");
 	while ($row=hesk_dbFetchAssoc($result))
 	{
-		$admins[$row['id']]=$row['name'];
+		$admins[$row['id']]=hesk_msgToPlain($row['name'], 1, 0);
 	}
 
     // Get category names
@@ -38,7 +38,7 @@ function hesk_export_to_XML($sql, $export_selected = false)
         $res2 = hesk_dbQuery("SELECT `id`, `name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE " . hesk_myCategories('id') . " ORDER BY `cat_order` ASC");
         while ($row=hesk_dbFetchAssoc($res2))
         {
-            $my_cat[$row['id']] = hesk_msgToPlain($row['name'], 1);
+            $my_cat[$row['id']] = hesk_msgToPlain($row['name'], 1, 0);
         }
     }
 
@@ -179,6 +179,7 @@ function hesk_export_to_XML($sql, $export_selected = false)
 	<Cell><Data ss:Type="String">'.$hesklang['message'].'</Data></Cell>
 	<Cell><Data ss:Type="String">'.$hesklang['owner'].'</Data></Cell>
 	<Cell><Data ss:Type="String">'.$hesklang['ts'].'</Data></Cell>
+	<Cell><Data ss:Type="String">'.$hesklang['due_date'].'</Data></Cell>
 	';
 
 	foreach ($hesk_settings['custom_fields'] as $k=>$v)
@@ -234,19 +235,29 @@ function hesk_export_to_XML($sql, $export_selected = false)
 		$tmp .= '
 <Row>
 <Cell><Data ss:Type="Number">'.$ticket['id'].'</Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.$ticket['trackid'].']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA($ticket['trackid']).']]></Data></Cell>
 <Cell ss:StyleID="s62"><Data ss:Type="DateTime">'.hesk_date($ticket['dt'], true).'</Data></Cell>
 <Cell ss:StyleID="s62"><Data ss:Type="DateTime">'.hesk_date($ticket['lastchange'], true).'</Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.hesk_msgToPlain($ticket['name'], 1).']]></Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.$ticket['email'].']]></Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.$ticket['category'].']]></Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.$ticket['priority'].']]></Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.$ticket['status'].']]></Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.$ticket['subject'].']]></Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.$ticket['message'].']]></Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.$ticket['owner'].']]></Data></Cell>
-<Cell><Data ss:Type="String"><![CDATA['.$ticket['time_worked'].']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA(hesk_msgToPlain($ticket['name'], 1, 0)).']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA($ticket['email']).']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA($ticket['category']).']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA($ticket['priority']).']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA($ticket['status']).']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA($ticket['subject']).']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA($ticket['message']).']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA($ticket['owner']).']]></Data></Cell>
+<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA($ticket['time_worked']).']]></Data></Cell>
 ';
+
+        // Due date
+        if (empty($ticket['due_date']))
+        {
+            $tmp .= '<Cell><Data ss:Type="String"></Data></Cell>'."\n";
+        }
+        else
+        {
+            $tmp .= '<Cell ss:StyleID="s63"><Data ss:Type="DateTime">'.hesk_date($ticket['due_date'], true).'</Data></Cell>'."\n";
+        }
 
 		// Add custom fields
 		foreach ($hesk_settings['custom_fields'] as $k=>$v)
@@ -261,7 +272,7 @@ function hesk_export_to_XML($sql, $export_selected = false)
                         $tmp .= "</Data></Cell> \n";
 	                    break;
 	                default:
-						$tmp .= '<Cell><Data ss:Type="String"><![CDATA['.hesk_msgToPlain($ticket[$k], 1, 0).']]></Data></Cell>  ' . "\n";
+						$tmp .= '<Cell><Data ss:Type="String"><![CDATA['.hesk_escape_CDATA(hesk_msgToPlain($ticket[$k], 1, 0)).']]></Data></Cell>  ' . "\n";
 	            }
 			}
 		}
@@ -418,3 +429,9 @@ function hesk_export_to_XML($sql, $export_selected = false)
     return array($success_msg, $tickets_exported);
 
 } // END hesk_export_to_XML()
+
+
+function hesk_escape_CDATA($in)
+{
+    return str_replace(']]>', ']]]]><![CDATA[>', $in);
+} // END hesk_escape_CDATA()

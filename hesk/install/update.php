@@ -1201,14 +1201,66 @@ function hesk_iUpdateTables()
     // 3.1.1 no changes
     // 3.1.2 no changes
 
+    // Updating 2.8.3 through 3.1.1 to 3.2.0
+    if ($update_all_next || $hesk_settings['update_from'] == '2.8.3') {
+        // Modify tickets table with due date-related fields only if it doesn't exist (MfH users will already have these columns)
+        $existing_column_rs = hesk_dbQuery("SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE table_name = '".hesk_dbEscape($hesk_settings['db_pfix'])."tickets'
+            AND table_schema = '".hesk_dbEscape($hesk_settings['db_name'])."'
+            AND column_name = 'due_date'");
+
+        if (hesk_dbNumRows($existing_column_rs) === 0) {
+            hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` ADD COLUMN `message_html` mediumtext DEFAULT NULL AFTER `message`, ADD COLUMN `due_date` timestamp NULL DEFAULT NULL, ADD COLUMN `overdue_email_sent` tinyint(1) DEFAULT '0'");
+            hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."users` ADD COLUMN `notify_overdue_unassigned` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1' AFTER `notify_note`");
+            hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."users` ADD COLUMN `notify_overdue_my` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1' AFTER `notify_overdue_unassigned`");
+        } else {
+            hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` ADD COLUMN `message_html` mediumtext DEFAULT NULL AFTER `message`");
+        }
+
+        hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `message_html` = `message`, `lastchange`=`lastchange`");
+        hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` CHANGE `name` `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '', ADD COLUMN `message_html` mediumtext DEFAULT NULL AFTER `message`");
+        hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` SET `message_html` = `message`");
+        hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."reply_drafts` ADD COLUMN `message_html` mediumtext COLLATE utf8_unicode_ci NULL AFTER `message`");
+        hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."reply_drafts` SET `message_html` = `message`");
+        hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."std_replies` ADD COLUMN `message_html` mediumtext COLLATE utf8_unicode_ci NULL AFTER `message`");
+        hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."std_replies` SET `message_html` = `message`");
+        hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."ticket_templates` ADD COLUMN `message_html` mediumtext COLLATE utf8_unicode_ci NULL AFTER `message`");
+        hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."ticket_templates` SET `message_html` = `message`");
+        hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."users` CHANGE `name` `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''");
+        hesk_dbQuery("ALTER TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` CHANGE `name` `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''");
+
+        // -> Log of overdue tickets
+        hesk_dbQuery("
+        CREATE TABLE IF NOT EXISTS `".hesk_dbEscape($hesk_settings['db_pfix'])."log_overdue` (
+          `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+          `dt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `ticket` mediumint(8) UNSIGNED NOT NULL,
+          `category` smallint(5) UNSIGNED NOT NULL,
+          `priority` enum('0','1','2','3') NOT NULL,
+          `status` tinyint(3) UNSIGNED NOT NULL,
+          `owner` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+          `due_date` timestamp NOT NULL DEFAULT '2000-01-01 00:00:00',
+          `comments` varchar(255) DEFAULT NULL,
+          PRIMARY KEY (`id`),
+          KEY `ticket` (`ticket`),
+          KEY `category` (`category`),
+          KEY `priority` (`priority`),
+          KEY `status` (`status`),
+          KEY `owner` (`owner`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+        ");
+
+        $update_all_next = 1;
+    }
+
 	// Insert the "HESK updated to latest version" mail for the administrator
 	if ( file_exists(HESK_PATH.'hesk_license.php') )
 	{
-        hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, 'HESK updated to version ".HESK_NEW_VERSION."', '".hesk_dbEscape("</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<p>&nbsp;<br /><b>Congratulations, your HESK has been successfully updated.</b></p>\r\n\r\n<p><b>Before you go, let me invite you to:</b><br />&nbsp;</p>\r\n\r\n<hr />\r\n#1: help us improve\r\n<hr />\r\n<p>You can suggest what features should be added to HESK by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\n#2: stay updated\r\n<hr />\r\n<p>HESK regularly receives improvements and bug fixes, make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow HESK on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen Stirn<br />\r\nAuthor and owner</p>\r\n\r\n</div><p>")."', NOW(), '0', 9999)");
+        hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, 'HESK updated to version ".HESK_NEW_VERSION."', '".hesk_dbEscape("</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<p>&nbsp;<br /><b>Congratulations, your HESK has been successfully updated.</b></p>\r\n\r\n<p><b>Before you go, let me invite you to:</b><br />&nbsp;</p>\r\n\r\n<hr />\r\n#1: help us improve\r\n<hr />\r\n<p>You can suggest what features should be added to HESK by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\n#2: stay updated\r\n<hr />\r\n<p>HESK regularly receives improvements and bug fixes; make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow HESK on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen<br />\r\n<a href=\"https://www.hesk.com/\">https://www.hesk.com</a></p>\r\n\r\n</div><p>")."', NOW(), '0', 9999)");
 	}
 	else
 	{
-        hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, 'HESK updated to version ".HESK_NEW_VERSION."', '".hesk_dbEscape("</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<p>&nbsp;<br /><b>Congratulations, your HESK has been successfully updated.</b></p>\r\n\r\n<p><b>Before you go, let me invite you to:</b><br />&nbsp;</p>\r\n\r\n<hr />\r\n#1: help us improve\r\n<hr />\r\n<p>You can suggest what features should be added to HESK by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\n#2: stay updated\r\n<hr />\r\n<p>HESK regularly receives improvements and bug fixes, make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow HESK on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\n#3: look professional\r\n<hr />\r\n<p>To look more professional and not advertise the tools you use, <a href=\"https://www.hesk.com/buy.php\">remove &quot;Powered by&quot; links</a> from your help desk.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen Stirn<br />\r\nAuthor and owner</p>\r\n\r\n</div><p>")."', NOW(), '0', 9999)");
+        hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, 'HESK updated to version ".HESK_NEW_VERSION."', '".hesk_dbEscape("</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<p>&nbsp;<br /><b>Congratulations, your HESK has been successfully updated.</b></p>\r\n\r\n<p><b>Before you go, let me invite you to:</b><br />&nbsp;</p>\r\n\r\n<hr />\r\n#1: help us improve\r\n<hr />\r\n<p>You can suggest what features should be added to HESK by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\n#2: stay updated\r\n<hr />\r\n<p>HESK regularly receives improvements and bug fixes; make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow HESK on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\n#3: look professional\r\n<hr />\r\n<p>To look more professional and not advertise the tools you use, <a href=\"https://www.hesk.com/buy.php\">remove &quot;Powered by&quot; links</a> from your help desk.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen<br />\r\n<a href=\"https://www.hesk.com/\">https://www.hesk.com</a></p>\r\n\r\n</div><p>")."', NOW(), '0', 9999)");
 	}
 
 	return true;
@@ -1311,6 +1363,8 @@ function hesk_defaultSettings()
 	$hesk_settings['noreply_mail']='noreply@example.com';
 	$hesk_settings['noreply_name']='Help Desk';
     $hesk_settings['site_theme']='hesk3';
+    $hesk_settings['admin_css']=0;
+    $hesk_settings['admin_css_url']='https://www.example.com/hesk-style.css';
 
 	// --> Language settings
 	$hesk_settings['can_sel_lang']=0;
@@ -1340,9 +1394,10 @@ function hesk_defaultSettings()
 	$hesk_settings['print_font_size']=12;
 	$hesk_settings['autoclose']=0;
 	$hesk_settings['max_open']=0;
+	$hesk_settings['due_soon']=7;
 	$hesk_settings['new_top']=0;
 	$hesk_settings['reply_top']=0;
-    $hesk_settings['hide_replies']=-1;
+    $hesk_settings['hide_replies']=0;
     $hesk_settings['limit_width']=800;
 
 	// --> Features
@@ -1365,6 +1420,7 @@ function hesk_defaultSettings()
 	$hesk_settings['select_cat']=0;
 	$hesk_settings['select_pri']=0;
 	$hesk_settings['cat_show_select']=15;
+	$hesk_settings['staff_ticket_formatting']=0;
 
 	// --> SPAM Prevention
 	$hesk_settings['secimg_use']=1;
@@ -1379,10 +1435,13 @@ function hesk_defaultSettings()
 	// --> Security
 	$hesk_settings['attempt_limit']=6;
 	$hesk_settings['attempt_banmin']=60;
+    $hesk_settings['flood']=3;
 	$hesk_settings['reset_pass']=1;
 	$hesk_settings['email_view_ticket']=1;
 	$hesk_settings['x_frame_opt']=1;
+    $hesk_settings['samesite']='Lax';
 	$hesk_settings['force_ssl']=0;
+    $hesk_settings['url_key']='';
 
 	// --> Attachments
 	$hesk_settings['attachments']=array (
@@ -1445,6 +1504,7 @@ function hesk_defaultSettings()
 	$hesk_settings['imap_host_name']='mail.example.com';
 	$hesk_settings['imap_host_port']=993;
 	$hesk_settings['imap_enc']='ssl';
+	$hesk_settings['imap_noval_cert']=1;
 	$hesk_settings['imap_keep']=0;
 	$hesk_settings['imap_user']='';
 	$hesk_settings['imap_password']='';
@@ -1504,6 +1564,26 @@ function hesk_iDetectVersion()
 {
 	global $hesk_settings, $hesklang;
 
+    // Get a list of tables from the database
+    $tables = array();
+    $res = hesk_dbQuery('SHOW TABLES FROM `'.hesk_dbEscape($hesk_settings['db_name']).'`');
+    while ($row = hesk_dbFetchRow($res))
+    {
+        $tables[] = $row[0];
+    }
+
+    // If we don't have four basic tables this is not a valid HESK install
+    if ( ! in_array($hesk_settings['db_pfix'].'categories', $tables) || ! in_array($hesk_settings['db_pfix'].'replies', $tables) || ! in_array($hesk_settings['db_pfix'].'tickets', $tables) || ! in_array($hesk_settings['db_pfix'].'users', $tables) )
+    {
+        hesk_iDatabase(3);
+    }
+
+    // Version 3.2.0 tables installed?
+    if (in_array($hesk_settings['db_pfix'].'log_overdue', $tables))
+    {
+        return '3.2.0';
+    }
+
     // Version 2.8.3 tables installed?
     $res = hesk_dbQuery("SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '".hesk_dbEscape($hesk_settings['db_pfix'])."tickets' AND table_schema = '".hesk_dbEscape($hesk_settings['db_name'])."' AND column_name = 'name' LIMIT 0, 1");
     $row = hesk_dbFetchRow($res);
@@ -1513,8 +1593,7 @@ function hesk_iDetectVersion()
     }
 
     // Version 2.8.2 tables installed?
-    $res = hesk_dbQuery("SHOW TABLES FROM `".hesk_dbEscape($hesk_settings['db_name'])."` LIKE '".hesk_dbEscape($hesk_settings['db_pfix'])."service_messages'");
-    if (hesk_dbNumRows($res))
+    if (in_array($hesk_settings['db_pfix'].'service_messages', $tables))
     {
         $res = hesk_dbQuery("SHOW COLUMNS FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."service_messages` LIKE 'language'");
         if (hesk_dbNumRows($res))
@@ -1529,15 +1608,6 @@ function hesk_iDetectVersion()
     {
         return '2.8';
     }
-
-	// Get a list of tables from the database
-	$tables = array();
-	$res = hesk_dbQuery('SHOW TABLES FROM `'.hesk_dbEscape($hesk_settings['db_name']).'`');
-
-	while ($row = hesk_dbFetchRow($res))
-	{
-		$tables[] = $row[0];
-	}
 
 	// Version 2.7 tables installed?
 	if (
@@ -1618,12 +1688,6 @@ function hesk_iDetectVersion()
 	// It's a version older than 0.94 or no tables found
 	else
 	{
-		// If we don't have four basic tables this is not a valid HESK install
-		if ( ! in_array('hesk_categories', $tables) || ! in_array('hesk_replies', $tables) || ! in_array('hesk_tickets', $tables) || ! in_array('hesk_users', $tables) )
-		{
-			hesk_iDatabase(3);
-		}
-
 		// Version 0.90 didn't have the notify column in users table
 		$res = hesk_dbQuery("SELECT * FROM `hesk_users` WHERE `id`=1 LIMIT 1");
 		$row = hesk_dbFetchAssoc($res);

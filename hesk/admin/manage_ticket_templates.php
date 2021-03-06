@@ -30,6 +30,11 @@ hesk_checkPermission('can_man_ticket_tpl');
 // Define required constants
 define('LOAD_TABS',1);
 
+if ($hesk_settings['staff_ticket_formatting'] == 2) {
+    define('WYSIWYG',1);
+}
+
+
 /* What should we do? */
 if ( $action = hesk_REQUEST('a') )
 {
@@ -84,7 +89,7 @@ $num = hesk_dbNumRows($result);
                 </div>
             </div>
         </h2>
-        <div class="btn btn--blue-border" ripple="ripple" data-action="create-template" onclick="diplayAddTitle()"><?php echo $hesklang['ticket_tpl_add']; ?></div>
+        <div class="btn btn--blue-border" ripple="ripple" data-action="create-template" onclick="displayAddTitle()"><?php echo $hesklang['ticket_tpl_add']; ?></div>
     </section>
     <ul class="response__list">
         <?php if ($num < 1): ?>
@@ -102,8 +107,10 @@ $num = hesk_dbNumRows($result);
                 unset($_SESSION['canned']['selcat2']);
             }
 
-            $javascript_messages.='myMsgTxt['.$mysaved['id'].']=\''.str_replace("\r\n","\\r\\n' + \r\n'", addslashes($mysaved['message']) )."';\n";
-            $javascript_titles.='myTitle['.$mysaved['id'].']=\''.addslashes($mysaved['title'])."';\n";
+            $message_text = $hesk_settings['staff_ticket_formatting'] == 2 ? $mysaved['message_html'] : $mysaved['message'];
+
+            $javascript_messages.='myMsgTxt['.$mysaved['id'].']=\''.preg_replace("/\r?\n|\r/","\\r\\n' + \r\n'", addslashes($message_text) )."';\n";
+            $javascript_titles.='myTitle['.$mysaved['id'].']=\''.preg_replace("/\r?\n|\r/","\\r\\n' + \r\n'", addslashes($mysaved['title']))."';\n";
 
             echo '
 	    <li ' . $table_row . '>
@@ -215,12 +222,17 @@ $num = hesk_dbNumRows($result);
                 <div class="form-group">
                     <label for="canned_message"><?php echo $hesklang['message']; ?></label>
                     <span id="HeskMsg">
-                        <textarea class="form-control <?php echo in_array('msg', $errors) ? 'isError' : ''; ?>" name="msg" rows="15" cols="70" id="canned_message"><?php
+                        <textarea class="form-control <?php echo in_array('msg', $errors) ? 'isError' : ''; ?>" name="msg" rows="40" cols="70" id="canned_message"><?php
                             if (isset($_SESSION['canned']['msg'])) {
                                 echo stripslashes($_SESSION['canned']['msg']);
                             }
                             ?></textarea>
                     </span>
+                    <?php
+                    if ($hesk_settings['staff_ticket_formatting'] == 2) {
+                        hesk_tinymce_init('#canned_message');
+                    }
+                    ?>
                 </div>
                 <div class="template--submit">
                     <?php if(isset($_SESSION['canned']['what']) && $_SESSION['canned']['what'] == 'EDIT'): ?>
@@ -250,7 +262,12 @@ echo $javascript_messages;
 
 function setMessage(msgid) {
     if (document.getElementById) {
-        document.getElementById('HeskMsg').innerHTML='<textarea class="form-control" id="canned_message" name="msg" rows="15" cols="70">'+myMsgTxt[msgid]+'</textarea>';
+        <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
+        tinymce.get("canned_message").setContent('');
+        tinymce.get("canned_message").execCommand('mceInsertRawHTML', false, myMsgTxt[msgid]);
+        <?php else: ?>
+        document.getElementById('HeskMsg').innerHTML='<textarea class="form-control" id="canned_message" name="msg" rows="40" cols="70">'+myMsgTxt[msgid]+'</textarea>';
+        <?php endif; ?>
         document.getElementById('HeskTitle').innerHTML='<input type="text" class="form-control" id="canned_title" name="name" maxlength="50" value="'+myTitle[msgid]+'">';
     } else {
         document.form1.msg.value=myMsgTxt[msgid];
@@ -264,11 +281,14 @@ function setMessage(msgid) {
     document.getElementsByClassName('template-create')[0].style.display = 'block';
 }
 
-function diplayAddTitle() {
+function displayAddTitle() {
     document.form1.msg.value = '';
     document.form1.name.value = '';
     document.form1.saved_replies.value = 0;
     document.form1.a.value = 'new';
+    <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
+    tinymce.get("canned_message").setContent('');
+    <?php endif; ?>
     document.getElementById('add-title').style.display = 'block';
     document.getElementById('edit-title').style.display = 'none';
 }
@@ -325,7 +345,31 @@ function edit_saved()
         hesk_process_messages($hesk_error_buffer,'manage_ticket_templates.php?saved_replies='.$id);
     }
 
-    $result = hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."ticket_templates` SET `title`='".hesk_dbEscape($savename)."',`message`='".hesk_dbEscape($msg)."' WHERE `id`='".intval($id)."'");
+    if ($hesk_settings['staff_ticket_formatting'] == 2) {
+        // Decode the message we encoded earlier
+        $msg_html = hesk_html_entity_decode($msg);
+
+        // Clean the HTML code and set the plaintext version
+        require(HESK_PATH . 'inc/htmlpurifier/HeskHTMLPurifier.php');
+        require(HESK_PATH . 'inc/html2text/html2text.php');
+        $purifier = new HeskHTMLPurifier($hesk_settings['cache_dir']);
+        $msg_html = $purifier->heskPurify($msg_html);
+
+        $msg = convert_html_to_text($msg_html);
+        $msg = fix_newlines($msg);
+        // Replace regular newlines with \r\n to match regular plaintext storage... but then get rid of any accidental \r\r\n outputs
+        $msg = str_replace("\n", "\r\n", $msg);
+        $msg = str_replace("\r\r\n", "\r\n", $msg);
+
+        // Re-encode the message
+        $msg = hesk_htmlspecialchars($msg);
+    } else {
+        $msg_html = hesk_makeURL($msg);
+        $msg_html = nl2br($msg_html);
+    }
+
+    $result = hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."ticket_templates` SET `title`='".hesk_dbEscape($savename)."',`message`='".hesk_dbEscape($msg)."', `message_html`='".hesk_dbEscape($msg_html)."' WHERE `id`='".intval($id)."'");
+
 
     unset($_SESSION['canned']['what']);
     unset($_SESSION['canned']['id']);
@@ -372,12 +416,35 @@ function new_saved()
         hesk_process_messages($hesk_error_buffer,'manage_ticket_templates.php');
     }
 
+    if ($hesk_settings['staff_ticket_formatting'] == 2) {
+        // Decode the message we encoded earlier
+        $msg_html = hesk_html_entity_decode($msg);
+
+        // Clean the HTML code and set the plaintext version
+        require(HESK_PATH . 'inc/htmlpurifier/HeskHTMLPurifier.php');
+        require(HESK_PATH . 'inc/html2text/html2text.php');
+        $purifier = new HeskHTMLPurifier($hesk_settings['cache_dir']);
+        $msg_html = $purifier->heskPurify($msg_html);
+
+        $msg = convert_html_to_text($msg_html);
+        $msg = fix_newlines($msg);
+        // Replace regular newlines with \r\n to match regular plaintext storage... but then get rid of any accidental \r\r\n outputs
+        $msg = str_replace("\n", "\r\n", $msg);
+        $msg = str_replace("\r\r\n", "\r\n", $msg);
+
+        // Re-encode the message
+        $msg = hesk_htmlspecialchars($msg);
+    } else {
+        $msg_html = hesk_makeURL($msg);
+        $msg_html = nl2br($msg_html);
+    }
+
     /* Get the latest tpl_order */
     $result = hesk_dbQuery('SELECT `tpl_order` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'ticket_templates` ORDER BY `tpl_order` DESC LIMIT 1');
     $row = hesk_dbFetchRow($result);
     $my_order = isset($row[0]) ? intval($row[0]) + 10 : 10;
 
-    hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."ticket_templates` (`title`,`message`,`tpl_order`) VALUES ('".hesk_dbEscape($savename)."','".hesk_dbEscape($msg)."','".intval($my_order)."')");
+    hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."ticket_templates` (`title`,`message`,`message_html`,`tpl_order`) VALUES ('".hesk_dbEscape($savename)."','".hesk_dbEscape($msg)."','".hesk_dbEscape($msg_html)."','".intval($my_order)."')");
 
     unset($_SESSION['canned']['what']);
     unset($_SESSION['canned']['name']);

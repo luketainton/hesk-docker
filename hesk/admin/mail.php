@@ -421,8 +421,8 @@ function show_message($actually_show = true)
 				$hesk_settings['mailtmp']['other']  = 'to';
 				$hesk_settings['mailtmp']['m_from'] = $hesklang['m_to'];
 				$hesk_settings['mailtmp']['outbox'] = '<b>'.$hesklang['outbox'].'</b>';
-				$hesk_settings['mailtmp']['inbox']  = '<a href="mail.php">'.$hesklang['inbox'].'</a>';
-				$hesk_settings['mailtmp']['outbox'] = '<a href="mail.php?folder=outbox">'.$hesklang['outbox'].'</a>';
+				$hesk_settings['mailtmp']['inbox']  = '<a href="mail.php"><li><span>'.$hesklang['inbox'].'</span></li></a>';
+				$hesk_settings['mailtmp']['outbox'] = '<a href="mail.php?folder=outbox"><li><span>'.$hesklang['outbox'].'</span></li></a>';
 
 	        }
 	        else
@@ -456,7 +456,7 @@ function show_message($actually_show = true)
                             </div>
                             <time><?php echo $pm['dt']; ?></time>
                         </div>
-                        <div class="body">
+                        <div class="body browser-default">
                             <?php echo $pm['message']; ?>
                         </div>
                         <div class="form">

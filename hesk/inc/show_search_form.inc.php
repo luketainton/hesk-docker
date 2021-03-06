@@ -96,6 +96,9 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
         <div class="search-option">
             <div class="search-name">
                 <?php echo $hesklang['status']; ?>
+                <br><a href="" id="selectAllStatus" class="plain_link"><?php echo $hesklang['a_select']; ?></a>
+                <br><a href="" id="deselectAllStatus" class="plain_link"><?php echo $hesklang['a_deselect']; ?></a>
+                <br><a href="" id="toggleAllStatus" class="plain_link"><?php echo $hesklang['a_toggle']; ?></a>
             </div>
             <div class="search-options">
                 <div class="checkbox-list">
@@ -115,24 +118,27 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
             <div class="search-option">
                 <div class="search-name">
                     <?php echo $hesklang['priority']; ?>
+                    <br><a href="" id="selectAllPriority" class="plain_link"><?php echo $hesklang['a_select']; ?></a>
+                    <br><a href="" id="deselectAllPriority" class="plain_link"><?php echo $hesklang['a_deselect']; ?></a>
+                    <br><a href="" id="toggleAllPriority" class="plain_link"><?php echo $hesklang['a_toggle']; ?></a>
                 </div>
                 <div class="search-options">
                     <div class="checkbox-list">
                         <div class="checkbox-custom">
-                            <input type="checkbox" id="p0" name="p0" value="1" <?php if (isset($priority[0])) {echo 'checked';} ?>>
-                            <label for="p0"><span class="priority0"><?php echo $hesklang['critical']; ?></span></label>
+                            <input type="checkbox" id="priority_0" name="p0" value="1" <?php if (isset($priority[0])) {echo 'checked';} ?>>
+                            <label for="priority_0"><span class="priority0"><?php echo $hesklang['critical']; ?></span></label>
                         </div>
                         <div class="checkbox-custom">
-                            <input type="checkbox" id="p1" name="p1" value="1" <?php if (isset($priority[1])) {echo 'checked';} ?>>
-                            <label for="p1"><span class="priority1"><?php echo $hesklang['high']; ?></span></label>
+                            <input type="checkbox" id="priority_1" name="p1" value="1" <?php if (isset($priority[1])) {echo 'checked';} ?>>
+                            <label for="priority_1"><span class="priority1"><?php echo $hesklang['high']; ?></span></label>
                         </div>
                         <div class="checkbox-custom">
-                            <input type="checkbox" id="p2" name="p2" value="1" <?php if (isset($priority[2])) {echo 'checked';} ?>>
-                            <label for="p2"><span class="priority2"><?php echo $hesklang['medium']; ?></span></label>
+                            <input type="checkbox" id="priority_2" name="p2" value="1" <?php if (isset($priority[2])) {echo 'checked';} ?>>
+                            <label for="priority_2"><span class="priority2"><?php echo $hesklang['medium']; ?></span></label>
                         </div>
                         <div class="checkbox-custom">
-                            <input type="checkbox" id="p3" name="p3" value="1" <?php if (isset($priority[3])) {echo 'checked';} ?>>
-                            <label for="p3"><span class="priority3"><?php echo $hesklang['low']; ?></span></label>
+                            <input type="checkbox" id="priority_3" name="p3" value="1" <?php if (isset($priority[3])) {echo 'checked';} ?>>
+                            <label for="priority_3"><span class="priority3"><?php echo $hesklang['low']; ?></span></label>
                         </div>
                     </div>
                 </div>
@@ -140,20 +146,23 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
             <div class="search-option">
                 <div class="search-name">
                     <?php echo $hesklang['show']; ?>
+                    <br><a href="" id="selectAllShow" class="plain_link"><?php echo $hesklang['a_select']; ?></a>
+                    <br><a href="" id="deselectAllShow" class="plain_link"><?php echo $hesklang['a_deselect']; ?></a>
+                    <br><a href="" id="toggleAllShow" class="plain_link"><?php echo $hesklang['a_toggle']; ?></a>
                 </div>
                 <div class="search-options">
                     <div class="checkbox-list">
                         <div class="checkbox-custom">
-                            <input type="checkbox" name="s_my" id="s_my" value="1" <?php if ($s_my[1]) echo 'checked'; ?>>
-                            <label for="s_my"><?php echo $hesklang['s_my']; ?></label>
+                            <input type="checkbox" id="show_my" name="s_my" value="1" <?php if ($s_my[1]) echo 'checked'; ?>>
+                            <label for="show_my"><?php echo $hesklang['s_my']; ?></label>
                         </div>
                         <?php
                         if ($can_view_unassigned)
                         {
                             ?>
                             <div class="checkbox-custom">
-                                <input type="checkbox" name="s_un" id="s_un" value="1" <?php if ($s_un[1]) echo 'checked'; ?>>
-                                <label for="s_un"><?php echo $hesklang['s_un']; ?></label>
+                                <input type="checkbox" id="show_un" name="s_un" value="1" <?php if ($s_un[1]) echo 'checked'; ?>>
+                                <label for="show_un"><?php echo $hesklang['s_un']; ?></label>
                             </div>
                             <?php
                         }
@@ -163,15 +172,15 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
                         {
                             ?>
                             <div class="checkbox-custom">
-                                <input type="checkbox" name="s_ot" id="s_ot" value="1" <?php if ($s_ot[1]) echo 'checked'; ?>>
-                                <label for="s_ot"><?php echo $hesklang['s_ot']; ?></label>
+                                <input type="checkbox" id="show_ot" name="s_ot" value="1" <?php if ($s_ot[1]) echo 'checked'; ?>>
+                                <label for="show_ot"><?php echo $hesklang['s_ot']; ?></label>
                             </div>
                             <?php
                         }
                         ?>
                         <div class="checkbox-custom">
-                            <input type="checkbox" name="archive" id="s_archive" value="1" <?php if ($archive[1]) echo 'checked'; ?>>
-                            <label for="s_archive"><?php echo $hesklang['disp_only_archived']; ?></label>
+                            <input type="checkbox" id="show_archive" name="archive" value="1" <?php if ($archive[1]) echo 'checked'; ?>>
+                            <label for="show_archive"><?php echo $hesklang['disp_only_archived']; ?></label>
                         </div>
                     </div>
                 </div>
@@ -186,7 +195,11 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
                         array_unshift($hesk_settings['ticket_list'], 'priority');
                         $hesk_settings['possible_ticket_list']['priority'] = $hesklang['priority'];
 
-                        foreach ($hesk_settings['ticket_list'] as $key): ?>
+                        foreach ($hesk_settings['ticket_list'] as $key):
+                            if (!key_exists($key, $hesk_settings['possible_ticket_list'])) {
+                                continue;
+                            }
+                            ?>
                             <div class="radio-custom">
                                 <input type="radio" id="sort<?php echo $key; ?>" name="sort" value="<?php echo $key; ?>"
                                     <?php if ($sort == $key) { echo 'checked'; } ?>>
@@ -308,6 +321,62 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
     </form>
 </div>
 
+<script>
+// STATUS
+$("#selectAllStatus").click(function(event) {
+    event.preventDefault();
+    $("[id^=status_][type=checkbox]").prop('checked', true);
+});
+
+$("#deselectAllStatus").click(function(event) {
+    event.preventDefault();
+    $("[id^=status_][type=checkbox]").prop('checked', false);
+});
+
+$("#toggleAllStatus").click(function(event) {
+    event.preventDefault();
+    $("[id^=status_][type=checkbox]").each(function() {
+        this.checked = !this.checked;
+    });
+});
+
+// PRIORITY
+$("#selectAllPriority").click(function(event) {
+    event.preventDefault();
+    $("[id^=priority_][type=checkbox]").prop('checked', true);
+});
+
+$("#deselectAllPriority").click(function(event) {
+    event.preventDefault();
+    $("[id^=priority_][type=checkbox]").prop('checked', false);
+});
+
+$("#toggleAllPriority").click(function(event) {
+    event.preventDefault();
+    $("[id^=priority_][type=checkbox]").each(function() {
+        this.checked = !this.checked;
+    });
+});
+
+// SHOW
+$("#selectAllShow").click(function(event) {
+    event.preventDefault();
+    $("[id^=show_][type=checkbox]").prop('checked', true);
+});
+
+$("#deselectAllShow").click(function(event) {
+    event.preventDefault();
+    $("[id^=show_][type=checkbox]").prop('checked', false);
+});
+
+$("#toggleAllShow").click(function(event) {
+    event.preventDefault();
+    $("[id^=show_][type=checkbox]").each(function() {
+        this.checked = !this.checked;
+    });
+});
+</script>
+
 <!-- ** END SHOW TICKET FORM ** -->
 
 <!-- ** START SEARCH TICKETS FORM ** -->
@@ -428,20 +497,23 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
             <div class="search-option">
                 <div class="search-name">
                     <?php echo $hesklang['s_incl']; ?>
+                    <br><a href="" id="selectAllFind" class="plain_link"><?php echo $hesklang['a_select']; ?></a>
+                    <br><a href="" id="deselectAllFind" class="plain_link"><?php echo $hesklang['a_deselect']; ?></a>
+                    <br><a href="" id="toggleAllFind" class="plain_link"><?php echo $hesklang['a_toggle']; ?></a>
                 </div>
                 <div class="search-options">
                     <div class="checkbox-list">
                         <div class="checkbox-custom">
-                            <input type="checkbox" id="find_s_my" name="s_my" value="1" <?php if ($s_my[2]) echo 'checked'; ?>>
-                            <label for="find_s_my"><?php echo $hesklang['s_my']; ?></label>
+                            <input type="checkbox" id="find_show_my" name="s_my" value="1" <?php if ($s_my[2]) echo 'checked'; ?>>
+                            <label for="find_show_my"><?php echo $hesklang['s_my']; ?></label>
                         </div>
                         <?php
                         if ($can_view_ass_others || $can_view_ass_by)
                         {
                             ?>
                             <div class="checkbox-custom">
-                                <input type="checkbox" id="find_s_ot" name="s_ot" value="1" <?php if ($s_ot[2]) echo 'checked'; ?>>
-                                <label for="find_s_ot"><?php echo $hesklang['s_ot']; ?></label>
+                                <input type="checkbox" id="find_show_ot" name="s_ot" value="1" <?php if ($s_ot[2]) echo 'checked'; ?>>
+                                <label for="find_show_ot"><?php echo $hesklang['s_ot']; ?></label>
                             </div>
                             <?php
                         }
@@ -450,8 +522,8 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
                         {
                             ?>
                             <div class="checkbox-custom">
-                                <input type="checkbox" id="find_s_un" name="s_un" value="1" <?php if ($s_un[2]) echo 'checked'; ?>>
-                                <label for="find_s_un"><?php echo $hesklang['s_un']; ?></label>
+                                <input type="checkbox" id="find_show_un" name="s_un" value="1" <?php if ($s_un[2]) echo 'checked'; ?>>
+                                <label for="find_show_un"><?php echo $hesklang['s_un']; ?></label>
                             </div>
                             <?php
                         }
@@ -482,6 +554,25 @@ $more2 = empty($_GET['more2']) ? 0 : 1;
         </div>
     </form>
 </div>
+
+<script>
+$("#selectAllFind").click(function(event) {
+    event.preventDefault();
+    $("[id^=find_][type=checkbox]").prop('checked', true);
+});
+
+$("#deselectAllFind").click(function(event) {
+    event.preventDefault();
+    $("[id^=find_][type=checkbox]").prop('checked', false);
+});
+
+$("#toggleAllFind").click(function(event) {
+    event.preventDefault();
+    $("[id^=find_][type=checkbox]").each(function() {
+        this.checked = !this.checked;
+    });
+});
+</script>
 
 <!-- ** END SEARCH TICKETS FORM ** -->
 

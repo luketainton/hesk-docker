@@ -92,6 +92,7 @@ $info = array(
 'attachments'	=> $ticket['attachments'],
 'dt'			=> hesk_date($ticket['dt'], true),
 'lastchange'	=> hesk_date($ticket['lastchange'], true),
+'due_date'      => hesk_format_due_date($ticket['due_date']),
 'id'			=> $ticket['id'],
 'time_worked'   => $ticket['time_worked'],
 'last_reply_by' => hesk_getReplierName($ticket),

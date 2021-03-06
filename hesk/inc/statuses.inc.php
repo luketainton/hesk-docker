@@ -154,8 +154,8 @@ function hesk_get_status_checkboxes($selected = array())
 
         echo '
         <div class="checkbox-custom">
-            <input type="checkbox" id="s'.$k.'" name="s'.$k.'" value="1" '.(isset($selected[$k]) ? 'checked' : '').'>
-            <label for="s'.$k.'">'.hesk_get_admin_ticket_status($k).'</label>
+            <input type="checkbox" id="status_'.$k.'" name="s'.$k.'" value="1" '.(isset($selected[$k]) ? 'checked' : '').'>
+            <label for="status_'.$k.'">'.hesk_get_admin_ticket_status($k).'</label>
         </div>';
 
         if ($i % 3 === 2) {

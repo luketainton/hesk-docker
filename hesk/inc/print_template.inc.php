@@ -48,6 +48,7 @@ foreach ($tickets as $ticket) {
     // Other variables that need processing
     $ticket['dt'] = hesk_date($ticket['dt'], true);
     $ticket['lastchange'] = hesk_date($ticket['lastchange'], true);
+    $ticket['due_date'] = hesk_format_due_date($ticket['due_date']);
     $random=mt_rand(10000,99999);
 
     $ticket['status'] = hesk_get_status_name($ticket['status']);

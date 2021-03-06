@@ -161,6 +161,11 @@ function print_add_ticket()
 	if ($number_of_categories == 0)
 	{
 		$category = 1;
+        $res = hesk_dbQuery("SELECT `id`, `name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `id`=1");
+        while ($row=hesk_dbFetchAssoc($res))
+        {
+            $hesk_settings['categories'][$row['id']] = $row['name'];
+        }
 	}
 	elseif ($number_of_categories == 1)
 	{
@@ -426,11 +431,11 @@ function forgot_tid()
 	{
 		if ($hesk_settings['open_only'])
         {
-        	hesk_process_messages($hesklang['noopen'],'ticket.php?remind=1&e='.rawurlencode($email));
+            hesk_process_messages($hesklang['noopen'],'ticket.php?remind=1&e='.rawurlencode($email).(hesk_POST('forgot') ? '&forgot=1#forgot-modal' : ''));
         }
         else
         {
-        	hesk_process_messages($hesklang['tid_not_found'],'ticket.php?remind=1&e='.rawurlencode($email));
+            hesk_process_messages($hesklang['tid_not_found'],'ticket.php?remind=1&e='.rawurlencode($email).(hesk_POST('forgot') ? '&forgot=1#forgot-modal' : ''));
         }
 	}
 

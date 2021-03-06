@@ -539,7 +539,7 @@ $(document).ready(function() {
   });
 
   // Never allow typing in dropdowns
-  $('.selectize-input input').prop('disabled', 'disabled');
+  $('.selectize-input input').prop('readonly', 'true');
 });
 
 window.onload = function() {

@@ -15,7 +15,7 @@
 <tr>
 <td width="50%" style="text-align:left;vertical-align:top">
  <ul class="nobullets">
- <li>Version: 3.1.2 from 18th August 2020</li>
+ <li>Version: 3.2.0 from 28th February 2021</li>
  <li>Developed by: Klemen Stirn, Mike Koch</li>
  <li><a href="https://www.hesk.com">Help Desk Software HESK</a></li>
  <li><a href="https://www.phpjunkyard.com">Free PHP Scripts</a></li>
@@ -33,6 +33,32 @@
 </table>
 
 <h2>HESK 3 CHANGELOG</h2>
+
+<p><b>Changes in 3.2.0</b> - 28th February 2021<br />
+- tickets can now have a due date set<br />
+- added support for HTML-formatted ticket messages/replies (staff only)<br />
+- added links to filter tickets by assignment/due soon/overdue quickly<br />
+- do not update &quot;lastchange&quot; timestamp on Resolved tickets when deleting a user or category<br />
+- support for %%SITE_TITLE%% in email subjects<br />
+- improved button text display on non-English versions<br />
+- added an easy way to load an extra custom CSS file to Hesk admin<br />
+- staff can now change ticket category when submitting a ticket<br />
+- staff can now set ticket (customer) language when submitting a ticket<br />
+- cron files can now have an access key set to authorize web access<br />
+- security: fixed persistent XSS, reported by Charley Celice of Quorum Cyber (<a href="https://www.quorumcyber.com/">www</a>)<br />
+- fix: make sure ticket list always has clickable links in mobile view<br />
+- fix: ticket list mismatch after deleting a custom field<br />
+- fix: check if JSON is enabled when installing/updating Hesk<br />
+- fix: bulk ticket actions select vertical scroll bar off-screen on some mobile devices<br />
+- fix: set cookie SameSite attribute to &quot;None&quot; if Hesk is allowed to be displayed in frames<br />
+- fix: message encoding issue when previewing service messages<br />
+- fix: properly escape edge-case HTML special characters and backslashes<br />
+- fix: &quot;Can unban ips&quot; permission should also enable &quot;Can ban ips&quot;<br />
+- fix: email notification setting when someone adds a note not respected<br />
+- fix: respect custom field position when editing a ticket<br />
+- fix: properly encode CDATA closing tag<br />
+- minor styling and usability changes<br />
+</p>
 
 <p><b>Changes in 3.1.2</b> - 18th August 2020<br />
 - the &quot;Submit as&quot; control in staff reply form now supports all statuses<br />
@@ -735,7 +761,7 @@
 
 <p>&nbsp;</p>
 
-<p style="text-align:center">&copy; Copyright <a href="https://www.hesk.com">HESK.COM</a> 2005-2020. All rights reserved.<br />
+<p style="text-align:center">&copy; Copyright <a href="https://www.hesk.com">HESK.COM</a> 2005-2021. All rights reserved.<br />
 &reg; HESK is a registered trademark of Klemen Stirn.</p>
 
 </div>

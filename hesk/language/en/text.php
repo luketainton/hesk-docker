@@ -3,7 +3,7 @@
 *
 * Language file for Help Desk Software HESK (https://www.hesk.com)
 * Language: English
-* Version: 3.0.0
+* Version: 3.2.0
 *
 * ==> CONTRIBUTORS
 *
@@ -56,6 +56,8 @@ $hesklang['new_note']               = '[#%%TRACK_ID%%] Note added to: %%SUBJECT%
 $hesklang['new_pm']                 = 'New private message: %%SUBJECT%%';
 $hesklang['forgot_ticket_id']       = 'List of your support tickets';
 $hesklang['ticket_closed']			= '[#%%TRACK_ID%%] Ticket closed/resolved'; // New in 2.6.0
+$hesklang['overdue_ticket']         = '[#%%TRACK_ID%%] Ticket overdue'; // New in 3.2.0
+$hesklang['ticket_escalated']       = '[#%%TRACK_ID%%] ESCALATED: %%SUBJECT%%'; // New in 3.2.0
 
 // ERROR MESSAGES
 $hesklang['cant_connect_db']='Can\'t connect to database!';
@@ -1659,7 +1661,7 @@ $hesklang['tdisd']='Date and time';
 $hesklang['tdisa']='Time ago (example: 5 hours ago)';
 $hesklang['nav_templates']='Templates'; // Admin panel navigation item
 $hesklang['hide_replies']='Hide ticket replies';
-$hesklang['hide_replies_no']='Never, always show all replies';
+$hesklang['hide_replies_no']='Do not hide, always show all replies';
 $hesklang['hide_replies_yes']='Hide all replies except the last:';
 $hesklang['hide_replies_def']='Show the last staff reply and any subsequent customer replies';
 $hesklang['reply_by']='Reply by'; // Reply by NAME
@@ -1684,7 +1686,7 @@ assigning users to categories.'; // this was in before 3.0.x, bringing it back
 $hesklang['spam_req']='At least one SPAM prevention measure must be enabled!';
 $hesklang['modules'] = 'Modules';
 $hesklang['modules_demo'] = 'This module is currently available only in %s'; // %s = Hesk cloud link
-$hesklang['see_demo']='Try the live demo here: %s'; // %s = Hesk demo link 
+$hesklang['see_demo']='Try the live demo here: %s'; // %s = Hesk demo link
 $hesklang['statistics']['tab'] = 'Statistics';
 $hesklang['statistics']['intro'] = 'This report will give you insight into your help desk usage and staff performance.';
 $hesklang['statistics']['ntsp']='No tickets in the selected time period.';
@@ -1753,6 +1755,156 @@ $hesklang['sep_1000']=','; // separator between every group of thousands: 1,000,
 $hesklang['sep_dec']='.'; // separator between full and decimal numbers: 0.99
 $hesklang['and_more']='and much more...'; // last item in a list
 
+// Added or modified in HESK 3.2.0
+$hesklang['escalate']['tab']='Escalate'; // Menu link
+$hesklang['escalate']['page_title']='Escalate Tickets'; // Page H2 title
+$hesklang['escalate']['intro']='This module will help you escalate tickets that are not attended to on time.';
+$hesklang['escalate']['feat1']='Tickets not assigned, replied to, or resolved within a timeframe';
+$hesklang['escalate']['feat2']='tickets approaching due date and overdue tickets';
+$hesklang['escalate']['feat3']='automatically change ticket priority, re-assign a ticket, send an email notification';
+$hesklang['escalate']['feat4']='apply rules based on ticket category, owner, status';
+$hesklang['escalate']['prefix']='Escalated:'; // Email subject prefix, e.g. "Escalated: [XXX-XXX-XXXX] Test ticket"
+$hesklang['escalate']['active_rules']='Active rules';
+$hesklang['escalate']['new']='New escalation rule';
+$hesklang['escalate']['no_rules']='You do not have any escalation rules. Create one by clicking the &quot;New escalation rule&quot; button above.';
+$hesklang['escalate']['title']='Rule title';
+$hesklang['escalate']['titlet']='A descriptive title, for example: Re-assign tickets not replied to within a day';
+$hesklang['escalate']['default_title']='Rule by %1$s'; // Default rule title; %1$s = user name
+$hesklang['escalate']['trigger']='Rule trigger';
+$hesklang['escalate']['trigt']='Set the condition that will trigger (run) this rule.';
+$hesklang['escalate']['hits']='Hits'; // How many times a rule has been triggered
+$hesklang['escalate']['step1']='Condition'; // Title of step 1 when creating/editing a rule
+$hesklang['escalate']['step2']='Action'; // Title of step 2 when creating/editing a rule
+$hesklang['escalate']['step3']='Apply to'; // Title of step 3 when creating/editing a rule
+$hesklang['escalate']['delete']='Delete this rule?';
+$hesklang['escalate']['edit']='Editing escalation rule ID %1$s'; // %1$s = rule ID number
+$hesklang['escalate']['ifat']='A support ticket is:'; // If a ticket is not (resolved) within X (minutes) of submitting, then (resend notification)
+$hesklang['escalate']['nrep']='not replied to by staff';
+$hesklang['escalate']['nrepc']='not replied to by customer';
+$hesklang['escalate']['nass']='not assigned';
+$hesklang['escalate']['nres']='not resolved';
+$hesklang['escalate']['ndue']='approaching due date';
+$hesklang['escalate']['odue']='overdue';
+$hesklang['escalate']['within']='Within:';
+$hesklang['escalate']['minutes']='minutes';
+$hesklang['escalate']['hours']='hours';
+$hesklang['escalate']['days']='days';
+$hesklang['escalate']['weeks']='weeks';
+$hesklang['escalate']['months']='months';
+$hesklang['escalate']['years']='years';
+$hesklang['escalate']['ofs']='of being submitted';
+$hesklang['escalate']['resend']='Re-send email notifications:';
+$hesklang['escalate']['force']='Always send, disregard staff settings';
+$hesklang['escalate']['noforce']='Respect staff notifications settings';
+$hesklang['escalate']['setpri']='Set priority to:';
+$hesklang['escalate']['setsta']='Set status to:';
+$hesklang['escalate']['assto']='Assign ticket to:';
+$hesklang['escalate']['asm']='Another staff member';
+$hesklang['escalate']['notify']='Notify staff members...';
+$hesklang['escalate']['ato']='Apply to:';
+$hesklang['escalate']['tic']='Tickets in category:';
+$hesklang['escalate']['tat']='Tickets assigned to:';
+$hesklang['escalate']['tws']='Tickets with status:';
+$hesklang['escalate']['tall']='Apply this rule to existing and future tickets';
+$hesklang['escalate']['tfn']='Apply this rule to future tickets only, ignore existing tickets';
+$hesklang['escalate']['tfi']='Apply this rule only to tickets with ID higher than:';
+$hesklang['escalate']['save']='Save rule';
+$hesklang['escalate']['e_tt']='Time should be between 1 and 10000';
+$hesklang['escalate']['e_a']='Select at least one action to perform on matching tickets';
+$hesklang['escalate']['nocat']='Select at least one category';
+$hesklang['escalate']['nouser']='Select at least one user';
+$hesklang['escalate']['nostatus']='Select at least one status';
+$hesklang['escalate']['nocata']='%1$s doesn\'t have access to these categories:'; // %1$s = user name
+$hesklang['escalate']['rule_added']='New rule has been created';
+$hesklang['escalate']['mdf']='Rule settings have been saved';
+$hesklang['escalate']['e_id']='No rule with this ID found';
+$hesklang['escalate']['deleted']='Selected rule has been deleted';
+$hesklang['escalate']['edit_notice']='changing the rule trigger will have no effect on any ticket already escalated by this rule (unless you reset the rule).';
+$hesklang['escalate']['reset']='Reset this rule';
+$hesklang['escalate']['reset2']='Are you sure you want to reset this rule?<br><br>Rule hits will go to 0 and any ticket that matches this rule will be escalated again.';
+$hesklang['escalate']['reset3']='Selected rule has been reset';
+$hesklang['escalate']['log_title']='Rule #%1$s (%2$s)'; // Used in ticket history log. %1$s = rule ID, %2$s = rule title
+$hesklang['escalate']['thist1']='<li class="smaller">%1$s | escalated by %2$s:</li>'; // Used in ticket history log. %1$s = date, %2$s = rule log title (above)
+$hesklang['escalate']['thist2']='<li class="smaller">%1$s | - set priority to %2$s</li>'; // %1$s = date, %2$s = priority
+$hesklang['escalate']['thist3']='<li class="smaller">%1$s | - assign to %2$s</li>'; // %1$s = date, %2$s = owner
+$hesklang['escalate']['thist4']='<li class="smaller">%1$s | - send staff notification</li>';
+$hesklang['escalate']['thist5']='<li class="smaller">%1$s | - send staff notification (forced)</li>';
+$hesklang['escalate']['thist6']='<li class="smaller">%1$s | - error: %2$s doesn\'t have access to ticket category</li>'; // %1$s = date, %2$s = owner
+$hesklang['escalate']['thist7']='<li class="smaller">%1$s | - error: %2$s doesn\'t have permission to view tickets</li>'; // %1$s = date, %2$s = owner
+$hesklang['escalate']['thist8']='<li class="smaller">%1$s | - error: no other user who can view this ticket</li>'; // %1$s = date
+$hesklang['escalate']['thist9']='<li class="smaller">%1$s | - notice: priority already set to %2$s</li>'; // %1$s = date, %2$s = priority
+$hesklang['escalate']['thist10']='<li class="smaller">%1$s | - notice: already assigned to %2$s</li>'; // %1$s = date, %2$s = owner
+$hesklang['escalate']['thist11']='<li class="smaller">%1$s | - notify: %2$s</li>'; // %1$s = date, %2$s = list of users
+$hesklang['escalate']['thist12']='<li class="smaller">%1$s | - set status to %2$s</li>'; // %1$s = date, %2$s = status
+$hesklang['escalate']['thist13']='<li class="smaller">%1$s | - notice: status already set to %2$s</li>'; // %1$s = date, %2$s = status
+$hesklang['escalate']['active']='Active'; // Is the rule active (live)?
+$hesklang['escalate']['activate']='Activate this rule (start using it)';
+$hesklang['escalate']['activated']='Selected rule has been activated'; // %1$s = rule log title
+$hesklang['escalate']['deactivate']='Deactivate this rule (stop using it)';
+$hesklang['escalate']['deactivated']='Selected rule has been deactivated'; // %1$s = rule log title
+$hesklang['escalate']['no_active']='No active escalation rules';
+$hesklang['escalate']['matched']='Number of matching tickets found: %1$s '; // %1$s = number of tickets
+$hesklang['escalate']['tools']='Tools';
+$hesklang['escalate']['test']='Simulate this rule';
+$hesklang['escalate']['testa']='Simulate all rules';
+$hesklang['escalate']['testaa']='Simulate all active rules';
+$hesklang['escalate']['testr']='Simulation results';
+$hesklang['escalate']['rsim']='Repeat simulation';
+$hesklang['escalate']['tbef']='Before a rule is live, you need to activate it by clicking the checkbox in the &quot;ACTIVE&quot; column.<br><br>
+                               We strongly recommend that you <strong>simulate</strong> each rule by clicking the %1$s (Simulate this rule) icon in the rules table
+                               to see how it will affect your existing tickets before activating it.<br><br>
+                               <strong>Active rules are processed every %2$s minutes. A ticket can only be escalated once by each rule</strong>.'; // %1$s = replaced by icon, %2$s = number of minutes, usually 5 or more
+$hesklang['escalate']['sim']='SIMULATION MODE, no changes to the database';
+$hesklang['escalate']['sic']='SIMULATION COMPLETE';
+$hesklang['escalate']['r']='[RULE]';
+$hesklang['escalate']['i']='[INFO]';
+$hesklang['multopt']='Tip: hold down CTRL key to select multiple options';
+$hesklang['desc_ticket_escalated']='(Staff) Ticket has been escalated'; // Email description in admin panel
+$hesklang['ticket_formatting_staff']='Ticket Formatting (Staff)';
+$hesklang['ticket_formatting_plaintext']='Plain Text';
+$hesklang['ticket_formatting_rich_text']='Rich Text (HTML)';
+$hesklang['due_date'] = 'Due date';
+$hesklang['invalid_due_date'] = 'An invalid due date was entered.';
+$hesklang['thist19']='<li class="smaller">%s | due date updated to %s by %s</li>'; // %s = date, new due date, user making change
+$hesklang['thist20']='<li class="smaller">%s | due date removed by %s</li>'; // %s = date, user making change
+$hesklang['due_date_updated']='Ticket due date has been updated.';
+$hesklang['menu_kb_manage']='Manage'; // Left admin menu Knowledgebase "Manage" tab
+$hesklang['menu_kb_view']='View'; // Left admin menu Knowledgebase "View" tab
+$hesklang['a_select']='Select all';
+$hesklang['a_deselect']='Deselect all';
+$hesklang['a_toggle']='Toggle all';
+$hesklang['ql_all']='All tickets';
+$hesklang['ql_alo']='All open tickets';
+$hesklang['ql_fit']='Filtered tickets';
+$hesklang['ql_a2m']='Assigned to me';
+$hesklang['ql_a2o']='Assigned to others';
+$hesklang['ql_una']='Unassigned';
+$hesklang['ql_due']='Due soon';
+$hesklang['ql_ovr']='Overdue';
+$hesklang['set_ds']='Show as &quot;due soon&quot;'; // Settings page (title of setting)
+$hesklang['set_ds2']='days before due date';
+$hesklang['not_aos']='Some open tickets you have access to are not shown due to your filters.';
+$hesklang['ntoverdue']='A ticket is overdue with owner:';
+$hesklang['ovdcron']='for overdue notifications to work, your administrator must enable a cron job.';
+$hesklang['instructions']='Instructions';
+$hesklang['desc_overdue_ticket']='(Staff) Ticket overdue';
+$hesklang['overdue_starting']='Starting overdue tickets notification process';
+$hesklang['overdue_sim']='Sending emails and updating tickets is disabled in SIMULATION mode.';
+$hesklang['overdue_ticket_count']='Found %s tickets that are overdue.'; // %s = Number of tickets
+$hesklang['overdue_finished']='Finished Overdue Tickets. %s emails sent. %s emails failed to send.'; // %s = Successful emails, failed emails
+$hesklang['admin_css']='Admin CSS';
+$hesklang['admin_css2']='Load an extra custom style file for the admin panel';
+$hesklang['noval_cert']='Do not validate server certificates';
+$hesklang['chg_cat']='Click to change ticket category';
+$hesklang['tlan']='Ticket language';
+$hesklang['uue']='Two or more staff members have the same email address. We recommend setting a unique email address for each user.';
+$hesklang['flood']='Flood limit';
+$hesklang['e_flood']='Ooops, you already submitted a reply just recently. We stopped this request to prevent reply flooding.';
+$hesklang['cookies']='Cookies';
+$hesklang['ukey']='URL Access Key'; // Key required to access certain files (like cron jobs) via an URL
+$hesklang['ukeyg']='Generate a random URL Access Key';
+$hesklang['ukeym']='Error: to run this file via HTTP you must include your URL Access Key in the request. Example:';
+$hesklang['ukeyw']='Error: wrong URL Access Key';
 
 // DO NOT CHANGE BELOW
 if (!defined('IN_SCRIPT')) die('PHP syntax OK!');

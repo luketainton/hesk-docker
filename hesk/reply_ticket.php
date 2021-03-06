@@ -40,6 +40,19 @@ if ( empty($_POST) && ! empty($_SERVER['CONTENT_LENGTH']) )
 
 hesk_session_start();
 
+// Prevent flooding - multiple replies within a few seconds are probably not valid
+if ($hesk_settings['flood'])
+{
+    if (isset($_SESSION['last_reply_timestamp']) && (time() - $_SESSION['last_reply_timestamp']) < $hesk_settings['flood'])
+    {
+        hesk_error($hesklang['e_flood']);
+    }
+    else
+    {
+        $_SESSION['last_reply_timestamp'] = time();
+    }
+}
+
 /* A security check */
 # hesk_token_check('POST');
 
@@ -184,7 +197,7 @@ if (hesk_can_customer_change_status($ticket['status']))
 $res = hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `lastchange`=NOW(), `status`='{$ticket['status']}', `replies`=`replies`+1, `lastreplier`='0' WHERE `id`='{$ticket['id']}'");
 
 // Insert reply into database
-hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (`replyto`,`name`,`message`,`dt`,`attachments`) VALUES ({$ticket['id']},'".hesk_dbEscape($ticket['name'])."','".hesk_dbEscape($message)."',NOW(),'".hesk_dbEscape($myattachments)."')");
+hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (`replyto`,`name`,`message`,`message_html`,`dt`,`attachments`) VALUES ({$ticket['id']},'".hesk_dbEscape(addslashes($ticket['name']))."','".hesk_dbEscape($message)."','".hesk_dbEscape($message)."',NOW(),'".hesk_dbEscape($myattachments)."')");
 
 
 /*** Need to notify any staff? ***/
@@ -205,6 +218,7 @@ $info = array(
 'attachments'	=> $myattachments,
 'dt'			=> hesk_date($ticket['dt'], true),
 'lastchange'	=> hesk_date($ticket['lastchange'], true),
+'due_date'      => hesk_format_due_date($ticket['due_date']),
 'id'			=> $ticket['id'],
 'time_worked'   => $ticket['time_worked'],
 'last_reply_by' => $ticket['name'],

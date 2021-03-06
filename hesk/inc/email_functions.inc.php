@@ -203,6 +203,37 @@ function hesk_notifyStaff($email_template,$sql_where,$is_ticket=1)
 
 } // END hesk_notifyStaff()
 
+function hesk_sendOverdueTicketReminder($ticket, $users) {
+
+    if (defined('HESK_DEMO')) {
+        return true;
+    }
+
+    hesk_setLanguage($ticket['user_language']);
+
+    // Format email subject and message
+    $subject = hesk_getEmailSubject('overdue_ticket', $ticket);
+    $message = hesk_getEmailMessage('overdue_ticket', $ticket, 1);
+
+    $emails = array();
+    if ($ticket['user_email'] != NULL) {
+        $emails[] = $ticket['user_email'];
+    } else {
+        foreach ($users as $user) {
+            $categories = explode(',', $user['categories']);
+            if ($user['isadmin'] || in_array($ticket['category'], $categories)) {
+                $emails[] = $user['email'];
+            }
+        }
+    }
+
+    if (count($emails)) {
+        hesk_mail(implode(',', $emails), $subject, $message);
+    }
+
+    return true;
+}
+
 
 function hesk_validEmails()
 {
@@ -246,6 +277,9 @@ function hesk_validEmails()
 
 		// --> Staff password reset email
 		'reset_password' => $hesklang['reset_password'],
+
+        // --> Overdue ticket email
+        'overdue_ticket' => $hesklang['overdue_ticket'],
 
     );
 } // END hesk_validEmails()
@@ -408,7 +442,7 @@ function hesk_getEmailSubject($eml_file, $ticket='', $is_ticket=1, $strip=0)
     }
 
  	/* Set category title */
-	$ticket['category'] = hesk_msgToPlain(hesk_getCategoryName($ticket['category']), 1);
+    $ticket['category'] = hesk_msgToPlain(hesk_getCategoryName($ticket['category']), 1, 0);
 
 	/* Get priority */
 	switch ($ticket['priority'])
@@ -429,7 +463,11 @@ function hesk_getEmailSubject($eml_file, $ticket='', $is_ticket=1, $strip=0)
     /* Set status */
 	$ticket['status'] = hesk_get_status_name($ticket['status']);
 
+    // Convert any entities in site title to plain text
+    $site_title = hesk_msgToPlain($hesk_settings['site_title'], 1, 0);
+
 	/* Replace all special tags */
+    $msg = str_replace('%%SITE_TITLE%%', $site_title, $msg);
 	$msg = str_replace('%%SUBJECT%%',	$ticket['subject'],		$msg);
 	$msg = str_replace('%%TRACK_ID%%',	$ticket['trackid'],		$msg);
 	$msg = str_replace('%%CATEGORY%%',	$ticket['category'],	$msg);
@@ -479,7 +517,7 @@ function hesk_getEmailMessage($eml_file, $ticket, $is_admin=0, $is_ticket=1, $ju
     }
 
 	// Convert any entities in site title to plain text
-	$hesk_settings['site_title'] = hesk_msgToPlain($hesk_settings['site_title'], 1);
+    $site_title = hesk_msgToPlain($hesk_settings['site_title'], 1, 0);
 
     /* If it's not a ticket-related mail (like "a new PM") just process quickly */
     if ( ! $is_ticket)
@@ -488,9 +526,9 @@ function hesk_getEmailMessage($eml_file, $ticket, $is_admin=0, $is_ticket=1, $ju
 
 		$msg = str_replace('%%NAME%%',		$ticket['name']					,$msg);
 		$msg = str_replace('%%SUBJECT%%',	$ticket['subject']				,$msg);
-		$msg = str_replace('%%TRACK_URL%%',	$trackingURL					,$msg);
-		$msg = str_replace('%%SITE_TITLE%%',$hesk_settings['site_title']	,$msg);
-		$msg = str_replace('%%SITE_URL%%',	$hesk_settings['site_url']		,$msg);
+		$msg = str_replace('%%TRACK_URL%%',	$trackingURL.' '				,$msg);
+		$msg = str_replace('%%SITE_TITLE%%',$site_title                     ,$msg);
+		$msg = str_replace('%%SITE_URL%%',	$hesk_settings['site_url'].' '	,$msg);
 		$msg = str_replace('%%FIRST_NAME%%',hesk_full_name_to_first_name($ticket['name']),$msg);
 
 		if ( isset($ticket['message']) )
@@ -531,7 +569,7 @@ function hesk_getEmailMessage($eml_file, $ticket, $is_admin=0, $is_ticket=1, $ju
 	}
 
     /* Get owner name */
-    $ticket['owner'] = hesk_msgToPlain( hesk_getOwnerName($ticket['owner']), 1);
+    $ticket['owner'] = hesk_msgToPlain( hesk_getOwnerName($ticket['owner']), 1, 0);
 
     /* Set status */
 	$ticket['status'] = hesk_get_status_name($ticket['status']);
@@ -546,9 +584,9 @@ function hesk_getEmailMessage($eml_file, $ticket, $is_admin=0, $is_ticket=1, $ju
 	$msg = str_replace('%%NAME%%',		$ticket['name']				,$msg);
 	$msg = str_replace('%%SUBJECT%%',	$ticket['subject']			,$msg);
 	$msg = str_replace('%%TRACK_ID%%',	$ticket['trackid']			,$msg);
-	$msg = str_replace('%%TRACK_URL%%',	$trackingURL				,$msg);
-	$msg = str_replace('%%SITE_TITLE%%',$hesk_settings['site_title'],$msg);
-	$msg = str_replace('%%SITE_URL%%',	$hesk_settings['site_url']	,$msg);
+	$msg = str_replace('%%TRACK_URL%%',	$trackingURL.' '			,$msg);
+	$msg = str_replace('%%SITE_TITLE%%',$site_title                 ,$msg);
+	$msg = str_replace('%%SITE_URL%%',	$hesk_settings['site_url'].' ',$msg);
 	$msg = str_replace('%%CATEGORY%%',	$ticket['category']			,$msg);
 	$msg = str_replace('%%PRIORITY%%',	$ticket['priority']			,$msg);
     $msg = str_replace('%%OWNER%%',		$ticket['owner']			,$msg);
@@ -556,6 +594,7 @@ function hesk_getEmailMessage($eml_file, $ticket, $is_admin=0, $is_ticket=1, $ju
     $msg = str_replace('%%EMAIL%%',		$ticket['email']			,$msg);
     $msg = str_replace('%%CREATED%%',	$ticket['dt']				,$msg);
     $msg = str_replace('%%UPDATED%%',	$ticket['lastchange']		,$msg);
+    $msg = str_replace('%%DUE_DATE%%',	$ticket['due_date']         ,$msg);
 	$msg = str_replace('%%ID%%',		$ticket['id']				,$msg);
     $msg = str_replace('%%TIME_WORKED%%',  $ticket['time_worked']   ,$msg);
     $msg = str_replace('%%LAST_REPLY_BY%%',$ticket['last_reply_by'] ,$msg);
@@ -580,7 +619,7 @@ function hesk_getEmailMessage($eml_file, $ticket, $is_admin=0, $is_ticket=1, $ju
                 	break;
             }
 
-			$msg = str_replace('%%'.strtoupper($k).'%%',stripslashes($ticket[$k]),$msg);
+			$msg = str_replace('%%'.strtoupper($k).'%%',$ticket[$k],$msg);
 		}
         else
         {

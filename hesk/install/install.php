@@ -249,7 +249,7 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."banned_ips` (
 hesk_dbQuery("
 CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(60) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `cat_order` smallint(5) unsigned NOT NULL DEFAULT '0',
   `autoassign` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
   `type` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
@@ -414,6 +414,27 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."logins` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 ");
 
+// -> Log of overdue tickets
+hesk_dbQuery("
+CREATE TABLE IF NOT EXISTS `".hesk_dbEscape($hesk_settings['db_pfix'])."log_overdue` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `dt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ticket` mediumint(8) UNSIGNED NOT NULL,
+  `category` smallint(5) UNSIGNED NOT NULL,
+  `priority` enum('0','1','2','3') NOT NULL,
+  `status` tinyint(3) UNSIGNED NOT NULL,
+  `owner` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+  `due_date` timestamp NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `comments` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ticket` (`ticket`),
+  KEY `category` (`category`),
+  KEY `priority` (`priority`),
+  KEY `status` (`status`),
+  KEY `owner` (`owner`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+");
+
 // -> Private messages
 hesk_dbQuery("
 CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (
@@ -432,7 +453,7 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (
 ");
 
 // ---> Insert welcome email
-hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, 'HESK quick start guide', '".hesk_dbEscape("</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<p>&nbsp;<br /><b>Welcome to HESK! You'll find it is a great tool for improving your customer support.</b></p>\r\n\r\n<p><b>Here is a short guide to get you started.</b><br />&nbsp;</p>\r\n\r\n<hr />\r\nSTEP #1: setup your profile\r\n<hr />\r\n<ol>\r\n<li>go to <a href=\"profile.php\">Profile</a>,</li>\r\n<li>set your name and email address.</li>\r\n</ol>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #2: configure HESK\r\n<hr />\r\n<ol>\r\n<li>go to <a href=\"admin_settings_general.php\">Settings</a>,</li>\r\n<li>for a quick start, just modify these on the \"General\" tab:<br /><br />\r\nWebsite title<br />\r\nWebsite URL<br />\r\nWebmaster email<br />&nbsp;\r\n</li>\r\n<li>you can come back to the settings page later and explore all the options. To view details about a setting, click the [?]</li>\r\n</ol>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #3: add ticket categories\r\n<hr />\r\n<p>Go to <a href=\"manage_categories.php\">Categories</a> to add ticket categories.</p>\r\n<p>You cannot delete the default category, but you can rename it.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<hr />\r\nSTEP #4: add staff accounts\r\n<hr />\r\n<p>Go to <a href=\"manage_users.php\">Users</a> to create new staff accounts.</p>\r\n<p>You can use two user types in HESK:</p>\r\n<ul>\r\n<li><b>Administrators</b>, who have full access to all HESK features</li>\r\n<li><b>Staff</b>, who have access to limited privileges and categories</li>\r\n</ul>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #5: useful tools\r\n<hr />\r\n<p>You can do a lot on the <a href=\"banned_emails.php\">Tools</a> page, for example:</p>\r\n<ul>\r\n<li>create custom ticket statuses,</li>\r\n<li>add custom input fields to the \"Submit a ticket\" form,</li>\r\n<li>modify email templates,</li>\r\n<li>and more.</li>\r\n</ul>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #6: create a knowledgebase\r\n<hr />\r\n<p>A clear and comprehensive knowledgebase can drastically reduce the number of support tickets you receive, thereby saving you significant time and effort in the long run.</p>\r\n<p>Go to <a href=\"manage_knowledgebase.php\">Knowledgebase</a> to create categories and write articles for your knowledgebase.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #7: don't repeat yourself\r\n<hr />\r\n<p>Sometimes several support tickets are addressing the same issues - allowing you to use pre-written (&quot;canned&quot;) responses.</p>\r\n<p>To compose canned responses go to <a href=\"manage_canned.php\">Canned</a> page.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #8: secure your help desk\r\n<hr />\r\n<p>Make sure your help desk is as secure as possible by going through <a href=\"https://www.hesk.com/knowledgebase/?article=82\">HESK security check list</a></p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #9: stay updated\r\n<hr />\r\n<p>HESK regularly receives improvements and bug fixes, make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow us on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #10: look professional\r\n<hr />\r\n<p>To look more professional and not advertise the tools you use, <a href=\"https://www.hesk.com/buy.php\">remove &quot;Powered by&quot; links</a> from your help desk.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Again, welcome to HESK and enjoy using it!</p>\r\n\r\n<p>Klemen Stirn<br />\r\nAuthor and owner</p>\r\n\r\n</div><p>")."', NOW(), '0', 9999)");
+hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, 'HESK quick start guide', '".hesk_dbEscape("</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<p>&nbsp;<br /><b>Welcome to HESK! You'll find it is a great tool for improving your customer support.</b></p>\r\n\r\n<p><b>Here is a short guide to get you started.</b><br />&nbsp;</p>\r\n\r\n<hr />\r\nSTEP #1: set up your profile\r\n<hr />\r\n<ol>\r\n<li>go to <a href=\"profile.php\">Profile</a>,</li>\r\n<li>set your name and email address.</li>\r\n</ol>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #2: configure HESK\r\n<hr />\r\n<ol>\r\n<li>go to <a href=\"admin_settings_general.php\">Settings</a>,</li>\r\n<li>for a quick start, just modify these on the \"General\" tab:<br /><br />\r\nWebsite title<br />\r\nWebsite URL<br />\r\nWebmaster email<br />&nbsp;\r\n</li>\r\n<li>you can come back to the settings page later and explore all the options. To view details about a setting, click the [?]</li>\r\n</ol>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #3: add ticket categories\r\n<hr />\r\n<p>Go to <a href=\"manage_categories.php\">Categories</a> to add ticket categories.</p>\r\n<p>You cannot delete the default category, but you can rename it.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<hr />\r\nSTEP #4: add staff accounts\r\n<hr />\r\n<p>Go to <a href=\"manage_users.php\">Team</a> to create new staff accounts.</p>\r\n<p>You can use two user types in HESK:</p>\r\n<ul>\r\n<li><b>Administrators</b>, who have full access to all HESK features</li>\r\n<li><b>Staff</b>, who have access to limited privileges and categories</li>\r\n</ul>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #5: useful tools\r\n<hr />\r\n<p>You can do a lot on the <a href=\"banned_emails.php\">Tools</a> page, for example:</p>\r\n<ul>\r\n<li>create custom ticket statuses,</li>\r\n<li>add custom input fields to the \"Submit a ticket\" form,</li>\r\n<li>modify email templates,</li>\r\n<li>and more.</li>\r\n</ul>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #6: create a knowledgebase\r\n<hr />\r\n<p>A clear and comprehensive knowledgebase can drastically reduce the number of support tickets you receive, thereby saving you significant time and effort in the long run.</p>\r\n<p>Go to <a href=\"manage_knowledgebase.php\">Knowledgebase</a> to create categories and write articles for your knowledgebase.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #7: don't repeat yourself\r\n<hr />\r\n<p>Sometimes several support tickets are addressing the same issues - allowing you to use pre-written (&quot;canned&quot;) responses.</p>\r\n<p>To compose canned responses go to <a href=\"manage_canned.php\">Canned</a> page.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #8: secure your help desk\r\n<hr />\r\n<p>Make sure your help desk is as secure as possible by going through <a href=\"https://www.hesk.com/knowledgebase/?article=82\">HESK security check list</a></p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #9: stay updated\r\n<hr />\r\n<p>HESK regularly receives improvements and bug fixes; make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow us on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\nSTEP #10: look professional\r\n<hr />\r\n<p>To look more professional and not advertise the tools you use, <a href=\"https://www.hesk.com/buy.php\">remove &quot;Powered by&quot; links</a> from your help desk.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Again, welcome to HESK and enjoy using it!</p>\r\n\r\n<p>Klemen<br />\r\n<a href=\"https://www.hesk.com\">https://www.hesk.com</a></p>\r\n\r\n</div><p>")."', NOW(), '0', 9999)");
 
 // -> Notes
 hesk_dbQuery("
@@ -475,8 +496,9 @@ hesk_dbQuery("
 CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `replyto` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `message` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `message_html` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
   `dt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `attachments` mediumtext COLLATE utf8_unicode_ci,
   `staffid` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -495,6 +517,7 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."reply_drafts` (
   `owner` smallint(5) unsigned NOT NULL,
   `ticket` mediumint(8) unsigned NOT NULL,
   `message` mediumtext CHARACTER SET utf8 NOT NULL,
+  `message_html` mediumtext CHARACTER SET utf8 DEFAULT NULL,
   `dt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `owner` (`owner`),
   KEY `ticket` (`ticket`)
@@ -537,6 +560,7 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."std_replies` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `message` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `message_html` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
   `reply_order` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
@@ -553,6 +577,7 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` (
   `priority` enum('0','1','2','3') COLLATE utf8_unicode_ci NOT NULL DEFAULT '3',
   `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `message` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `message_html` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
   `dt` timestamp NOT NULL DEFAULT '2000-01-01 00:00:00',
   `lastchange` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `firstreply` timestamp NULL DEFAULT NULL,
@@ -626,6 +651,8 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` (
   `custom48` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `custom49` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `custom50` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `due_date` timestamp NULL DEFAULT NULL,
+  `overdue_email_sent` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `trackid` (`trackid`),
   KEY `archive` (`archive`),
@@ -643,6 +670,7 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."ticket_templates` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `message` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `message_html` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
   `tpl_order` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
@@ -655,7 +683,7 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."users` (
   `user` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `pass` char(40) COLLATE utf8_unicode_ci NOT NULL,
   `isadmin` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `signature` varchar(1000) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `language` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -673,6 +701,8 @@ CREATE TABLE `".hesk_dbEscape($hesk_settings['db_pfix'])."users` (
   `notify_assigned` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
   `notify_pm` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
   `notify_note` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
+  `notify_overdue_unassigned` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
+  `notify_overdue_my` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
   `default_list` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `autoassign` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
   `heskprivileges` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -736,6 +766,16 @@ function hesk_iSaveSettings()
 
     // If SSL is enabled, let's force it by default
     $set['force_ssl'] = HESK_SSL ? 1 : 0;
+
+    // Generate an URL access key
+    $length = mt_rand(20, 30);
+    $result = '';
+    $characters = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ1234567890-_.';
+    $charactersLength = strlen($characters);
+    for ($i = 0; $i < $length; $i++) {
+        $result .=  $characters[mt_rand(0, $charactersLength-1)];
+    }
+    $set['url_key'] = $result;
 
 	hesk_iSaveSettingsFile($set);
 

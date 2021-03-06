@@ -239,6 +239,27 @@ hesk_handle_messages();
                         <?php echo $hesklang['test_theme_folder']; ?>
                     </button>
                 </div>
+                <div class="checkbox-group">
+                    <h5>
+                        <span><?php echo $hesklang['admin_css']; ?></span>
+                        <a onclick="hesk_window('<?php echo $help_folder; ?>general.html#59','400','500')">
+                            <div class="tooltype right" style="vertical-align: top;">
+                                <svg class="icon icon-info">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                                </svg>
+                            </div>
+                        </a>
+                    </h5>
+                    <div class="checkbox-list">
+                        <div class="checkbox-custom">
+                            <input type="checkbox" id="s_admin_css" name="s_admin_css" value="1" onchange="hesk_toggleLayerDisplay('admin_css');" <?php if ($hesk_settings['admin_css']) {echo 'checked';} ?>>
+                            <label for="s_admin_css"><?php echo $hesklang['admin_css2']; ?></label>
+                        </div>
+                        <div id="admin_css" style="margin-left:25px;display:<?php echo $hesk_settings['admin_css'] ? 'block' : 'none'; ?>">
+                            <input type="text" class="form-control" name="s_admin_css_url" maxlength="255" value="<?php echo $hesk_settings['admin_css_url']; ?>">
+                        </div>
+                    </div>
+                </div>
             </section>
             <section class="settings__form_block language">
                 <h3><?php echo $hesklang['lgs']; ?></h3>

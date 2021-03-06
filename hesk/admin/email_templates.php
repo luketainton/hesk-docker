@@ -329,6 +329,9 @@ if ($action == 'edit')
                             <a href="javascript:" title="%%TIME_WORKED%%" onclick="hesk_insertTag('TIME_WORKED')">
                                 <?php echo $hesklang['ts']; ?>
                             </a>
+                            <a href="javascript:" title="%%DUE_DATE%%" onclick="hesk_insertTag('DUE_DATE')">
+                                <?php echo $hesklang['due_date']; ?>
+                            </a>
                             <a href="javascript:" title="%%TRACK_ID%%" onclick="hesk_insertTag('TRACK_ID')">
                                 <?php echo $hesklang['trackID']; ?>
                             </a>

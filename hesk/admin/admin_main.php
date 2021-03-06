@@ -50,27 +50,6 @@ hesk_handle_messages();
 /* Print tickets? */
 if (hesk_checkPermission('can_view_tickets',0))
 {
-	if ( ! isset($_SESSION['hide']['ticket_list']) )
-    {
-        // Show 'Tickets' if resolved tickets are shown by default
-        if (isset($_SESSION['default_list']) && strpos($_SESSION['default_list'], 's3=1') !== false) {
-            $table_title = $hesklang['tickets'];
-        } else {
-            $table_title = $hesklang['open_tickets'];
-        }
-
-        $header_text = '
-        <section style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px">
-            <h2 style="font-size: 18px; font-weight: bold">'.$table_title.' (%%HESK_TICKET_COUNT%%)</h2>
-            <div class="checkbox-custom">
-                <input type="checkbox" id="reloadCB" onclick="toggleAutoRefresh(this);">
-                <label for="reloadCB">'.$hesklang['arp'].'</label>&nbsp;<span id="timer"></span>
-                <script type="text/javascript">heskCheckReloading();</script>
-            </div>
-        </section>
-        ';
-	}
-
 	/* Reset default settings? */
 	if ( isset($_GET['reset']) && hesk_token_check() )
 	{
@@ -85,6 +64,7 @@ if (hesk_checkPermission('can_view_tickets',0))
 	}
 
 	/* Print the list of tickets */
+    $href = 'admin_main.php';
 	require(HESK_PATH . 'inc/print_tickets.inc.php');
 
     echo "&nbsp;<br />";

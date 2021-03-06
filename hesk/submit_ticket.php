@@ -16,7 +16,6 @@ define('HESK_PATH','./');
 
 // Get all the required files and functions
 require(HESK_PATH . 'hesk_settings.inc.php');
-// TODO pull this from settings
 define('TEMPLATE_PATH', HESK_PATH . "theme/{$hesk_settings['site_theme']}/");
 require(HESK_PATH . 'inc/common.inc.php');
 
@@ -470,8 +469,9 @@ if (count($hesk_error_buffer))
     hesk_process_messages($hesk_error_buffer, 'index.php?a=add&category='.$tmpvar['category']);
 }
 
-$tmpvar['message']=hesk_makeURL($tmpvar['message']);
-$tmpvar['message']=nl2br($tmpvar['message']);
+$tmpvar['message'] = hesk_makeURL($tmpvar['message']);
+$tmpvar['message'] = nl2br($tmpvar['message']);
+$tmpvar['message_html'] = $tmpvar['message'];
 
 // Track suggested knowledgebase articles
 if ($hesk_settings['kb_enable'] && $hesk_settings['kb_recommendanswers'] && isset($_POST['suggested']) && is_array($_POST['suggested']) )
@@ -488,7 +488,7 @@ $autoassign_owner = hesk_autoAssignTicket($tmpvar['category']);
 if ($autoassign_owner)
 {
 	$tmpvar['owner']    = $autoassign_owner['id'];
-    $tmpvar['history'] .= sprintf($hesklang['thist10'], hesk_date(), $autoassign_owner['name'].' ('.$autoassign_owner['user'].')');
+    $tmpvar['history'] .= sprintf($hesklang['thist10'], hesk_date(), addslashes($autoassign_owner['name']).' ('.$autoassign_owner['user'].')');
     $tmpvar['assignedby'] = -1;
 }
 

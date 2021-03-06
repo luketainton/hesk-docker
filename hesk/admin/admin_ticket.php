@@ -13,6 +13,7 @@
 
 define('IN_SCRIPT',1);
 define('HESK_PATH','../');
+define('CALENDAR',1);
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
@@ -61,6 +62,10 @@ define('BACK2TOP',1);
 if ($hesk_settings['time_display']) {
     define('TIMEAGO',1);
 }
+if ($hesk_settings['staff_ticket_formatting'] == 2) {
+    define('WYSIWYG',1);
+    define('STYLE_CODE',1);
+}
 
 /* Get ticket info */
 $res = hesk_dbQuery("SELECT `t1`.* , `t2`.name AS `repliername` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` AS `t1` LEFT JOIN `".hesk_dbEscape($hesk_settings['db_pfix'])."users` AS `t2` ON `t1`.`replierid` = `t2`.`id` WHERE `trackid`='".hesk_dbEscape($trackingID)."' LIMIT 1");
@@ -90,6 +95,16 @@ else
 	/* We have a match, get ticket info */
 	$ticket = hesk_dbFetchAssoc($res);
 }
+
+// Has this ticket been anonymized?
+$ticket['anonymized'] = (
+    $ticket['name'] == $hesklang['anon_name'] &&
+    $ticket['email'] == $hesklang['anon_email'] &&
+    $ticket['subject'] == $hesklang['anon_subject'] &&
+    $ticket['message'] == $hesklang['anon_message'] &&
+    $ticket['message_html'] == $hesklang['anon_message'] &&
+    $ticket['ip'] == $hesklang['anon_IP']
+    ) ? true : false;
 
 /* Permission to view this ticket? */
 if ($ticket['owner'] && $ticket['owner'] != $_SESSION['id'] && ! hesk_checkPermission('can_view_ass_others',0))
@@ -387,7 +402,7 @@ if (isset($_POST['notemsg']) && hesk_token_check('POST'))
         /* Notify assigned staff that a note has been added if needed */
         if ($ticket['owner'] && $ticket['owner'] != $_SESSION['id'])
         {
-			$res = hesk_dbQuery("SELECT `email`, `notify_note` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` WHERE `id`='".intval($ticket['owner'])."' LIMIT 1");
+			$res = hesk_dbQuery("SELECT `email` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` WHERE `id`='".intval($ticket['owner'])."' AND `notify_note`='1' LIMIT 1");
 
 			if (hesk_dbNumRows($res) == 1)
 			{
@@ -407,6 +422,7 @@ if (isset($_POST['notemsg']) && hesk_token_check('POST'))
 				'dt'			=> hesk_date($ticket['dt'], true),
 				'lastchange'	=> hesk_date($ticket['lastchange'], true),
 				'attachments'	=> $myattachments,
+                'due_date'      => hesk_format_due_date($ticket['due_date']),
 				'id'			=> $ticket['id'],
                 'time_worked'   => $ticket['time_worked'],
                 'last_reply_by' => $ticket['repliername'],
@@ -449,11 +465,44 @@ if ($hesk_settings['time_worked'] && ($can_reply || $can_edit) && isset($_POST['
     $time_worked = hesk_getTime($h . ':' . $m . ':' . $s);
 
 	/* Update database */
-    $revision = sprintf($hesklang['thist14'],hesk_date(),$time_worked,$_SESSION['name'].' ('.$_SESSION['user'].')');
+    $revision = sprintf($hesklang['thist14'],hesk_date(),$time_worked,addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 	hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `time_worked`='" . hesk_dbEscape($time_worked) . "', `history`=CONCAT(`history`,'" . hesk_dbEscape($revision) . "') WHERE `trackid`='" . hesk_dbEscape($trackingID) . "'");
 
 	/* Show ticket */
 	hesk_process_messages($hesklang['twu'],'admin_ticket.php?track='.$trackingID.'&Refresh='.mt_rand(10000,99999),'SUCCESS');
+}
+
+/* Update due date */
+if (($can_reply || $can_edit) && isset($_POST['action']) && $_POST['action'] == 'due_date' && hesk_token_check('POST')) {
+    $new_due_date = hesk_POST('new-due-date');
+
+    // MM/DD/YYYY
+    if ($new_due_date != '' && !preg_match("/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/", $new_due_date)) {
+        hesk_process_messages($hesklang['invalid_due_date'], 'admin_ticket.php?track='.$trackingID.'&Refresh='.mt_rand(10000,99999));
+    }
+
+    $sql_overdue_email = '';
+
+    if ($new_due_date == '') {
+        $formatted_date = false;
+        $revision = sprintf($hesklang['thist20'], hesk_date(), addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
+    } else {
+        $date = new DateTime($new_due_date . 'T00:00:00');
+        $formatted_date = $date->format('Y-m-d');
+        $revision = sprintf($hesklang['thist19'], hesk_date(), $formatted_date, addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
+
+        // If this is a future date, we'll reset the
+        $current_date = new DateTime();
+        if ($date > $current_date)
+        {
+            $sql_overdue_email = '`overdue_email_sent`=0,';
+        }
+    }
+
+    hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `due_date` = " . ($formatted_date === false ? 'NULL' : "'".hesk_dbEscape($formatted_date)."'") . ", {$sql_overdue_email} `history`=CONCAT(`history`,'" . hesk_dbEscape($revision) . "') WHERE `trackid`='" . hesk_dbEscape($trackingID) . "' AND (`due_date` IS " . ($formatted_date === false ? 'NOT NULL' : "NULL OR `due_date` != '".hesk_dbEscape($formatted_date)."'") . ")");
+
+    /* Show ticket */
+    hesk_process_messages($hesklang['due_date_updated'],'admin_ticket.php?track='.$trackingID.'&Refresh='.mt_rand(10000,99999),'SUCCESS');
 }
 
 /* Delete attachment action */
@@ -499,7 +548,7 @@ if (isset($_GET['delatt']) && hesk_token_check())
 	hesk_dbQuery("DELETE FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."attachments` WHERE `att_id`='".intval($att_id)."'");
 
 	/* Update ticket or reply in the database */
-    $revision = sprintf($hesklang['thist12'],hesk_date(),$att['real_name'],$_SESSION['name'].' ('.$_SESSION['user'].')');
+    $revision = sprintf($hesklang['thist12'],hesk_date(),$att['real_name'],addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 	if ($reply)
 	{
 		hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` SET `attachments`=REPLACE(`attachments`,'".hesk_dbEscape($att_id.'#'.$att['real_name']).",','') WHERE `id`='".intval($reply)."'");
@@ -933,11 +982,11 @@ $options = array(
                 }
             }
 
-            if ($ticket['message'] != '')
+            if ($ticket['message_html'] != '')
             {
                 ?>
-                <div class="block--description">
-                    <p><?php echo $ticket['message']; ?></p>
+                <div class="block--description browser-default">
+                    <p><?php echo $ticket['message_html']; ?></p>
                 </div>
                 <?php
             }
@@ -1396,6 +1445,66 @@ $options = array(
                 <?php
                 }
                 ?>
+                <div class="row">
+                    <div class="title"><?php echo $hesklang['due_date']; ?></div>
+                    <?php
+                    $dateformat = substr($hesk_settings['timeformat'], 0, strpos($hesk_settings['timeformat'], ' '));
+                    $due_date = $hesklang['none'];
+                    $datepicker_due_date = '';
+                    if ($ticket['due_date'] != null) {
+                        $datepicker_due_date = hesk_date($ticket['due_date'], false, true, false);
+                        $due_date = date($dateformat, $datepicker_due_date);
+                        $datepicker_due_date = date('m/d/Y', $datepicker_due_date);
+                    }
+
+                    if ($can_reply || $can_edit)
+                    {
+                        ?>
+                        <div class="value">
+                            <a href="javascript:" onclick="hesk_toggleLayerDisplay('modifyduedate')">
+                                <?php echo $due_date; ?>
+                            </a>
+                            <div id="modifyduedate" style="display:none">
+                                <form class="form" method="post" action="admin_ticket.php">
+                                    <section class="param calendar">
+                                        <div class="calendar--button">
+                                            <button type="button">
+                                                <svg class="icon icon-calendar">
+                                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-calendar"></use>
+                                                </svg>
+                                            </button>
+                                            <input name="new-due-date"
+                                                   data-datepicker-position="bottom left"
+                                                   value="<?php echo $datepicker_due_date; ?>"
+                                                   type="text" class="datepicker">
+                                        </div>
+                                        <div class="calendar--value" style="<?php echo $datepicker_due_date == '' ? '' : 'display: block'; ?>">
+                                            <span><?php echo $datepicker_due_date; ?></span>
+                                            <i class="close">
+                                                <svg class="icon icon-close">
+                                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-close"></use>
+                                                </svg>
+                                            </i>
+                                        </div>
+                                    </section>
+                                    <button style="display: inline-flex; width: auto; height: 48px; padding: 0 16px" class="btn btn-full" type="submit"><?php echo $hesklang['save']; ?></button>
+                                    <a class="btn btn--blue-border" href="Javascript:void(0)" onclick="Javascript:hesk_toggleLayerDisplay('modifyduedate')"><?php echo $hesklang['cancel']; ?></a>
+                                    <input type="hidden" name="track" value="<?php echo $trackingID; ?>" />
+                                    <input type="hidden" name="token" value="<?php hesk_token_echo(); ?>" />
+                                    <input type="hidden" name="action" value="due_date">
+                                </form>
+                            </div>
+                        </div>
+                        <?php
+                    } else {
+                        ?>
+                        <div class="value">
+                            <?php echo $ticket['due_date']; ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
             </div>
         </section>
         <?php
@@ -1523,7 +1632,7 @@ function hesk_getAdminButtons($isReply=0,$white=1)
     if (!$isReply) {
         // Print ticket button
         $buttons[] = '
-        <a href="../print.php?track='.$trackingID.'" title="'.$hesklang['btn_print'].'">
+        <a href="../print.php?track='.$trackingID.'" title="'.$hesklang['btn_print'].'" target="_blank">
             <svg class="icon icon-print">
                 <use xlink:href="' . HESK_PATH .'img/sprite.svg#icon-print"></use>
             </svg>
@@ -1577,16 +1686,18 @@ function hesk_getAdminButtons($isReply=0,$white=1)
 	}
 
 	// Resend email notification button
-	$buttons['more'][] = '
-	<a id="resendemail" href="resend_notification.php?track='.$trackingID.'&amp;reply='.($isReply && isset($reply['id']) ? intval($reply['id']) : 0).'&amp;Refresh='.mt_rand(10000,99999).'&amp;token='.hesk_token_echo(0).'" title="'.$hesklang['btn_resend'].'">
-	    <svg class="icon icon-mail-small">
-            <use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-mail-small"></use>
-        </svg>
-	    '.$hesklang['btn_resend'].'
-    </a>';
+    if (!$ticket['anonymized']) {
+        $buttons['more'][] = '
+        <a id="resendemail" href="resend_notification.php?track='.$trackingID.'&amp;reply='.($isReply && isset($reply['id']) ? intval($reply['id']) : 0).'&amp;Refresh='.mt_rand(10000,99999).'&amp;token='.hesk_token_echo(0).'" title="'.$hesklang['btn_resend'].'">
+            <svg class="icon icon-mail-small">
+                <use xlink:href="'. HESK_PATH .'img/sprite.svg#icon-mail-small"></use>
+            </svg>
+            '.$hesklang['btn_resend'].'
+        </a>';
+    }
 
 	// Import to knowledgebase button
-	if (!$isReply && $hesk_settings['kb_enable'] && hesk_checkPermission('can_man_kb',0))
+    if (!$isReply && $hesk_settings['kb_enable'] && hesk_checkPermission('can_man_kb',0) && !$ticket['anonymized'])
 	{
 		$buttons['more'][] = '
 		<a id="addtoknow" href="manage_knowledgebase.php?a=import_article&amp;track='.$trackingID.'" title="'.$hesklang['import_kb'].'">
@@ -1598,7 +1709,7 @@ function hesk_getAdminButtons($isReply=0,$white=1)
 	}
 
     // Export ticket
-    if (!$isReply && $can_export)
+    if (!$isReply && $can_export && !$ticket['anonymized'])
     {
         $buttons['more'][] = '
         <a id="exportticket" href="export_ticket.php?track='.$trackingID.'&amp;Refresh='.mt_rand(10000,99999).'&amp;token='.hesk_token_echo(0).'" title="'.$hesklang['btn_export'].'">
@@ -1826,8 +1937,8 @@ function hesk_printTicketReplies() {
                 </div>
                 <?php echo hesk_getAdminButtons(1, $i); ?>
             </div>
-            <div class="block--description">
-                <p><?php echo $reply['message']; ?></p>
+            <div class="block--description browser-default">
+                <p><?php echo $reply['message_html']; ?></p>
             </div>
             <?php
 
@@ -1870,8 +1981,8 @@ function hesk_printTicketReplies() {
                 </div>
                 <?php echo hesk_getAdminButtons(1,$i); ?>
             </div>
-            <div class="block--description">
-                <p><?php echo $reply['message']; ?></p>
+            <div class="block--description browser-default">
+                <p><?php echo $reply['message_html']; ?></p>
             </div>
             <?php
             /* Attachments */
@@ -1928,8 +2039,8 @@ function hesk_printTicketReplies() {
             </div>
             <?php echo hesk_getAdminButtons(1, $i); ?>
         </div>
-        <div class="block--description">
-            <p><?php echo $reply['message']; ?></p>
+        <div class="block--description browser-default">
+            <p><?php echo $reply['message_html']; ?></p>
         </div>
         <?php
 
@@ -2100,10 +2211,11 @@ function hesk_printReplyForm() {
                     // Perhaps a message stored in reply drafts?
                     else
                     {
-                        $res = hesk_dbQuery("SELECT `message` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."reply_drafts` WHERE `owner`=".intval($_SESSION['id'])." AND `ticket`=".intval($ticket['id'])." LIMIT 1");
+                        $db_column = $hesk_settings['staff_ticket_formatting'] == 2 ? 'message_html' : 'message';
+                        $res = hesk_dbQuery("SELECT `{$db_column}` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."reply_drafts` WHERE `owner`=".intval($_SESSION['id'])." AND `ticket`=".intval($ticket['id'])." LIMIT 1");
                         if (hesk_dbNumRows($res) == 1)
                         {
-                            echo hesk_dbResult($res);
+                            echo $db_column === 'message_html' ? htmlspecialchars(hesk_dbResult($res)) : hesk_dbResult($res);
                         }
                     }
 
@@ -2111,6 +2223,10 @@ function hesk_printReplyForm() {
             </div>
 
         <?php
+        if ($hesk_settings['staff_ticket_formatting'] == 2) {
+            hesk_tinymce_init('#message');
+        }
+
         /* attachments */
         if ($hesk_settings['attachments']['use'])
         {
@@ -2163,7 +2279,7 @@ function hesk_printReplyForm() {
                 <input type="checkbox" id="set_priority" name="set_priority" value="1">
                 <label for="set_priority"><?php echo $hesklang['change_priority']; ?></label>
 
-                <div class="dropdown-select center out-close" data-value="low">
+                <div class="dropdown-select center out-close priority" data-value="low">
                     <select id="replypriority" name="priority">
                         <?php echo implode('',$options); ?>
                     </select>
@@ -2250,10 +2366,13 @@ function hesk_printCanned()
 	myMsgTxt[0]='';
 
 	<?php
-	while ($mysaved = hesk_dbFetchRow($res))
+	while ($mysaved = hesk_dbFetchAssoc($res))
 	{
-	    $can_options .= '<option value="' . $mysaved[0] . '">' . $mysaved[1]. "</option>\n";
-	    echo 'myMsgTxt['.$mysaved[0].']=\''.str_replace("\r\n","\\r\\n' + \r\n'", addslashes($mysaved[2]))."';\n";
+        $can_options .= '<option value="' . $mysaved['id'] . '">' . $mysaved['title']. "</option>\n";
+
+        $message_text = $hesk_settings['staff_ticket_formatting'] == 2 ? $mysaved['message_html'] : $mysaved['message'];
+
+        echo 'myMsgTxt['.$mysaved['id'].']=\''.preg_replace("/\r?\n|\r/","\\r\\n' + \r\n'", addslashes($message_text))."';\n";
 	}
 
 	?>
@@ -2266,7 +2385,11 @@ function hesk_printCanned()
         {
             if (document.form1.mode[1].checked)
             {
+            <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
+                tinymce.get("message").setContent('');
+            <?php else: ?>
                 document.getElementById('message').value = '';
+            <?php endif; ?>
                 $('.ticket .block--message .placeholder').click();
                 return true;
             }
@@ -2288,14 +2411,23 @@ function hesk_printCanned()
 		}
 		?>
 
-	    if (document.getElementById)
-        {
-            if (document.getElementById('moderep').checked)
-            {
+        if (document.getElementById) {
+            if (document.getElementById('moderep').checked) {
+            <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
+                tinymce.get("message").setContent('');
+                tinymce.get("message").execCommand('mceInsertRawHTML', false, myMsg);
+            <?php else: ?>
                 document.getElementById('message-block').innerHTML = '<textarea name="message" id="message" placeholder="<?php echo $hesklang['type_your_message']; ?>">' + myMsg + '</textarea>';
+            <?php endif; ?>
             } else {
-                var oldMsg = document.getElementById('message').value;
+            <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
+                var oldMsg = tinymce.get("message").getContent();
+                tinymce.get("message").setContent('');
+                tinymce.get("message").execCommand('mceInsertRawHTML', false, oldMsg + myMsg);
+            <?php else: ?>
+                var oldMsg = escapeHtml(document.getElementById('message').value);
                 document.getElementById('message-block').innerHTML = '<textarea name="message" id="message" placeholder="<?php echo $hesklang['type_your_message']; ?>">' + oldMsg + myMsg + '</textarea>';
+            <?php endif; ?>
             }
             $('.ticket .block--message .placeholder').click();
 	    } else {

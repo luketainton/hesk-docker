@@ -41,14 +41,14 @@ if (empty($_GET['locked']))
 {
 	$status = 0;
 	$tmp = $hesklang['tunlock'];
-    $revision = sprintf($hesklang['thist6'],hesk_date(),$_SESSION['name'].' ('.$_SESSION['user'].')');
+    $revision = sprintf($hesklang['thist6'],hesk_date(),addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 	$closedby_sql = ' , `closedat`=NULL, `closedby`=NULL ';
 }
 else
 {
 	$status = 1;
 	$tmp = $hesklang['tlock'];
-    $revision = sprintf($hesklang['thist5'],hesk_date(),$_SESSION['name'].' ('.$_SESSION['user'].')');
+    $revision = sprintf($hesklang['thist5'],hesk_date(),addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 	$closedby_sql = ' , `closedat`=NOW(), `closedby`='.intval($_SESSION['id']).' ';
 
 	// Notify customer of closed ticket?

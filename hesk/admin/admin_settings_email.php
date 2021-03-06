@@ -622,6 +622,7 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') )
                 <input type="hidden" name="tmp_imap_user" value="<?php echo $hesk_settings['imap_user']; ?>" />
                 <input type="hidden" name="tmp_imap_password" value="<?php echo $hesk_settings['imap_password']; ?>" />
                 <input type="hidden" name="tmp_imap_enc" value="<?php echo $hesk_settings['imap_enc']; ?>" />
+                <input type="hidden" name="tmp_imap_noval_cert" value="<?php echo $hesk_settings['imap_noval_cert']; ?>" />
                 <input type="hidden" name="tmp_imap_keep" value="<?php echo $hesk_settings['imap_keep']; ?>" />
                 <div class="checkbox-group row">
                     <h5>
@@ -726,6 +727,19 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') )
                                 <input type="radio" name="s_imap_enc" value="" id="i3" <?php echo $none; echo $onload_status; ?>>
                                 <label for="i3"><?php echo $hesklang['none']; ?></label>
                             </div>
+                            <div id="div_imap_noval_cert" style="display:<?php echo ($hesk_settings['imap_enc'] == 'ssl' || $hesk_settings['imap_enc'] == 'tls') ? 'block' : 'none'; ?>">
+                                <div class="checkbox-custom">
+                                    <input type="checkbox" id="i10" name="s_imap_noval_cert" value="1" <?php if ($hesk_settings['imap_noval_cert']) {echo 'checked';} ?>>
+                                    <label for="i10"><?php echo $hesklang['noval_cert']; ?></label>
+                                    <a onclick="hesk_window('<?php echo $help_folder; ?>email.html#68','400','500')">
+                                        <div class="tooltype right">
+                                            <svg class="icon icon-info">
+                                                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-info"></use>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="checkbox-group row">
@@ -800,13 +814,15 @@ if ($hesk_settings['attachments']['use'] && ! defined('HESK_DEMO') )
                             var s_imap_user      = document.getElementById('i5').value;
                             var s_imap_password  = document.getElementById('i6').value;
                             var s_imap_enc       = document.getElementById('i4').checked ? 'tls' : (document.getElementById('i9').checked ? 'ssl' : '');
+                            var s_imap_noval_cert = document.getElementById('i10').checked ? '1' : '0';
 
                             var params = "test=imap" +
                                 "&s_imap_host_name="  + encodeURIComponent( s_imap_host_name ) +
                                 "&s_imap_host_port=" + encodeURIComponent( s_imap_host_port ) +
                                 "&s_imap_user="      + encodeURIComponent( s_imap_user ) +
                                 "&s_imap_password="  + encodeURIComponent( s_imap_password ) +
-                                "&s_imap_enc="       + encodeURIComponent( s_imap_enc );
+                                "&s_imap_enc="       + encodeURIComponent( s_imap_enc ) +
+                                "&s_imap_noval_cert=" + encodeURIComponent( s_imap_noval_cert );
 
                             xmlHttp=GetXmlHttpObject();
                             if (xmlHttp==null)

@@ -96,7 +96,9 @@ $default_userdata = array(
 
 	// Notifications
 	'notify_new_unassigned' => 1,
+	'notify_overdue_unassigned' => 1,
 	'notify_new_my' => 1,
+	'notify_overdue_my' => 1,
 	'notify_reply_unassigned' => 1,
 	'notify_reply_my' => 1,
 	'notify_assigned' => 1,
@@ -225,6 +227,20 @@ if ($hesk_settings['imap'] && hesk_validateEmail($hesk_settings['imap_user'], 'E
             }
         }
     }
+}
+
+// We probably shouldn't have two or more users with the same email address; show a notice if so
+$res = hesk_dbQuery('SELECT `email`, COUNT(*) AS `cnt` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` GROUP BY `email` HAVING `cnt` > 1');
+if (hesk_dbNumRows($res) > 0)
+{
+    $emails = array();
+    while ($row = hesk_dbFetchAssoc($res))
+    {
+        $emails[$row['email']] = $row['cnt'];
+    }
+
+    //hesk_show_notice($hesklang['uue'] . '<br><br>' . implode('<br>', array_keys($emails)));
+    hesk_show_notice($hesklang['uue']);
 }
 ?>
 <div class="main__content team">
@@ -637,7 +653,9 @@ function new_user()
 	`notify_customer_reply`,
 	`show_suggested`,
 	`notify_new_unassigned`,
+	`notify_overdue_unassigned`,
 	`notify_new_my`,
+	`notify_overdue_my`,
 	`notify_reply_unassigned`,
 	`notify_reply_my`,
 	`notify_assigned`,
@@ -660,7 +678,9 @@ function new_user()
 	'".($myuser['notify_customer_reply'])."' ,
 	'".($myuser['show_suggested'])."' ,
 	'".($myuser['notify_new_unassigned'])."' ,
+	'".($myuser['notify_overdue_unassigned'])."',
 	'".($myuser['notify_new_my'])."' ,
+	'".($myuser['notify_overdue_my'])."' ,
 	'".($myuser['notify_reply_unassigned'])."' ,
 	'".($myuser['notify_reply_my'])."' ,
 	'".($myuser['notify_assigned'])."' ,
@@ -750,7 +770,9 @@ function update_user()
 	`notify_customer_reply`='".($myuser['notify_customer_reply'])."' ,
 	`show_suggested`='".($myuser['show_suggested'])."' ,
 	`notify_new_unassigned`='".($myuser['notify_new_unassigned'])."' ,
+	`notify_overdue_unassigned`='".($myuser['notify_overdue_unassigned'])."' ,
 	`notify_new_my`='".($myuser['notify_new_my'])."' ,
+	`notify_overdue_my`='".($myuser['notify_overdue_my'])."' ,
 	`notify_reply_unassigned`='".($myuser['notify_reply_unassigned'])."' ,
 	`notify_reply_my`='".($myuser['notify_reply_my'])."' ,
 	`notify_assigned`='".($myuser['notify_assigned'])."' ,
@@ -839,6 +861,12 @@ function hesk_validateUserInfo($pass_required = 1, $redirect_to = './manage_user
 				}
 			}
         }
+
+        // One needs view tickets permissions in one has reply to permission
+        if (in_array('can_reply_tickets', $myuser['features']))
+        {
+            $myuser['features'][] = 'can_view_tickets';
+        }
 	}
 
 	if (hesk_mb_strlen($myuser['signature'])>1000)
@@ -909,13 +937,15 @@ function hesk_validateUserInfo($pass_required = 1, $redirect_to = './manage_user
     }
 
     /* Notifications */
-    $myuser['notify_new_unassigned']	= empty($_POST['notify_new_unassigned']) ? 0 : 1;
-    $myuser['notify_new_my'] 			= empty($_POST['notify_new_my']) ? 0 : 1;
-    $myuser['notify_reply_unassigned']	= empty($_POST['notify_reply_unassigned']) ? 0 : 1;
-    $myuser['notify_reply_my']			= empty($_POST['notify_reply_my']) ? 0 : 1;
-    $myuser['notify_assigned']			= empty($_POST['notify_assigned']) ? 0 : 1;
-    $myuser['notify_note']				= empty($_POST['notify_note']) ? 0 : 1;
-    $myuser['notify_pm']				= empty($_POST['notify_pm']) ? 0 : 1;
+    $myuser['notify_new_unassigned']	    = empty($_POST['notify_new_unassigned']) ? 0 : 1;
+    $myuser['notify_overdue_unassigned']    = empty($_POST['notify_overdue_unassigned']) ? 0 : 1;
+    $myuser['notify_new_my'] 			    = empty($_POST['notify_new_my']) ? 0 : 1;
+    $myuser['notify_overdue_my']            = empty($_POST['notify_overdue_my']) ? 0 : 1;
+    $myuser['notify_reply_unassigned']	    = empty($_POST['notify_reply_unassigned']) ? 0 : 1;
+    $myuser['notify_reply_my']			    = empty($_POST['notify_reply_my']) ? 0 : 1;
+    $myuser['notify_assigned']			    = empty($_POST['notify_assigned']) ? 0 : 1;
+    $myuser['notify_note']				    = empty($_POST['notify_note']) ? 0 : 1;
+    $myuser['notify_pm']				    = empty($_POST['notify_pm']) ? 0 : 1;
 
     /* Save entered info in session so we don't lose it in case of errors */
 	$_SESSION['userdata'] = $myuser;
@@ -941,6 +971,12 @@ function hesk_validateUserInfo($pass_required = 1, $redirect_to = './manage_user
 	{
     	$myuser['features'][] = 'can_ban_emails';
 	}
+
+    // "can_unban_ips" feature also enables "can_ban_ips"
+    if ( in_array('can_unban_ips', $myuser['features']) && ! in_array('can_ban_ips', $myuser['features']) )
+    {
+        $myuser['features'][] = 'can_ban_ips';
+    }
 
 	return $myuser;
 
@@ -969,6 +1005,9 @@ function remove()
     }
 
     /* Un-assign all tickets for this user */
+    // Don't update resolved tickets "Last modified"
+    $res = hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `owner`=0, `lastchange`=`lastchange` WHERE `owner`='".intval($myuser)."' AND `status` = '3'");
+    // For unresolved tickets, update the "Last modified"
     $res = hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `owner`=0 WHERE `owner`='".intval($myuser)."'");
 
     /* Delete user info */

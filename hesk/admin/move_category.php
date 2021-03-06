@@ -76,7 +76,7 @@ if (hesk_dbNumRows($res) != 1)
 $ticket = hesk_dbFetchAssoc($res);
 
 /* Log that ticket is being moved */
-$history = sprintf($hesklang['thist1'],hesk_date(),$row['name'],$_SESSION['name'].' ('.$_SESSION['user'].')');
+$history = sprintf($hesklang['thist1'],hesk_date(),addslashes($row['name']),addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
 
 /* Is the ticket assigned to someone? If yes, check that the user has access to category or change to unassigned */
 $need_to_reassign = 0;
@@ -112,7 +112,7 @@ if ($need_to_reassign || ! $ticket['owner'])
 	if ($autoassign_owner)
 	{
 		$ticket['owner'] = $autoassign_owner['id'];
-	    $history .= sprintf($hesklang['thist10'],hesk_date(),$autoassign_owner['name'].' ('.$autoassign_owner['user'].')');
+	    $history .= sprintf($hesklang['thist10'],hesk_date(),addslashes($autoassign_owner['name']).' ('.$autoassign_owner['user'].')');
 	}
     else
     {
@@ -140,6 +140,7 @@ $info = array(
 'attachments'	=> $ticket['attachments'],
 'dt'			=> hesk_date($ticket['dt'], true),
 'lastchange'	=> hesk_date($ticket['lastchange'], true),
+'due_date'      => hesk_format_due_date($ticket['due_date']),
 'id'			=> $ticket['id'],
 'time_worked'   => $ticket['time_worked'],
 'last_reply_by' => hesk_getReplierName($ticket),

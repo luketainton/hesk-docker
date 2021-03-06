@@ -173,10 +173,12 @@ function hesk_isValidIP($ip)
 
 function hesk_setcookie($name, $value, $expire=0, $path="")
 {
+    global $hesk_settings;
+
     // PHP < 7.3 doesn't support the SameSite attribute, let's use a trick
     if (PHP_VERSION_ID < 70300)
     {
-        setcookie($name, $value, $expire, $path . "; SameSite=Lax", null, HESK_SSL, true);
+        setcookie($name, $value, $expire, $path . '; SameSite=' . $hesk_settings['samesite'], null, HESK_SSL, true);
         return true;
     }
 
@@ -184,7 +186,7 @@ function hesk_setcookie($name, $value, $expire=0, $path="")
         'expires' => $expire,
         'path' => $path,
         'secure' => HESK_SSL,
-        'samesite' => 'Lax',
+        'samesite' => $hesk_settings['samesite'],
     ));
 
     return true;
@@ -936,7 +938,7 @@ function hesk_getCategoryName($id)
 	$hesk_settings['category_data'][$id]['name'] = hesk_dbResult($res,0,0);
 
 	return $hesk_settings['category_data'][$id]['name'];
-} // END hesk_getOwnerName()
+} // END hesk_getCategoryName()
 
 
 function hesk_getReplierName($ticket)
@@ -1168,13 +1170,13 @@ function hesk_handle_messages()
 } // END hesk_handle_messages()
 
 
-function hesk_show_error($message,$title='',$append_colon=true)
+function hesk_show_error($message,$title='',$append_colon=true,$extra_class='')
 {
 	global $hesk_settings, $hesklang;
     $title = $title ? $title : $hesklang['error'];
 	$title = $append_colon ? $title . ':' : $title;
 	?>
-    <div class="main__content notice-flash">
+    <div class="main__content notice-flash <?php echo $extra_class; ?>">
         <div class="notification red">
             <b><?php echo $title; ?></b> <?php echo $message; ?>
         </div>
@@ -1183,13 +1185,13 @@ function hesk_show_error($message,$title='',$append_colon=true)
 } // END hesk_show_error()
 
 
-function hesk_show_success($message,$title='',$append_colon=true)
+function hesk_show_success($message,$title='',$append_colon=true,$extra_class='')
 {
 	global $hesk_settings, $hesklang;
     $title = $title ? $title : $hesklang['success'];
 	$title = $append_colon ? $title . ':' : $title;
 	?>
-    <div class="main__content notice-flash">
+    <div class="main__content notice-flash <?php echo $extra_class; ?>">
         <div class="notification green">
             <b><?php echo $title; ?></b> <?php echo $message; ?>
         </div>
@@ -1198,13 +1200,13 @@ function hesk_show_success($message,$title='',$append_colon=true)
 } // END hesk_show_success()
 
 
-function hesk_show_notice($message,$title='',$append_colon=true)
+function hesk_show_notice($message,$title='',$append_colon=true,$extra_class='')
 {
 	global $hesk_settings, $hesklang;
     $title = $title ? $title : $hesklang['note'];
 	$title = $append_colon ? $title . ':' : $title;
 	?>
-    <div class="main__content notice-flash">
+    <div class="main__content notice-flash <?php echo $extra_class; ?>">
         <div class="notification orange">
             <b><?php echo $title; ?></b> <?php echo $message; ?>
         </div>
@@ -1213,13 +1215,13 @@ function hesk_show_notice($message,$title='',$append_colon=true)
 } // END hesk_show_notice()
 
 
-function hesk_show_info($message,$title='',$append_colon=true)
+function hesk_show_info($message,$title='',$append_colon=true,$extra_class='')
 {
 	global $hesk_settings, $hesklang;
     $title = $title ? $title : $hesklang['info'];
 	$title = $append_colon ? $title . ':' : $title;
 	?>
-    <div class="main__content notice-flash">
+    <div class="main__content notice-flash <?php echo $extra_class; ?>">
         <div class="notification blue">
             <b><?php echo $title; ?></b> <?php echo $message; ?>
         </div>
@@ -1651,6 +1653,33 @@ function hesk_date($dt='', $from_database=false, $is_str=true, $return_str=true)
 } // End hesk_date()
 
 
+function hesk_format_due_date($dt, $is_str=true)
+{
+    global $hesk_settings;
+
+    if (!$dt)
+    {
+        return '';
+    }
+    elseif ($is_str)
+    {
+        $dt = strtotime($dt);
+    }
+
+    if (substr_count($hesk_settings['timeformat'], ' ') === 1)
+    {
+        list($date_format, $time_format) = explode(' ', $hesk_settings['timeformat']);
+    }
+    else
+    {
+        $date_format = 'Y-m-d';
+    }
+
+    return date($date_format, $dt);
+
+} // End hesk_format_due_date()
+
+
 function hesk_array_fill_keys($keys, $value)
 {
 	if ( version_compare(PHP_VERSION, '5.2.0', '>=') )
@@ -1870,20 +1899,31 @@ function hesk_isNumber($in, $error = 0)
 } // END hesk_isNumber()
 
 
-function hesk_validateURL($url,$error)
+function hesk_validateURL($url, $error=false)
 {
 	global $hesklang;
 
     $url = trim($url);
 
-    if (strpos($url,"'") !== false || strpos($url,"\"") !== false)
+    if (filter_var($url, FILTER_VALIDATE_URL) === false)
     {
-		die($hesklang['attempt']);
+        if ($error === false)
+        {
+            return '';
+        }
+
+        hesk_error($error);
     }
 
-    if (preg_match('/^https?:\/\/+(localhost|[\w\-]+\.[\w\-]+)/i',$url))
+    $scheme = parse_url($url, PHP_URL_SCHEME);
+    if ($scheme == 'https' || $scheme == 'http')
     {
         return hesk_input($url);
+    }
+
+    if ($error === false)
+    {
+        return '';
     }
 
     hesk_error($error);
@@ -1925,7 +1965,7 @@ function hesk_input($in, $error=0, $redirect_to='', $force_slashes=0, $max_lengt
 	// Sanitize input
 	$in = hesk_clean_utf8($in);
 	$in = hesk_htmlspecialchars($in);
-	$in = preg_replace('/&amp;(\#[0-9]+;)/','&$1',$in);
+	//$in = preg_replace('/&amp;(\#[0-9]+;)/','&$1',$in);
 
 	// Add slashes
     if (HESK_SLASH || $force_slashes)
@@ -2080,6 +2120,8 @@ function hesk_session_regenerate_id()
 
 function hesk_session_start()
 {
+    global $hesk_settings;
+
     session_name('HESK' . sha1(dirname(__FILE__) . '$r^k*Zkq|w1(G@!-D?3%') );
 
     // PHP < 7.3 doesn't support the SameSite attribute, let's use a trick
@@ -2088,7 +2130,7 @@ function hesk_session_start()
         $currentCookieParams = session_get_cookie_params();
         session_set_cookie_params(
             $currentCookieParams['lifetime'],
-            $currentCookieParams['path'] . "; SameSite=Lax",
+            $currentCookieParams['path'] . '; SameSite=' . $hesk_settings['samesite'],
             $currentCookieParams['domain'],
             $currentCookieParams['secure'],
             $currentCookieParams['httponly']
@@ -2096,7 +2138,7 @@ function hesk_session_start()
     }
     else
     {
-        session_set_cookie_params(array('samesite' => 'Lax'));
+        session_set_cookie_params(array('samesite' => $hesk_settings['samesite']));
     }
 
 	session_cache_limiter('nocache');
@@ -2217,6 +2259,11 @@ function hesk_check_maintenance($dodie = true)
                       $hesk_settings['db_vrsn'] == 0 &&
                       $hesk_settings['hesk_title'] == 'Help Desk' &&
                       $hesk_settings['hesk_url'] == 'http://www.example.com/helpdesk';
+
+    // Just exist if TEMPLATE_PATH is not defined
+    if ( ! defined('TEMPLATE_PATH')) {
+        exit($hesklang['mm1']);
+    }
 
 	// Maintenance mode - show notice and exit
 	$hesk_settings['render_template'](TEMPLATE_PATH . 'customer/maintenance.php', array(
@@ -2414,4 +2461,32 @@ function hesk_generate_delete_modal($title, $body, $confirm_link, $delete_text =
     <?php
 
     return $random_id;
-}
+} // end hesk_generate_delete_modal()
+
+
+function hesk_authorizeNonCLI()
+{
+    global $hesklang, $hesk_settings;
+
+    // URL Access Key not set?
+    if ($hesk_settings['url_key'] == '') {
+        return true;
+    }
+
+    // Are we in CLI mode?
+    if (php_sapi_name() == 'cli' || empty($_SERVER['REMOTE_ADDR'])) {
+        return true;
+    }
+
+    // Do we have a "key" variable set?
+    if ( ! isset($_REQUEST['key'])) {
+        die($hesklang['ukeym'] . ' ' . $_SERVER['SCRIPT_NAME'] . '?key=XXXXXXXXXX');
+    }
+
+    // Is the correct "key" set?
+    if ($_REQUEST['key'] != $hesk_settings['url_key']) {
+        die($hesklang['ukeyw']);
+    }
+
+    return true;
+} // END hesk_authorizeNonCLI()

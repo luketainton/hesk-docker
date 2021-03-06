@@ -46,18 +46,10 @@ hesk_handle_messages();
 ?>
 </div>
 <?php
-$header_text = '
-    <section style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px">
-        <h2 style="font-size: 18px; font-weight: bold">'. $hesklang['tickets'] .' (%%HESK_TICKET_COUNT%%)</h2>
-        <div class="checkbox-custom">
-            <input type="checkbox" id="reloadCB" onclick="toggleAutoRefresh(this);">
-            <label for="reloadCB">'. $hesklang['arp'] .'</label>&nbsp;<span id="timer"></span>
-            <script type="text/javascript">heskCheckReloading();</script>
-        </div>
-    </section>';
 
 /* Print the list of tickets */
 $is_search = 1;
+$href = 'show_tickets.php';
 require_once(HESK_PATH . 'inc/print_tickets.inc.php');
 
 /* Update staff default settings? */

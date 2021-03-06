@@ -81,6 +81,10 @@ if (!defined('IN_SCRIPT')) {
                 <td><?php echo $ticket['time_worked']; ?></td>
             </tr>
             <tr>
+                <td><?php echo $hesklang['due_date']; ?>:</td>
+                <td><?php echo $ticket['due_date']; ?></td>
+            </tr>
+            <tr>
                 <td><?php echo $hesklang['ip']; ?>:</td>
                 <td><?php echo $ticket['ip']; ?></td>
             </tr>

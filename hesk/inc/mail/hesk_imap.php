@@ -53,6 +53,9 @@ $hesk_settings['imap_password']  = 'password';
 //                         END OPTIONAL MODIFICATIONS                         //
 //============================================================================//
 
+// Do we require a key if not accessed over CLI?
+hesk_authorizeNonCLI();
+
 // Is this feature enabled?
 if (empty($hesk_settings['imap']))
 {
@@ -114,17 +117,17 @@ define('HESK_IMAP', true);
 switch ($hesk_settings['imap_enc'])
 {
     case 'ssl':
-        $hesk_settings['imap_mailbox'] = '{'.$hesk_settings['imap_host_name'].':'.$hesk_settings['imap_host_port'].'/imap/ssl/novalidate-cert}';
+        $hesk_settings['imap_mailbox'] = '{'.$hesk_settings['imap_host_name'].':'.$hesk_settings['imap_host_port'].'/imap/ssl'.($hesk_settings['imap_noval_cert'] ? '/novalidate-cert' : '').'}';
         break;
     case 'tls':
-        $hesk_settings['imap_mailbox'] = '{'.$hesk_settings['imap_host_name'].':'.$hesk_settings['imap_host_port'].'/imap/tls/novalidate-cert}';
+        $hesk_settings['imap_mailbox'] = '{'.$hesk_settings['imap_host_name'].':'.$hesk_settings['imap_host_port'].'/imap/tls'.($hesk_settings['imap_noval_cert'] ? '/novalidate-cert' : '').'}';
         break;
     default:
         $hesk_settings['imap_mailbox'] = '{'.$hesk_settings['imap_host_name'].':'.$hesk_settings['imap_host_port'].'}';
 }
 
 // Connect to IMAP
-$imap = @imap_open($hesk_settings['imap_mailbox'], $hesk_settings['imap_user'], $hesk_settings['imap_password']);
+$imap = @imap_open($hesk_settings['imap_mailbox'], $hesk_settings['imap_user'], hesk_htmlspecialchars_decode($hesk_settings['imap_password']));
 
 // Connection successful?
 if ($imap !== false)

@@ -2122,7 +2122,7 @@ body.noscroll {
 }
 
 .modal .modal__body .modal__buttons button {
-    width: 176px;
+    min-width: 176px;
 }
 
 @media screen and (max-width: 900px) {
@@ -2225,7 +2225,7 @@ button {
 }
 
 .btn-full {
-    width: 152px;
+    min-width: 152px;
     height: 40px;
     background-color: #1776ea;
     color: #fff;
@@ -2257,7 +2257,7 @@ button {
 }
 
 .btn-border {
-    width: 152px;
+    min-width: 152px;
     height: 40px;
     border: 1px solid #002d73;
     color: #002d73;
@@ -2281,7 +2281,7 @@ button {
 }
 
 .btn-banner {
-    width: 176px;
+    min-width: 176px;
     background-color: #f0f2f5;
     color: #002d73;
     font-weight: 600;
@@ -3882,7 +3882,7 @@ li.ticket-new {
 }
 
 .filters__listing {
-    width: 100%;
+    /*width: 100%;*/
 }
 
 .filters__listing:not(.is-collapsed) .toggler-value {
@@ -3932,7 +3932,7 @@ li.ticket-new {
     align-items: center;
     height: 32px;
     padding: 0 2px 0 12px;
-    border: solid 1px #9c9c9c;
+    border: solid 1px #c5cad4;
     font-size: 12px;
     background-color: #fff;
     transition: all 250ms ease;
@@ -3975,7 +3975,7 @@ li.ticket-new {
     align-items: baseline;
     margin: 0 0 8px 10px;
     letter-spacing: 0.1px;
-    padding: 0 2px 0 10px;
+    padding: 0 12px;
     -ms-flex-align: center;
     align-items: center;
     line-height: 1;
@@ -3989,7 +3989,7 @@ li.ticket-new {
 .filters__listing .btn.is-selected {
     border-color: #1177f5;
     box-shadow: 0 2px 8px 0 rgba(38, 40, 42, 0.1);
-    background-color: #f5f8ff;
+    /*background-color: #f5f8ff;*/
 }
 
 .filters__listing .btn.is-selected .filters__btn-value {
@@ -4017,7 +4017,35 @@ li.ticket-new {
 .filters__btn-value {
     margin-left: 7px;
     font-weight: 700;
-    color: #959eb0;
+/*    color: #959eb0;*/
+}
+
+.filters__listing .btn.is-due-soon {
+    background-color: #ffffcc !important;
+    border: 1px solid #eeb707;
+
+}
+
+.filters__listing .btn.is-overdue {
+    background-color: #fff5f5 !important;
+    border: 1px solid #e64342;
+    color: #e64342;
+}
+
+.filters__listing .btn.is-due-soon.is-selected {
+    border-width: 2px;
+}
+
+.filters__listing .btn.is-overdue.is-selected {
+    border-width: 2px;
+}
+
+.filters__listing .btn.is-overdue .filters__btn-value {
+    /*color: #e64342;*/
+}
+
+.filters__listing .btn.is-due-soon .filters__btn-value {
+    /*color: #eeb707;*/
 }
 
 .filters__action {
@@ -5068,15 +5096,6 @@ p.rate {
         border: none;
     }
 
-    .main__content.tickets table .trackid {
-        display: none;
-    }
-
-/*
-    .main__content.tickets table .table__first_td, .main__content.tickets table .table__first_th {
-        display: none;
-    }
-*/
     .main__content.tickets table .subject a {
         white-space: nowrap;
         max-width: 112px;
@@ -5828,7 +5847,6 @@ p.rate {
 }
 
 .template-create .template-create__body .form .form-group {
-    width: 320px;
     margin-bottom: 24px;
 }
 
@@ -5959,7 +5977,7 @@ p.rate {
 }
 
 .main__content.categories .categories__head .btn {
-    width: 168px;
+    min-width: 168px;
 }
 
 .main__content.categories .new-category {
@@ -6095,7 +6113,7 @@ p.rate {
 }
 
 .right-bar.category-create .right-bar__footer .btn-full {
-    width: 152px;
+    min-width: 152px;
 }
 
 .right-bar.category-create .form-group {
@@ -6178,7 +6196,7 @@ p.rate {
 }
 
 .main__content.team .team__head .btn {
-    width: 168px;
+    min-width: 168px;
 }
 
 .main__content.team .new-team {
@@ -6356,7 +6374,7 @@ p.rate {
 
 .team-create .right-bar__body [data-action="save"] {
     display: none;
-    width: 176px;
+    min-width: 176px;
 }
 
 @media screen and (max-width: 900px) {
@@ -7305,7 +7323,7 @@ p.rate {
 }
 
 .main__content.knowledge .article__detalies .article__detalies_action .btn {
-    width: 152px;
+    min-width: 152px;
     height: 40px;
 }
 
@@ -7322,8 +7340,8 @@ p.rate {
 }
 
 .main__content.knowledge .article__detalies.edit .article__detalies_action .btn {
-    width: 112px;
-    padding: 0;
+    min-width: 112px;
+    padding: 4px;
 }
 
 .main__content.knowledge .article__detalies.edit .article__detalies_action .btn--blue-border {
@@ -8893,7 +8911,7 @@ p.rate {
 }
 
 .main__content.tools .tools__add-mail .form-group .btn {
-    width: 152px;
+    min-width: 152px;
     height: 40px;
 }
 
@@ -9220,7 +9238,7 @@ p.rate {
 }
 
 .main__content.tools .tools__between-head .btn {
-    width: 184px;
+    min-width: 184px;
 }
 
 @media screen and (max-width: 900px) {
@@ -11727,7 +11745,7 @@ p.rate {
 
 .step-footer .btn-full.save {
     display: none;
-    width: 176px;
+    min-width: 176px;
 }
 
 [data-step="1"] .step-bar li:nth-child(1)::before {
@@ -12508,7 +12526,7 @@ p.rate {
 
 .tickets__legend .bulk-actions .btn-full {
     display: inline-block;
-    width: auto;
+    min-width: 100px;
 }
 
 .tickets__legend svg {
@@ -12726,6 +12744,41 @@ sub {
   border: 1px solid gray;
 }
 
+.browser-default blockquote {
+  border-left: 2px solid #ccc ! important;
+  margin-left: 1.5rem ! important;
+  padding-left: 1rem ! important;
+  font-style: normal ! important;
+}
+
+.browser-default pre {
+  display: block;
+  font-family: monospace;
+  margin: 1em 0;
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.browser-default em {
+  font-style: italic;
+}
+
+.browser-default code {
+  font-family: monospace;
+  margin: 1em 0;
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  background-color: #e8e8e8;
+  border-radius: 3px;
+  padding: .1rem .2rem;
+}
+
 .selectize-dropdown .option, .selectize-input.input-active {
     cursor: pointer ! important;
 }
@@ -12742,6 +12795,97 @@ sub {
     display: none;
 }
 
-.back-to-top:hover {    
+.back-to-top:hover {
     background-color: rgba(135, 135, 135, 0.50);
+}
+
+/* TinyMCE Hack */
+.tox-tiered-menu {
+    min-width: inherit !important;
+}
+
+.inline-bottom {
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+@media screen and (max-width: 600px) {
+    .tickets__legend {
+        display: block;
+    }
+
+    .tickets__legend .bulk-actions {
+        text-align: left;
+        margin-top: 10px;
+    }
+
+    .main__content.reports .reports__range .reports__range_form .radio-list .radio-custom {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .inline-bottom {
+        display: block;
+    }
+}
+
+.plain_link {
+    font-weight: normal;
+}
+
+#submit-as-div .label { 
+    background-color: #1776ea;
+    border-radius: 0px 2px 2px 0px;
+}
+
+#submit-as-div .label span { 
+    border: 1px solid #002d73;
+    outline: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: normal ! important;
+    border-radius: 2px 0px 0px 2px;
+    min-width: 152px;
+    height: 40px;
+    background-color: #fff;
+    color: #002d73;
+    font-weight: 600;
+    transition: all 250ms ease;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px; 
+    padding: 0px;
+    margin-left: 0px;
+}
+
+#submit-as-div .label .icon-chevron-down { 
+    fill: white;
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
+.right-bar .right-bar__body .right-bar__footer .btn {
+    width: 152px;
+}
+
+.block--submit .btn-border {
+    padding: 5px 12px;
+}
+
+.no-padding-top {
+    padding-top: 0px;
+}
+
+#modifytime .btn.btn-full ,#modifyduedate .btn.btn-full {
+    min-width: 64px;
+}
+
+.change_category {
+    height:auto;
+    font-size: 14px;
+    padding: 0.75em 1em;
+    margin: 4px 0;
+    text-decoration: none;
+    font-weight: normal;
 }

@@ -49,10 +49,11 @@ $onload='';
 	}
 
 	/* If page requires WYSIWYG editor include TinyMCE Javascript */
-	if (defined('WYSIWYG') && $hesk_settings['kb_wysiwyg'])
+	if (defined('WYSIWYG') && ($hesk_settings['staff_ticket_formatting'] == 2 || $hesk_settings['kb_wysiwyg']))
 	{
+        require(HESK_PATH . 'inc/tiny_mce/tinymce.inc.php');
 		?>
-		<script type="text/javascript" src="<?php echo HESK_PATH; ?>inc/tiny_mce/5.4.2/tinymce.min.js"></script>
+		<script type="text/javascript" src="<?php echo HESK_PATH; ?>inc/tiny_mce/5.6.2/tinymce.min.js"></script>
 		<?php
 	}
 
@@ -213,6 +214,10 @@ $onload='';
         new $.Zebra_Tooltips($('.tooltip'), {animation_offset: 0, animation_speed: 100, hide_delay: 0, show_delay: 0, vertical_alignment: 'above', vertical_offset: 5});
     });
     </script>
+
+    <?php if ($hesk_settings['admin_css']): ?>
+    <link rel="stylesheet" href="<?php echo $hesk_settings['admin_css_url']; ?>">
+    <?php endif; ?>
 
 </head>
 <body onload="<?php echo $onload; unset($onload); ?>">

@@ -58,7 +58,7 @@ elseif ($artid)
 	// Show drafts only to staff who can manage knowledgebase
 	if ($can_man_kb)
 	{
-		$result = hesk_dbQuery("SELECT t1.*, t2.`name` AS `cat_name`
+		$result = hesk_dbQuery("SELECT t1.*, t2.`name` AS `cat_name`, t2.`type` AS `cat_type`
 		FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` AS `t1`
 		LEFT JOIN `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_categories` AS `t2` ON `t1`.`catid` = `t2`.`id`
 		WHERE `t1`.`id` = '{$artid}'
@@ -66,7 +66,7 @@ elseif ($artid)
 	}
 	else
 	{
-		$result = hesk_dbQuery("SELECT t1.*, t2.`name` AS `cat_name`
+		$result = hesk_dbQuery("SELECT t1.*, t2.`name` AS `cat_name`, t2.`type` AS `cat_type`
 		FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` AS `t1`
 		LEFT JOIN `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_categories` AS `t2` ON `t1`.`catid` = `t2`.`id`
 		WHERE `t1`.`id` = '{$artid}' AND `t1`.`type` IN ('0', '1')
@@ -221,7 +221,7 @@ function hesk_show_kb_article($artid)
                     <div class="descr">
                         <?php echo $article['id']; ?>
                         <?php
-                        if ($article['type'] == 0)
+                        if ($article['type'] == 0 && $article['cat_type'] != 1)
                         {
                             echo '<a href="' . $hesk_settings['hesk_url'] . '/knowledgebase.php?article=' . $article['id'] . '">' . $hesklang['public_link'] . '</a>';
                         }
