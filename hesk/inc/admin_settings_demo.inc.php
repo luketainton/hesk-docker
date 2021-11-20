@@ -20,6 +20,7 @@ $hesk_settings['db_name']               = $hesklang['hdemo'];
 $hesk_settings['db_user']               = $hesklang['hdemo'];
 $hesk_settings['db_pass']               = $hesklang['hdemo'];
 $hesk_settings['db_pfix']               = $hesklang['hdemo'];
+$hesk_settings['url_key']               = $hesklang['hdemo'];
 $hesk_settings['smtp_host_name']        = $hesklang['hdemo'];
 $hesk_settings['smtp_user']             = $hesklang['hdemo'];
 $hesk_settings['smtp_password']         = $hesklang['hdemo'];

@@ -109,7 +109,8 @@ function hesk_testMySQL()
 	$set['db_pass'] = hesk_input( hesk_POST('s_db_pass') );
 	$set['db_pfix'] = preg_replace('/[^0-9a-zA-Z_]/', '', hesk_POST('s_db_pfix', 'hesk_') );
 
-	// Allow & in password
+	// Allow & in password and username
+    $set['db_user'] = str_replace('&amp;', '&', $set['db_user']);
     $set['db_pass'] = str_replace('&amp;', '&', $set['db_pass']);
 
 	// MySQL tables used by HESK
@@ -231,9 +232,6 @@ function hesk_testMySQL()
 		$mysql_log = '';
 		return false;
 	}
-
-	// Check PHP version for the mysql(i)_set_charset function
-	$set['db_vrsn'] = ( version_compare(PHP_VERSION, '5.2.3') >= 0 ) ? 1 : 0;
 
 	// Some tables weren't found, show an error
 	if (count($tables) > 0)

@@ -441,13 +441,12 @@ function show_message($actually_show = true)
 
 	        if ($actually_show) {
                 ?>
-                <div class="email__list_article"
-                     style="background: #fff; margin-top: 24px; border-radius: 2px; box-shadow: 0 2px 8px 0 rgba(38,40,42,.1)">
+                <div class="email__list_article">
                     <div class="email__list_descr">
                         <div class="head">
                             <button type="button" class="btn btn-empty btn-hide-article">
                                 <svg class="icon icon-back">
-                                    <use xlink:href="./img/sprite.svg#icon-back"></use>
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-back"></use>
                                 </svg>
                             </button>
                             <div>
@@ -681,7 +680,7 @@ function show_new_form()
 	global $hesk_settings, $hesklang, $admins;
 	?>
     <h2 style="margin-top: 20px"><?php echo $hesklang['new_mail']; ?></h2>
-    <div class="new-message" style="background: #fff; margin-top: 24px; border-radius: 2px; box-shadow: 0 2px 8px 0 rgba(38,40,42,.1)">
+    <div class="new-message">
         <form action="mail.php" method="post" name="form2" class="form">
             <div class="form-group">
                 <label for="email-create-destination"><?php echo $hesklang['m_to']; ?></label>

@@ -21,16 +21,10 @@ function displayKbSearch() {
                         <button id="search-button" type="submit" class="btn btn-full"><?php echo $hesklang['search']; ?></button>
                     <?php endif; ?>
                 </div>
-                <div class="kb-suggestions" style="margin: 0 auto; width: 100%; max-width: 752px; display: none">
-                    <div class="alert none">
-                        <div class="alert__inner">
-                            <div class="alert__head">
-                                <h6 class="alert__title" style="margin-bottom:10px"><?php echo $hesklang['sc']; ?>:</h6>
-                            </div>
-                            <ol id="kb-suggestion-list" class="type--list" style="list-style-type: decimal; padding-left: 15px;">
-                            </ol>
-                        </div>
-                    </div>
+                <div class="kb-suggestions boxed">
+                    <h6><?php echo $hesklang['sc']; ?>:</h6>
+                    <ul id="kb-suggestion-list" class="type--list">
+                    </ul>
                 </div>
             </div>
         </form>
@@ -70,11 +64,17 @@ function outputSearchJavascript() {
                 $('.kb-suggestions').show();
                 var $suggestionList = $('#kb-suggestion-list');
                 $suggestionList.html('');
-                var format = '<li style="margin-bottom: 15px; padding-left: 0.5em;">' +
-                    '<a class="link" href="knowledgebase.php?article={0}">{1}</a>' +
-                    '<br>' +
-                    '{2}' +
-                    '</li>';
+                var format = '<a href="knowledgebase.php?article={0}" class="suggest-preview">' +
+                    '<div class="icon-in-circle">' +
+                    '<svg class="icon icon-knowledge">' +
+                    '<use xlink:href="./theme/hesk3/customer/img/sprite.svg#icon-knowledge"></use>' +
+                    '</svg>' +
+                    '</div>' +
+                    '<div class="suggest-preview__text">' +
+                    '<p class="suggest-preview__title">{1}</p>' +
+                    '<p>{2}</p>' +
+                    '</div>' +
+                    '</a>';
                 var results = false;
                 $.each(data, function() {
                     results = true;
@@ -82,7 +82,7 @@ function outputSearchJavascript() {
                 });
 
                 if (!results) {
-                    $suggestionList.append('<li style="list-style-type: none; margin-left: -15px;">' + noArticlesFoundText + '</li>');
+                    $suggestionList.append('<li class="no-articles-found">' + noArticlesFoundText + '</li>');
                 }
             });
         });

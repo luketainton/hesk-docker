@@ -718,7 +718,7 @@ img:not([src]):not([srcset]) { visibility: hidden; }
 
 .dropdown .dropdown-list > li, .dropdown-select .dropdown-list > li, .with-label .dropdown-list > li { height: 40px; display: -ms-flexbox; display: flex; -ms-flex-align: center; align-items: center; white-space: nowrap; padding: 0 16px; color: #002d73; }
 
-.dropdown .dropdown-list > li.selected, .dropdown-select .dropdown-list > li.selected, .with-label .dropdown-list > li.selected { display: none; }
+.dropdown .dropdown-list > li.selected, .dropdown-select .dropdown-list > li.selected, .with-label .dropdown-list > li.selected { /*display: none;*/ }
 
 .dropdown .dropdown-list > li a, .dropdown-select .dropdown-list > li a, .with-label .dropdown-list > li a { width: 100%; height: 100%; display: -ms-flexbox; display: flex; -ms-flex-align: center; align-items: center; color: #002d73; }
 
@@ -1513,13 +1513,35 @@ input::-ms-clear { display: none; }
 
 .rate { display: -ms-inline-flexbox; display: inline-flex; margin-left: auto; font-size: 12px; letter-spacing: 0.1px; }
 
-.rate .icon { margin: 0 2px; }
-
 .rate .star-rate + span { font-size: 12px; margin-left: 8px; }
 
 .preview__text { max-width: 678px; }
 
 .preview__text p { margin-top: 8px; }
+
+.kb-suggestions { margin: 0 auto; width: 100%; display: none; margin-top: 10px; }
+
+.kb-suggestions.boxed { max-width: 752px; padding: 10px; background-color: #fff; }
+
+.kb-suggestions h6 { padding: 0px 8px 8px 8px; font-size: 16px; font-weight: bold; letter-spacing: 0.1px; color: #26282a; }
+
+.suggest-preview { display: -ms-flexbox; display: flex; width: 100%; padding: 8px 8px; border-bottom: 1px solid #dfe4ec; background-color: #fff;}
+
+.suggest-preview:last-of-type { border-bottom: none;}
+
+a.suggest-preview:hover { background-color: #f9fafd;}
+
+a.suggest-preview:hover .icon-in-circle .icon { fill: #1776ea; }
+
+a.suggest-preview:hover .suggest-preview__title { font-weight: bold;}
+
+.suggest-preview .icon-in-circle { margin-top: 6px; margin-right: 12px; }
+
+.suggest-preview .suggest-preview__title { margin-bottom: 6px; font-size: 16px; /*font-weight: bold;*/ line-height: 1.38; letter-spacing: 0.11px; color: #1776ea; }
+
+.suggest-preview__text p { margin-top: 6px; }
+
+.no-articles-found { list-style-type: none; margin-left: 8px; }
 
 .block__head { display: -ms-flexbox; display: flex; -ms-flex-align: center; align-items: center; -ms-flex-pack: center; justify-content: center; text-align: center; }
 
@@ -2145,4 +2167,16 @@ sub {
 
 .rate .icon {
   height: 1.5em;
+}
+
+.custom-field-title {
+  color: #959eb0;
+}
+
+.text-danger {
+  color: red;
+}
+
+.text-bold {
+  font-weight: bold;
 }

@@ -38,6 +38,25 @@ if ($hesk_settings['staff_ticket_formatting'] == 2) {
 }
 
 // Pre-populate fields
+
+// First, reset data if any query string value is present
+if (isset($_REQUEST['name']) ||
+    isset($_REQUEST['email']) ||
+    isset($_REQUEST['priority']) ||
+    isset($_REQUEST['subject']) ||
+    isset($_REQUEST['message']) ||
+    isset($_REQUEST['due_date']) ||
+    isset($_REQUEST['ticket_language'])
+    ) {
+    hesk_new_ticket_reset_data();
+}
+
+foreach ($hesk_settings['custom_fields'] as $k=>$v) {
+    if ($v['use'] && isset($_REQUEST[$k])) {
+        hesk_new_ticket_reset_data();
+    }
+}
+
 // Customer name
 if (isset($_REQUEST['name'])) {
 	$_SESSION['as_name'] = $_REQUEST['name'];
@@ -77,6 +96,16 @@ foreach ($hesk_settings['custom_fields'] as $k=>$v) {
 	if ($v['use'] && isset($_REQUEST[$k]) ) {
 		$_SESSION['as_'.$k] = $_REQUEST[$k];
 	}
+}
+
+// Due date
+if (isset($_REQUEST['due_date']) && preg_match("/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/", $_REQUEST['due_date'])) {
+    $_SESSION['as_due_date'] = $_REQUEST['due_date'];
+}
+
+// Ticket language
+if (isset($_REQUEST['ticket_language'])) {
+    $_SESSION['as_language'] = $_REQUEST['ticket_language'];
 }
 
 /* Varibles for coloring the fields in case of errors */
@@ -980,17 +1009,16 @@ function print_select_category($number_of_categories)
 		hesk_process_messages($hesklang['sel_app_cat'],'NOREDIRECT','NOTICE');
 	}
 
-/* This will handle error, success and notice messages */
-hesk_handle_messages();
-?>
-<div class="main__content categories">
-    <div class="table-wrap">
-        <h3><?php echo $hesklang['select_category_staff']; ?></h3>
-        <div class="select_category">
-            <?php
-            // Print a select box if number of categories is large
-            if ($number_of_categories > $hesk_settings['cat_show_select']) {
-                ?>
+    /* This will handle error, success and notice messages */
+    hesk_handle_messages();
+    ?>
+    <div class="main__content categories">
+        <?php
+        // Print a select box if number of categories is large
+        if ($number_of_categories > $hesk_settings['cat_show_select']) {
+            ?>
+            <div class="table-wrap">
+                <h2 class="select__title-alt"><?php echo $hesklang['select_category_staff']; ?></h2>
                 <form action="new_ticket.php" method="get" class="form">
                     <select class="form-control" name="category" id="select_category">
                         <?php
@@ -1011,59 +1039,33 @@ hesk_handle_messages();
                         $('#select_category').selectize();
                     });
                 </script>
-                <?php
-            }
-            // Otherwise print quick links
-            else
-            {
-                ?>
-                <ul id="ul_category">
-                    <?php
-                    foreach ($hesk_settings['categories'] as $k=>$v)
-                    {
-                        echo '<li><a ripple="ripple" href="new_ticket.php?a=add&amp;category='.$k.'">'.$v['name'].'</a></li>';
-                    }
-                    ?>
-                </ul>
-                <?php
-            }
+            </div>
+            <?php
+        }
+        // Otherwise print quick links
+        else
+        {
             ?>
-        </div>
+            <h2 class="select__title"><?php echo $hesklang['select_category_staff']; ?></h2>
+            <div class="nav">
+                <?php foreach ($hesk_settings['categories'] as $k => $v): ?>
+                <a href="new_ticket.php?a=add&amp;category=<?php echo $k; ?>" class="navlink <?php if ($number_of_categories > 8) echo "navlink-condensed"; ?>">
+                    <div class="icon-in-circle">
+                        <svg class="icon icon-chevron-right">
+                            <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-right"></use>
+                        </svg>
+                    </div>
+                    <div>
+                        <h5 class="navlink__title"><!--[if IE]> &raquo; <![endif]--><?php echo $v['name']; ?></h5>
+                    </div>
+                </a>
+                <?php endforeach; ?>
+            </div>
+            <?php
+        }
+        ?>
     </div>
-</div>
-<style>
-    #ul_category {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        margin-top: 10px;
-    }
-
-    #ul_category li:first-child {
-        border-top: 1px solid #d1d5d7;
-    }
-
-    #ul_category li {
-        border: 1px solid #d1d5d7;
-        border-top: none;
-        border-radius: 2px;
-    }
-
-    #ul_category li:hover {
-        background: rgba(0,0,0,.05);
-    }
-
-    #ul_category li a {
-        display: block;
-        font-size: 14px;
-        padding: 0.75em 0.75em;
-        text-decoration: none;
-        transition: all 0.12s ease;
-        word-wrap: break-word;
-    }
-</style>
-
-<?php
+    <?php
 
 	hesk_cleanSessionVars('iserror');
 	hesk_cleanSessionVars('isnotice');
@@ -1072,3 +1074,34 @@ hesk_handle_messages();
 	require_once(HESK_PATH . 'inc/footer.inc.php');
 	exit();
 } // END print_select_category()
+
+
+function hesk_new_ticket_reset_data()
+{
+    global $hesk_settings;
+
+    // Already reset
+    if (isset($hesk_settings['POPULATE_DATA_RESET'])) {
+        return true;
+    }
+
+    hesk_cleanSessionVars('as_name');
+    hesk_cleanSessionVars('as_email');
+    hesk_cleanSessionVars('as_category');
+    hesk_cleanSessionVars('as_priority');
+    hesk_cleanSessionVars('as_subject');
+    hesk_cleanSessionVars('as_message');
+    hesk_cleanSessionVars('as_owner');
+    hesk_cleanSessionVars('as_notify');
+    hesk_cleanSessionVars('as_show');
+    hesk_cleanSessionVars('as_due_date');
+    hesk_cleanSessionVars('as_language');
+    foreach ($hesk_settings['custom_fields'] as $k=>$v) {
+        hesk_cleanSessionVars("as_$k");
+    }
+
+    $hesk_settings['POPULATE_DATA_RESET'] = true;
+
+    return true;
+
+} // END hesk_new_ticket_reset_data()

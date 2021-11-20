@@ -27,13 +27,13 @@ if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
                     $latest = hesk_checkVersion();
 
                     if ($latest === true) {
-                        echo ' - <span style="color:green">' . $hesklang['hud'] . '</span> ';
+                        echo ' - <span class="text-success">' . $hesklang['hud'] . '</span> ';
                     } elseif ($latest != -1) {
                         // Is this a beta/dev version?
                         if (strpos($hesk_settings['hesk_version'], 'beta') || strpos($hesk_settings['hesk_version'], 'dev') || strpos($hesk_settings['hesk_version'], 'RC')) {
-                            echo ' <span style="color:darkorange">' . $hesklang['beta'] . '</span> '; ?><br><a href="https://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['check4updates']; ?></a><?php
+                            echo ' <span class="text-warning">' . $hesklang['beta'] . '</span> '; ?><br><a href="https://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['check4updates']; ?></a><?php
                         } else {
-                            echo ' - <span style="color:darkorange;font-weight:bold">' . $hesklang['hnw'] . '</span> '; ?><br><a href="https://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['getup']; ?></a><?php
+                            echo ' - <span class="text-warning text-bold">' . $hesklang['hnw'] . '</span> '; ?><br><a href="https://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['getup']; ?></a><?php
                         }
                     } else {
                         ?> - <a href="https://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['check4updates']; ?></a><?php
@@ -58,9 +58,9 @@ if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
                 <?php
                 if (is_writable(HESK_PATH . 'hesk_settings.inc.php')) {
                     $enable_save_settings = 1;
-                    echo '<span style="color:green">'.$hesklang['exists'].'</span>, <span style="color:green">'.$hesklang['writable'].'</span>';
+                    echo '<span class="text-success">'.$hesklang['exists'].'</span>, <span class="text-success">'.$hesklang['writable'].'</span>';
                 } else {
-                    echo '<span style="color:green">'.$hesklang['exists'].'</span><br><span style="color:red">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_settings'];
+                    echo '<span class="text-success">'.$hesklang['exists'].'</span><br><span class="text-danger">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_settings'];
                 }
                 ?>
             </div>
@@ -70,15 +70,15 @@ if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
             <div class="list--status">
                 <?php
                 if (is_dir(HESK_PATH . $hesk_settings['attach_dir'])) {
-                    echo '<span style="color:green">'.$hesklang['exists'].'</span>, ';
+                    echo '<span class="text-success">'.$hesklang['exists'].'</span>, ';
                     if (is_writable(HESK_PATH . $hesk_settings['attach_dir'])) {
                         $enable_use_attachments = 1;
-                        echo '<span style="color:green">'.$hesklang['writable'].'</span>';
+                        echo '<span class="text-success">'.$hesklang['writable'].'</span>';
                     } else {
-                        echo '<br><span style="color:red">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_attdir'];
+                        echo '<br><span class="text-danger">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_attdir'];
                     }
                 } else {
-                    echo '<span style="color:red">'.$hesklang['no_exists'].'</span><br><span style="color:red">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_attdir'];
+                    echo '<span class="text-danger">'.$hesklang['no_exists'].'</span><br><span class="text-danger">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_attdir'];
                 }
                 ?>
             </div>
@@ -88,15 +88,15 @@ if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
             <div class="list--status">
                 <?php
                 if (is_dir(HESK_PATH . $hesk_settings['cache_dir'])) {
-                    echo '<span style="color:green">'.$hesklang['exists'].'</span>, ';
+                    echo '<span class="text-success">'.$hesklang['exists'].'</span>, ';
                     if (is_writable(HESK_PATH . $hesk_settings['cache_dir'])) {
                         $enable_use_attachments = 1;
-                        echo '<span style="color:green">'.$hesklang['writable'].'</span>';
+                        echo '<span class="text-success">'.$hesklang['writable'].'</span>';
                     } else {
-                        echo '<br><span style="color:red">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_cdir'];
+                        echo '<br><span class="text-danger">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_cdir'];
                     }
                 } else {
-                    echo '<span style="color:red">'.$hesklang['no_exists'].'</span><br><span style="color:red">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_cdir'];
+                    echo '<span class="text-danger">'.$hesklang['no_exists'].'</span><br><span class="text-danger">'.$hesklang['not_writable'].'</span></div></li><li><div style="text-align:justify">'.$hesklang['e_cdir'];
                 }
                 ?>
             </div>

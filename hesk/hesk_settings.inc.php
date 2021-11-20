@@ -1,5 +1,5 @@
 <?php
-// Settings file for HESK 3.2.0
+// Settings file for HESK 3.2.4
 
 // ==> GENERAL
 
@@ -28,7 +28,6 @@ $hesk_settings['db_name']='hesk';
 $hesk_settings['db_user']='test';
 $hesk_settings['db_pass']='test';
 $hesk_settings['db_pfix']='hesk_';
-$hesk_settings['db_vrsn']=0;
 
 
 // ==> HELP DESK
@@ -208,7 +207,7 @@ $hesk_settings['check_updates']=1;
 #############################
 #     DO NOT EDIT BELOW     #
 #############################
-$hesk_settings['hesk_version']='3.2.0';
+$hesk_settings['hesk_version']='3.2.4';
 if ($hesk_settings['debug_mode'])
 {
     error_reporting(E_ALL);

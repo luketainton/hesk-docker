@@ -124,6 +124,10 @@ if (isset($_POST['save']))
 
             $tmpvar['message'] = convert_html_to_text($tmpvar['message_html']);
             $tmpvar['message'] = fix_newlines($tmpvar['message']);
+
+            // Prepare plain message for storage as HTML
+            $tmpvar['message'] = hesk_htmlspecialchars($tmpvar['message']);
+            $tmpvar['message'] = nl2br($tmpvar['message']);
         } else {
             // `message` already contains a HTML friendly version. May as well just re-use it
             $tmpvar['message'] = hesk_makeURL($tmpvar['message']);
@@ -202,8 +206,9 @@ if (isset($_POST['save']))
             $tmpvar['message'] = convert_html_to_text($tmpvar['message_html']);
             $tmpvar['message'] = fix_newlines($tmpvar['message']);
 
-            // Re-encode the message
+            // Prepare plain message for storage as HTML
             $tmpvar['message'] = hesk_htmlspecialchars($tmpvar['message']);
+            $tmpvar['message'] = nl2br($tmpvar['message']);
         } else {
             // `message` already contains a HTML friendly version. May as well just re-use it
             $tmpvar['message'] = hesk_makeURL($tmpvar['message']);

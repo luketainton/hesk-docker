@@ -25,7 +25,7 @@ function hesk_tinymce_init($selector='#message')
             branding: false,
             browser_spellcheck: true,
             toolbar: 'undo redo | styleselect fontselect fontsizeselect | bold italic underline | alignleft aligncenter alignright alignjustify | forecolor backcolor | bullist numlist outdent indent | link unlink image codesample code',
-            plugins: 'charmap code codesample image link lists table',
+            plugins: 'charmap code codesample image link lists table autolink',
             height: 350,
             toolbar_mode: 'sliding',
             mobile: {

@@ -483,7 +483,7 @@ if (isset($success_msg))
                 ?>
                 <div class="checkbox-custom">
                     <input type="checkbox" name="s_ot" id="s_ot" value="1" <?php if ($s_ot[1]) echo 'checked'; ?>>
-                    <label for="reportCheck14"><?php echo $hesklang['s_ot']; ?></label>
+                    <label for="s_ot"><?php echo $hesklang['s_ot']; ?></label>
                 </div>
                 <?php
             }

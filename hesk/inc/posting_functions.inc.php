@@ -148,6 +148,12 @@ function hesk_newTicket($ticket)
 		$info[$k] = $v['use'] ? $ticket[$k] : '';
 	}
 
+    // Extra actions for achieving landmarks
+    if (in_array($info['id'], array(100, 1000, 10000)))
+    {
+        hesk_PMtoMainAdmin($info['id']);
+    }
+
     return hesk_ticketToPlain($info, 1);
 
 } // END hesk_newTicket()
@@ -156,6 +162,13 @@ function hesk_newTicket($ticket)
 function hesk_cleanFileName($filename)
 {
 	$parts = pathinfo($filename);
+
+    if ( ! isset($parts['extension']))
+    {
+        global $hesklang;
+        die($hesklang['eto']);
+    }
+    $parts['extension'] = preg_replace('/[^A-Za-z0-9\-_]/', '', $parts['extension']);
 
 	if ( isset($parts['filename']) )
 	{

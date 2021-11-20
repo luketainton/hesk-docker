@@ -36,9 +36,6 @@ if (hesk_check_maintenance(false)) {
 
 hesk_overdue_ticket_log($hesklang['overdue_starting']);
 
-
-$current_date = hesk_date();
-
 $sql = "SELECT `ticket`.`id` AS `id`, `ticket`.`trackid` AS `trackid`, `ticket`.`name` AS `name`, `ticket`.`subject` AS `subject`,
     `ticket`.`message` AS `message`, `ticket`.`message_html` AS `message_html`, `ticket`.`category` AS `category`, `ticket`.`priority` AS `priority`,
     `ticket`.`owner` AS `owner`, `ticket`.`status` AS `status`, `ticket`.`email` AS `email`, `ticket`.`dt` AS `dt`,
@@ -61,7 +58,7 @@ $sql = "SELECT `ticket`.`id` AS `id`, `ticket`.`trackid` AS `trackid`, `ticket`.
     LEFT JOIN `" . hesk_dbEscape($hesk_settings['db_pfix']) . "users` AS `user`
         ON `ticket`.`owner` = `user`.`id`
     WHERE `due_date` IS NOT NULL
-        AND `due_date` <= '{$current_date}'
+        AND `due_date` <= NOW()
         AND `status` <> 3
         AND `overdue_email_sent` = '0'";
 

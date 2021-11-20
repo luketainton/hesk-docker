@@ -60,35 +60,14 @@ if (confirm('<?php echo hesk_makeJsString($hesklang['delete_saved']); ?>')) {ret
 else {return false;}
 }
 
-function hesk_insertTag(tag) {
+function hesk_insertRichTag(tag) {
     var text_to_insert = '%%'+tag+'%%';
-    var msg = '';
     <?php if ($hesk_settings['staff_ticket_formatting'] == 2): ?>
-        msg = tinymce.get("canned_message").getContent();
-        tinymce.get("canned_message").setContent('');
-        tinymce.get("canned_message").execCommand('mceInsertRawHTML', false, msg + text_to_insert);
+        tinymce.get("canned_message").execCommand('mceInsertContent', false, text_to_insert);
     <?php else: ?>
-        msg = document.getElementById('canned_message').value;
-        document.getElementById('canned_message').value = msg + text_to_insert;
+        hesk_insertAtCursor(document.getElementById('canned_message'), text_to_insert);
+        document.getElementById('canned_message').focus();
     <?php endif; ?>
-    document.form1.msg.focus();
-}
-
-function hesk_insertAtCursor(myField, myValue) {
-if (document.selection) {
-myField.focus();
-sel = document.selection.createRange();
-sel.text = myValue;
-}
-else if (myField.selectionStart || myField.selectionStart == '0') {
-var startPos = myField.selectionStart;
-var endPos = myField.selectionEnd;
-myField.value = myField.value.substring(0, startPos)
-+ myValue
-+ myField.value.substring(endPos, myField.value.length);
-} else {
-myField.value += myValue;                                             
-}
 }
 //-->
 </script>
@@ -275,28 +254,31 @@ $num = hesk_dbNumRows($result);
                 <div class="template--tags">
                     <label><?php echo $hesklang['insert_special']; ?></label>
                     <div class="tag-list">
-                        <a href="javascript:" onclick="hesk_insertTag('HESK_ID')">
+                        <a href="javascript:" onclick="hesk_insertRichTag('HESK_ID')">
                             <?php echo $hesklang['seqid']; ?>
                         </a>
-                        <a href="javascript:" onclick="hesk_insertTag('HESK_TRACK_ID')">
+                        <a href="javascript:" onclick="hesk_insertRichTag('HESK_TRACK_ID')">
                             <?php echo $hesklang['trackID']; ?>
                         </a>
-                        <a href="javascript:" onclick="hesk_insertTag('HESK_NAME')">
+                        <a href="javascript:" onclick="hesk_insertRichTag('HESK_NAME')">
                             <?php echo $hesklang['name']; ?>
                         </a>
-                        <a href="javascript:" onclick="hesk_insertTag('HESK_FIRST_NAME')">
+                        <a href="javascript:" onclick="hesk_insertRichTag('HESK_FIRST_NAME')">
                             <?php echo $hesklang['fname']; ?>
                         </a>
-                        <a href="javascript:" onclick="hesk_insertTag('HESK_EMAIL')">
+                        <a href="javascript:" onclick="hesk_insertRichTag('HESK_EMAIL')">
                             <?php echo $hesklang['email']; ?>
                         </a>
-                        <a href="javascript:" onclick="hesk_insertTag('HESK_OWNER')">
+                        <a href="javascript:" onclick="hesk_insertRichTag('HESK_OWNER')">
                             <?php echo $hesklang['owner']; ?>
+                        </a>
+                        <a href="javascript:" onclick="hesk_insertRichTag('HESK_DUE_DATE')">
+                            <?php echo $hesklang['due_date']; ?>
                         </a>
                         <?php
                         foreach ($hesk_settings['custom_fields'] as $k=>$v) {
                             if ($v['use']) {
-                                echo '<a href="javascript:" onclick="hesk_insertTag(\'HESK_'.$k.'\')">'.$v['name'].'</a>';
+                                echo '<a href="javascript:" onclick="hesk_insertRichTag(\'HESK_'.$k.'\')">'.$v['name'].'</a>';
                             }
                         }
                         ?>

@@ -57,7 +57,7 @@ if (hesk_checkPermission('can_view_tickets',0))
         $_SESSION['default_list'] = '';
 	}
 	/* Get default settings */
-	else
+    elseif (empty($_GET))
 	{
 		parse_str($_SESSION['default_list'],$defaults);
 		$_GET = isset($_GET) && is_array($_GET) ? array_merge($_GET, $defaults) : $defaults;

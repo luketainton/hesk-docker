@@ -241,7 +241,7 @@ function hesk_email2ticket($results, $protocol = 0, $set_category = 1, $set_prio
 		hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` SET `read` = '1' WHERE `replyto` = '".intval($ticket['id'])."' AND `staffid` != '0' ");
 
 		// Insert reply into database
-		hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (`replyto`,`name`,`message`,`dt`,`attachments`) VALUES ('".intval($ticket['id'])."','".hesk_dbEscape($ticket['lastreplier'])."','".hesk_dbEscape($tmpvar['message'])."',NOW(),'".hesk_dbEscape($tmpvar['attachments'])."')");
+		hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (`replyto`,`name`,`message`,`message_html`,`dt`,`attachments`) VALUES ('".intval($ticket['id'])."','".hesk_dbEscape($ticket['lastreplier'])."','".hesk_dbEscape($tmpvar['message'])."','".hesk_dbEscape($tmpvar['message'])."',NOW(),'".hesk_dbEscape($tmpvar['attachments'])."')");
 
 		// --> Prepare reply message
 
@@ -462,7 +462,8 @@ function hesk_isReturnedEmail($tmpvar)
 	preg_match('/DELIVERY FAILURE/i', $tmpvar['subject']) ||
 	preg_match('/Undelivered Mail Returned to Sender/i', $tmpvar['subject']) ||
 	preg_match('/Delivery Status Notification \(Failure\)/i', $tmpvar['subject']) ||
-	preg_match('/Returned mail\: see transcript for details/i', $tmpvar['subject'])
+	preg_match('/Returned mail\: see transcript for details/i', $tmpvar['subject']) ||
+    preg_match('/^Undeliverable\:/i', $tmpvar['subject'])
 	)
 	{
 		return true;

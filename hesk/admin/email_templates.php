@@ -121,10 +121,10 @@ if ($action != 'edit') {
                         <?php
                         if (!file_exists($eml_file)) {
                             $all_files = false;
-                            echo '<span style="color:red">'.$hesklang['no_exists'].'</span>';
+                            echo '<span class="text-danger">'.$hesklang['no_exists'].'</span>';
                         } elseif (!is_writable($eml_file)) {
                             $all_writable = false;
-                            echo '<span style="color:red">'.$hesklang['not_writable'].'</span>';
+                            echo '<span class="text-danger">'.$hesklang['not_writable'].'</span>';
                         } else {
                             ?>
                             <a title="<?php echo $hesklang['edit']; ?>" href="email_templates.php?a=edit&amp;id=<?php echo $email; ?>&amp;edit_language=<?php echo urlencode($hesk_settings['edit_language']); ?>" class="edit tooltip">

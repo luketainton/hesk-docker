@@ -105,8 +105,9 @@ if (strlen($message))
         $message = convert_html_to_text($message_html);
         $message = fix_newlines($message);
 
-        // Re-encode the message
+        // Prepare plain message for storage as HTML
         $message = hesk_htmlspecialchars($message);
+        // nl2br done after adding signature
     } elseif ($hesk_settings['staff_ticket_formatting'] == 0) {
         $message_html = hesk_makeURL($message_html);
         $message_html = nl2br($message_html);

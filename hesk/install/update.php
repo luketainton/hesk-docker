@@ -1253,15 +1253,19 @@ function hesk_iUpdateTables()
         $update_all_next = 1;
     }
 
+    // Updating 3.2.0 and 3.2.1 to 3.2.2
+    if ($update_all_next || $hesk_settings['update_from'] == '3.2.0') {
+        // Fix any missing HTML messages from merged tickets
+        hesk_dbQuery("UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` SET `message_html` = `message` WHERE `message_html` IS NULL");
+        $update_all_next = 1;
+    }
+
+    // 3.2.3 no changes
+    // 3.2.4 no changes
+
 	// Insert the "HESK updated to latest version" mail for the administrator
-	if ( file_exists(HESK_PATH.'hesk_license.php') )
-	{
-        hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, 'HESK updated to version ".HESK_NEW_VERSION."', '".hesk_dbEscape("</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<p>&nbsp;<br /><b>Congratulations, your HESK has been successfully updated.</b></p>\r\n\r\n<p><b>Before you go, let me invite you to:</b><br />&nbsp;</p>\r\n\r\n<hr />\r\n#1: help us improve\r\n<hr />\r\n<p>You can suggest what features should be added to HESK by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\n#2: stay updated\r\n<hr />\r\n<p>HESK regularly receives improvements and bug fixes; make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow HESK on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen<br />\r\n<a href=\"https://www.hesk.com/\">https://www.hesk.com</a></p>\r\n\r\n</div><p>")."', NOW(), '0', 9999)");
-	}
-	else
-	{
-        hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, 'HESK updated to version ".HESK_NEW_VERSION."', '".hesk_dbEscape("</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<p>&nbsp;<br /><b>Congratulations, your HESK has been successfully updated.</b></p>\r\n\r\n<p><b>Before you go, let me invite you to:</b><br />&nbsp;</p>\r\n\r\n<hr />\r\n#1: help us improve\r\n<hr />\r\n<p>You can suggest what features should be added to HESK by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\n#2: stay updated\r\n<hr />\r\n<p>HESK regularly receives improvements and bug fixes; make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow HESK on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n&nbsp;\r\n\r\n<hr />\r\n#3: look professional\r\n<hr />\r\n<p>To look more professional and not advertise the tools you use, <a href=\"https://www.hesk.com/buy.php\">remove &quot;Powered by&quot; links</a> from your help desk.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen<br />\r\n<a href=\"https://www.hesk.com/\">https://www.hesk.com</a></p>\r\n\r\n</div><p>")."', NOW(), '0', 9999)");
-	}
+    $offer_license = file_exists(HESK_PATH.'hesk_license.php') ? "" : "<h3>&raquo; Look professional</h3>\r\n\r\n<p>To not only support Hesk development but also look more professional, <a href=\"https://www.hesk.com/get/hesk3-license\">remove &quot;Powered by&quot; links</a> from your help desk.</p>\r\n\r\n";
+    hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, 'Hesk updated to version ".HESK_NEW_VERSION."', '".hesk_dbEscape("</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<h2 style=\"padding-left:0px\">Congratulations, your Hesk has been successfully updated! Now is your chance to:</h2>\r\n\r\n<h3>&raquo; Help us improve</h3>\r\n\r\n<p>Suggest what features we should add to Hesk by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n<h3>&raquo; Stay updated</h3>\r\n\r\n<p>Hesk regularly receives improvements and bug fixes; make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow Hesk on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n{$offer_license}<h3>&raquo; Tired of manual updates? Upgrade to Hesk Cloud!</h3>\r\n\r\n<p>Experience the best of Hesk by moving your help desk into the Hesk Cloud:</p>\r\n<ul>\r\n<li>exclusive advanced modules,</li>\r\n<li>automated updates,</li>\r\n<li>free migration of your existing Hesk tickets and settings,</li>\r\n<li>we take care of maintenance, server setup and optimization, backups, and more!</li>\r\n</ul>\r\n\r\n<p>&nbsp;<br><a href=\"https://www.hesk.com/get/hesk3-cloud\" class=\"btn btn--blue-border\" style=\"text-decoration:none\">Click here to learn more about Hesk Cloud</a></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen Stirn<br>\r\nFounder<br>\r\n<a href=\"https://www.hesk.com\">https://www.hesk.com</a></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n</div><p>")."', NOW(), '0', 9999)");
 
 	return true;
 
@@ -1329,9 +1333,6 @@ function hesk_iSaveSettings()
     $set['notify_spam_tags'] = count($hesk_settings['notify_spam_tags']) ?  "'" . implode("','", $hesk_settings['notify_spam_tags']) . "'" : '';
     $set['ip_whois'] = str_replace('http://whois.domaintools.com', 'https://whois.domaintools.com', $set['ip_whois']);
 
-    // Check if PHP version is 5.2.3+ and MySQL is 5.0.7+
-	$set['db_vrsn'] = (version_compare(PHP_VERSION, '5.2.3') >= 0) ? 1 : 0;
-
     // reCaptcha v1 has been removed in 2.8, disable it
     if ($set['recaptcha_use'] == 1 && version_compare($hesk_settings['update_from'], '2.8', '<'))
     {
@@ -1379,7 +1380,6 @@ function hesk_defaultSettings()
 	$hesk_settings['db_user']='test';
 	$hesk_settings['db_pass']='test';
 	$hesk_settings['db_pfix']='hesk_';
-	$hesk_settings['db_vrsn']=0;
 
 
 	// ==> HELP DESK

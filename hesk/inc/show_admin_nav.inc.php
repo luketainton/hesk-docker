@@ -457,8 +457,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                     <div class="listitem__icon">
                         <a href="profile.php" class="mobile_ava">
                             <?php
-                            $letter = substr($_SESSION['name'], 0, 1);
-
+                            $letter = hesk_mb_substr($_SESSION['name'], 0, 1);
                             echo hesk_mb_strtoupper($letter);
                             ?>
                         </a>
@@ -501,8 +500,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                 <div class="profile__item profile__user out-close">
                     <div class="user__ava" data-action="show-profile">
                         <?php
-                        $letter = substr($_SESSION['name'], 0, 1);
-
+                        $letter = hesk_mb_substr($_SESSION['name'], 0, 1);
                         echo hesk_mb_strtoupper($letter);
                         ?>
                     </div>

@@ -310,7 +310,7 @@ if (hesk_dbNumRows($res) > 0)
                     if ($hesk_settings['online']) {
                         if (isset($hesk_settings['users_online'][$myuser['id']])) {
                             $myuser['name'] = '
-                                <svg class="icon icon-assign" style="fill: #000; margin-right: 10px;">
+                                <svg class="icon icon-assign is-online">
                                   <use xlink:href="' . HESK_PATH . 'img/sprite.svg#icon-assign"></use>
                                 </svg>' .
                                 $myuser['name'];
@@ -318,7 +318,7 @@ if (hesk_dbNumRows($res) > 0)
                         else
                         {
                             $myuser['name'] = '
-                                <svg class="icon icon-assign-no" style="fill: #C5CAD4; margin-right: 10px;">
+                                <svg class="icon icon-assign-no is-offline">
                                   <use xlink:href="' . HESK_PATH . 'img/sprite.svg#icon-assign-no"></use>
                                 </svg>' .
                                 $myuser['name'];

@@ -694,9 +694,9 @@ $options = array(
                 <?php endif; ?>
                 <?php echo $ticket['subject']; ?>
             </h3>
-            <div>
-                <a href="javascript:" onclick="hesk_toggleLayerDisplay('notesformTop')" style="text-decoration: none; color: #959eb0;">
-                    <svg class="icon icon-note" style="fill: #959eb0;">
+            <div class="note__link">
+                <a href="javascript:" onclick="hesk_toggleLayerDisplay('notesformTop')">
+                    <svg class="icon icon-note">
                         <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-note"></use>
                     </svg>&nbsp;&nbsp;
                     <?php echo $hesklang['addnote']; ?>
@@ -740,7 +740,7 @@ $options = array(
                         <div class="note__description">
                             <p><?php echo $note['message']; ?></p>
                         </div>
-                        <div class="note__attachments" style="color: #9c9c9c;">
+                        <div class="note__attachments">
                             <?php
                             // Attachments
                             if ( $hesk_settings['attachments']['use'] && strlen($note['attachments']) )
@@ -976,7 +976,7 @@ $options = array(
 
                     echo '
 					<div>
-                        <span style="color: #959eb0">'.$v['name:'].'</span>
+                        <span class="custom-field-title">'.$v['name:'].'</span>
                         <span>'.$ticket[$k].'</span>
 					</div>';
                 }
@@ -1005,7 +1005,7 @@ $options = array(
 
                     echo '
 					<div>
-                        <span style="color: #959eb0">'.$v['name:'].'</span>
+                        <span class="custom-field-title">'.$v['name:'].'</span>
                         <span>'.$ticket[$k].'</span>
 					</div>';
                 }
@@ -1091,7 +1091,7 @@ $options = array(
                         <div class="note__description">
                             <p><?php echo $note['message']; ?></p>
                         </div>
-                        <div class="note__attachments" style="color: #9c9c9c;">
+                        <div class="note__attachments">
                             <?php
                             // Attachments
                             if ( $hesk_settings['attachments']['use'] && strlen($note['attachments']) )
@@ -1499,7 +1499,7 @@ $options = array(
                     } else {
                         ?>
                         <div class="value">
-                            <?php echo $ticket['due_date']; ?>
+                            <?php echo $due_date; ?>
                         </div>
                         <?php
                     }
@@ -1568,7 +1568,7 @@ function hesk_listAttachments($attachments='', $reply=0, $white=1)
 
 	/* List attachments */
 	$att=explode(',',substr($attachments, 0, -1));
-    echo '<div class="block--uploads" style="display: block; color: #9c9c9c;">';
+    echo '<div class="block--uploads" style="display: block;">';
 	foreach ($att as $myatt)
 	{
 		list($att_id, $att_name) = explode('#', $myatt);
@@ -2133,15 +2133,15 @@ function hesk_printReplyForm() {
                     });
 
                     $('#reset_btn').click(function() {
-                        $('#pause_btn').find('svg').css('fill', '#002d73');
+                        $('#pause_btn').find('svg').addClass('playing');
                         r();
                     });
 
                     function updatePauseButton() {
                         if (!timer_running()) {
-                            $('#pause_btn').find('svg').css('fill', '#002d73');
+                            $('#pause_btn').find('svg').addClass('playing');
                         } else {
-                            $('#pause_btn').find('svg').css('fill', '#959eb0');
+                            $('#pause_btn').find('svg').removeClass('playing');
                         }
                     }
 
@@ -2403,6 +2403,7 @@ function hesk_printCanned()
         myMsg = myMsg.replace(/%%HESK_FIRST_NAME%%/g, '<?php echo hesk_jsString(hesk_full_name_to_first_name($ticket['name'])); ?>');
 		myMsg = myMsg.replace(/%%HESK_EMAIL%%/g, '<?php echo hesk_jsString($ticket['email']); ?>');
 		myMsg = myMsg.replace(/%%HESK_OWNER%%/g, '<?php echo hesk_jsString( isset($admins[$ticket['owner']]) ? $admins[$ticket['owner']] : ''); ?>');
+        myMsg = myMsg.replace(/%%HESK_DUE_DATE%%/g, '<?php echo hesk_jsString(hesk_format_due_date($ticket['due_date'])); ?>');
 
 		<?php
         for ($i=1; $i<=50; $i++)

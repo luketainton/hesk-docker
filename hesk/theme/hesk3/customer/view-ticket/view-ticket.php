@@ -120,17 +120,27 @@ require(TEMPLATE_PATH . 'customer/view-ticket/partial/add-reply.php');
                             <div class="block--head">
                                 <div class="d-flex">
                                     <div class="contact">
-                                        <span><?php echo $hesklang['name']; ?>:</span>
-                                        <span><?php echo $ticket['name']; ?></span>
+                                        <?php if ($ticket['email'] == ''): ?>
+                                            <span><?php echo $hesklang['name']; ?>:</span>
+                                            <span><?php echo $ticket['name']; ?></span>
+                                        <?php else: ?>
+                                            <span><?php echo $hesklang['contact']; ?>:</span>
+                                            <div class="dropdown left out-close">
+                                                <label>
+                                                    <span><?php echo $ticket['name']; ?></span>
+                                                    <svg class="icon icon-chevron-down">
+                                                        <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-chevron-down"></use>
+                                                    </svg>
+                                                </label>
+                                                <ul class="dropdown-list">
+                                                    <li class="noclose">
+                                                        <span class="title"><?php echo $hesklang['email']; ?>:</span>
+                                                        <span class="value"><a href="mailto:<?php echo $ticket['email']; ?>"><?php echo $ticket['email']; ?></a></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
-                                    <?php if ($ticket['email'] != ''): ?>
-                                    <div class="contact">
-                                        <span><?php echo $hesklang['email']; ?>:</span>
-                                        <a href="mailto:<?php echo $ticket['email']; ?>" class="link">
-                                            <?php echo $ticket['email']; ?>
-                                        </a>
-                                    </div>
-                                    <?php endif; ?>
                                     <time class="timeago tooltip" datetime="<?php echo date("c", strtotime($ticket['dt'])) ; ?>" title="<?php echo hesk_date($ticket['dt'], true); ?>"><?php echo hesk_date($ticket['dt'], true); ?></time>
                                 </div>
                                 <a title="<?php echo $hesklang['btn_print']; ?>" href="print.php?track=<?php echo $ticket['trackid'].$hesk_settings['e_query']; ?>" target="_blank" class="btn btn-action tooltip">

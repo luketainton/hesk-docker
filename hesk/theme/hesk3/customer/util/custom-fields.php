@@ -190,7 +190,7 @@ function hesk3_output_custom_fields_for_display($customFields) {
 
         echo '
             <div>
-                <span style="color: #959eb0">'.$customField['name:'].'</span>
+                <span class="custom-field-title">'.$customField['name:'].'</span>
                 <span>'.$customField['value'].'</span>
             </div>
             ';

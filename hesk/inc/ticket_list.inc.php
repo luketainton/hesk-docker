@@ -141,7 +141,7 @@ else
     $total = $totals['filtered']['all'];
 }
 
-if ($total > 0 || $is_quick_link)
+if (true)
 {
 
 	/* This query string will be used to browse pages */
@@ -268,7 +268,7 @@ if ($total > 0 || $is_quick_link)
         hesk_show_info($hesklang['not_aos'], ' ', false, 'no-padding-top');
     }
 	?>
-    <section style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px">
+    <section class="quick-links">
         <div class="filters__listing">
             <!--
             <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=all&amp;s_my=1&amp;s_ot=1&amp;s_un=1&amp;category=0'; ?>" class="btn btn-transparent <?php if ($is_quick_link == 'all') echo 'is-bold is-selected'; ?>"><span><?php echo $hesklang['ql_all']; ?></span> <span class="filters__btn-value"><?php echo $totals['all']; ?></span></a>
@@ -296,7 +296,7 @@ if ($total > 0 || $is_quick_link)
             <a href="<?php echo $href . '?' . $query_for_quick_links . '&amp;ql=ovr&amp;s_my=1&amp;s_ot=1&amp;s_un=1'; ?>" class="btn btn-transparent is-overdue <?php if ($is_quick_link == 'ovr') echo 'is-bold is-selected'; ?>"><span><?php echo $hesklang['ql_ovr']; ?></span> <span class="filters__btn-value"><?php echo $totals['filtered']['overdue']; ?></span></a>
         </div>
 
-        <div class="checkbox-custom">
+        <div class="checkbox-custom auto-reload">
             <input type="checkbox" id="reloadCB" onclick="toggleAutoRefresh(this);">
             <label for="reloadCB"><?php echo $hesklang['arp']; ?></label>&nbsp;<span id="timer"></span>
             <script type="text/javascript">heskCheckReloading();</script>
@@ -782,10 +782,6 @@ else
     if (isset($is_search) || $href == 'find_tickets.php')
     {
         hesk_show_notice($hesklang['no_tickets_crit']);
-    }
-    else
-    {
-        echo '<p>&nbsp;<br />&nbsp;<b><i>'.$hesklang['no_tickets_open'].'</i></b><br />&nbsp;</p>';
     }
 }
 

@@ -2256,7 +2256,6 @@ function hesk_check_maintenance($dodie = true)
                       $hesk_settings['db_user'] == 'test' &&
                       $hesk_settings['db_pass'] == 'test' &&
                       $hesk_settings['db_pfix'] == 'hesk_' &&
-                      $hesk_settings['db_vrsn'] == 0 &&
                       $hesk_settings['hesk_title'] == 'Help Desk' &&
                       $hesk_settings['hesk_url'] == 'http://www.example.com/helpdesk';
 
@@ -2300,7 +2299,7 @@ function hesk_error($error,$showback=1) {
             <p><?php echo $error; ?></p><br>
             <?php if ($hesk_settings['debug_mode']): ?>
                 <p>
-                    <span style="color:red;font-weight:bold"><?php echo $hesklang['warn']; ?></span><br>
+                    <span class="text-danger text-bold"><?php echo $hesklang['warn']; ?></span><br>
                     <?php echo $hesklang['dmod']; ?>
                 </p>
             <?php
@@ -2442,7 +2441,7 @@ function hesk_generate_delete_modal($title, $body, $confirm_link, $delete_text =
     $random_id .= $useChars[mt_rand(0, 62)];
     ?>
     <div class="modal delete-modal" data-modal-id="<?php echo $random_id; ?>">
-        <div class="modal__body" style="width: auto; min-width: 440px">
+        <div class="modal__body" style="white-space: normal">
             <i class="modal__close" data-action="cancel">
                 <svg class="icon icon-close">
                     <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-close"></use>
@@ -2454,7 +2453,7 @@ function hesk_generate_delete_modal($title, $body, $confirm_link, $delete_text =
             </div>
             <div class="modal__buttons">
                 <button class="btn btn-border" ripple="ripple" data-action="cancel"><?php echo $hesklang['cancel']; ?></button>
-                <a href="<?php echo $confirm_link; ?>" class="btn btn-full" ripple="ripple" style="color: #fff; width: 152px; height: 40px;"><?php echo $delete_text; ?></a>
+                <a href="<?php echo $confirm_link; ?>" class="btn btn-full text-white" ripple="ripple" style="width: 152px; height: 40px;"><?php echo $delete_text; ?></a>
             </div>
         </div>
     </div>

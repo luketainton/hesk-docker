@@ -112,8 +112,8 @@ if (!defined('IN_SCRIPT')) {
         <?php endforeach; ?>
     <?php endif; ?>
 
-    <?php if ($ticket['message'] != ''): ?>
-        <p><?php echo $ticket['message']; ?></p>
+    <?php if ($ticket['message_html'] != ''): ?>
+        <p><?php echo $ticket['message_html']; ?></p>
     <?php endif; ?>
 
     <?php foreach ($ticket['replies'] as $reply): ?>
@@ -128,7 +128,7 @@ if (!defined('IN_SCRIPT')) {
                 <td><?php echo $reply['name']; ?></td>
             </tr>
         </table>
-        <p><?php echo $reply['message']; ?></p>
+        <p><?php echo $reply['message_html']; ?></p>
     <?php endforeach; ?>
     <div style="page-break-after: always;"><?php echo $hesklang['end_ticket']; ?></div>
 <?php endforeach; ?>

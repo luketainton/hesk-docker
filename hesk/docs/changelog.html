@@ -15,7 +15,7 @@
 <tr>
 <td width="50%" style="text-align:left;vertical-align:top">
  <ul class="nobullets">
- <li>Version: 3.2.0 from 28th February 2021</li>
+ <li>Version: 3.2.4 from 2nd October 2021</li>
  <li>Developed by: Klemen Stirn, Mike Koch</li>
  <li><a href="https://www.hesk.com">Help Desk Software HESK</a></li>
  <li><a href="https://www.phpjunkyard.com">Free PHP Scripts</a></li>
@@ -34,7 +34,48 @@
 
 <h2>HESK 3 CHANGELOG</h2>
 
+<p><b>Changes in 3.2.4</b> - 2nd October 2021<br />
+- added &quot;Due date&quot; tag for canned responses<br />
+- security: error message not appropriately sanitized, reported by msry1<br />
+- fix: insert canned responses tags at pointer focus<br />
+- fix: inconsistent storage of plain text message version in RTF mode<br />
+- fix: due date not formatted for staff with view-only access<br />
+- fix: avatar uppercase letter shows ? in multi-byte names<br />
+- fix: cannot uncheck &quot;Assigned to others&quot; on ticket export page<br />
+- updated TinyMCE to 5.9.2<br />
+- minor styling and usability changes<br />
+</p>
+
+<p><b>Changes in 3.2.3</b> - 11th August 2021<br />
+- automatically link URLs in TinyMCE by default<br />
+- removed the <i>db_vrsn</i> setting, it is not needed anymore<br />
+- all ticket list pages now show the &quot;Auto reload page&quot; widget<br />
+- fix: forgot ticket ID email list does not include tickets with a custom status<br />
+- fix: the &quot;reply below this line&quot; tag not added in IMAP fetching<br />
+- fix: add an extra empty space after ticket tracking URL to make them clickable in Outlook<br />
+- fix: overdue cron notifications not working if date format is not YYYY-MM-DD<br />
+- fix: installation script doesn't accept UTF-8 chars for admin username<br />
+- fix: priority pre-select via URL parameter doesn't work in the public side<br />
+- fix: unable to sort ticket columns after setting a default view<br />
+- fix: Hesk doesn't accept database username with &amp;<br />
+- updated TinyMCE to 5.8.2<br />
+</p>
+
+<p><b>Changes in 3.2.2</b> - 13th March 2021<br />
+- fix: replies via email not showing content when Rich Text (HTML) formatting is turned on<br />
+- fix: reset ticket session data if any variable is sent to the Create new ticket form<br />
+- due date and ticket language parameters can now be passed to the Create new ticket form<br />
+</p>
+
+<p><b>Changes in 3.2.1</b> - 11th March 2021<br />
+- fix: merged tickets not showing replies with Rich Text (HTML) formatting turned on<br />
+- fix: SMTP class does not support TLS 1.2 in PHP &gt;= 5.6.7 and &lt; PHP 7.2<br />
+- fix: admin panel modals hidden on small screens<br />
+- updated TinyMCE to 5.7.0<br />
+</p>
+
 <p><b>Changes in 3.2.0</b> - 28th February 2021<br />
+- [<a href="https://www.hesk.com/get/hesk3-escalate">CLOUD ONLY</a>] Escalate module: create rules to escalate tickets automatically<br />
 - tickets can now have a due date set<br />
 - added support for HTML-formatted ticket messages/replies (staff only)<br />
 - added links to filter tickets by assignment/due soon/overdue quickly<br />

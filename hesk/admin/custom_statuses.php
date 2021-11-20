@@ -155,8 +155,7 @@ if ($reached_status_limit && $action !== 'edit_status') {
                                 </a>
                                 <?php if ($status['tickets'] > 0): ?>
                                     <a onclick="alert('<?php echo hesk_makeJsString($hesklang['status_not_empty']); ?>');"
-                                       style="cursor: not-allowed"
-                                       class="delete tooltip"
+                                       class="delete tooltip not-allowed"
                                        title="<?php echo $hesklang['status_not_empty']; ?>">
                                         <svg class="icon icon-delete">
                                             <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-delete"></use>

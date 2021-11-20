@@ -71,7 +71,7 @@ if (!defined('IN_SCRIPT')) {
                     <div class="notification red">
                         <b><?php echo $hesklang['error']; ?>:</b> <?php echo $error; ?>
                         <?php if ($showDebugWarning): ?>
-                            <p style="color:red;font-weight:bold;margin-top:10px">&nbsp;<br><?php echo $hesklang['warn']; ?></p>
+                            <p class="text-danger text-bold" style="margin-top:10px">&nbsp;<br><?php echo $hesklang['warn']; ?></p>
                             <?php echo $hesklang['dmod']; ?>
                         <?php endif; ?>
                         <p class="text-center">

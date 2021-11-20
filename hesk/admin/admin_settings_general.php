@@ -349,7 +349,7 @@ hesk_handle_messages();
                             </div>
                         </a>
                     </label>
-                    <input type="text" class="form-control" name="s_db_user" id="m3" maxlength="255" value="<?php echo $hesk_settings['db_user']; ?>" autocomplete="off">
+                    <input type="text" class="form-control" name="s_db_user" id="m3" maxlength="255" value="<?php echo str_replace('&', '&amp;', $hesk_settings['db_user']); ?>" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>
@@ -362,7 +362,7 @@ hesk_handle_messages();
                             </div>
                         </a>
                     </label>
-                    <input type="password" class="form-control" name="s_db_pass" id="m4" maxlength="255" value="<?php echo $hesk_settings['db_pass'] ; ?>" autocomplete="off">
+                    <input type="password" class="form-control" name="s_db_pass" id="m4" maxlength="255" value="<?php echo str_replace('&', '&amp;', $hesk_settings['db_pass']); ?>" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>

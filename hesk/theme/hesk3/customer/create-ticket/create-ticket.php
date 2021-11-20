@@ -196,16 +196,10 @@ require_once(TEMPLATE_PATH . 'customer/util/custom-fields.php');
                                           name="message" rows="12" cols="60"
                                           <?php if ($hesk_settings['require_message']) { ?>required<?php } ?>><?php if (isset($_SESSION['c_message'])) {echo stripslashes(hesk_input($_SESSION['c_message']));} ?></textarea>
                                 <?php if (has_public_kb() && $hesk_settings['kb_recommendanswers']): ?>
-                                    <div class="kb-suggestions" style="margin: 0 auto; width: 100%; max-width: 752px; display: none">
-                                        <div class="alert">
-                                            <div class="alert__inner">
-                                                <div class="alert__head">
-                                                    <h6 class="alert__title"><?php echo $hesklang['sc']; ?>:</h6>
-                                                </div>
-                                                <ul id="kb-suggestion-list" class="type--list">
-                                                </ul>
-                                            </div>
-                                        </div>
+                                    <div class="kb-suggestions">
+                                        <h6><?php echo $hesklang['sc']; ?>:</h6>
+                                        <ul id="kb-suggestion-list" class="type--list">
+                                        </ul>
                                         <div id="suggested-article-hidden-inputs" style="display: none">
                                             <?php // Will be populated with the list sent to the create ticket logic ?>
                                         </div>
@@ -450,11 +444,17 @@ if (defined('RECAPTCHA'))
                 var $suggestedArticlesHiddenInputsList = $('#suggested-article-hidden-inputs');
                 $suggestionList.html('');
                 $suggestedArticlesHiddenInputsList.html('');
-                var format = '<li style="margin-bottom: 5px">' +
-                    '<a class="link" href="knowledgebase.php?article={0}">{1}</a>' +
-                    '<br>' +
-                    '{2}' +
-                    '</li>';
+                var format = '<a href="knowledgebase.php?article={0}" class="suggest-preview" target="_blank">' +
+                    '<div class="icon-in-circle">' +
+                    '<svg class="icon icon-knowledge">' +
+                    '<use xlink:href="./theme/hesk3/customer/img/sprite.svg#icon-knowledge"></use>' +
+                    '</svg>' +
+                    '</div>' +
+                    '<div class="suggest-preview__text">' +
+                    '<p class="suggest-preview__title">{1}</p>' +
+                    '<p>{2}</p>' +
+                    '</div>' +
+                    '</a>';
                 var hiddenInputFormat = '<input type="hidden" name="suggested[]" value="{0}">';
                 var results = false;
                 $.each(data, function() {
@@ -464,7 +464,7 @@ if (defined('RECAPTCHA'))
                 });
 
                 if (!results) {
-                    $suggestionList.append('<li>' + noArticlesFoundText + '</li>');
+                    $suggestionList.append('<li class="no-articles-found">' + noArticlesFoundText + '</li>');
                 }
             }
         );

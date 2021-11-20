@@ -3,6 +3,8 @@
  * smtp.php
  *
  * @(#) $Header: /opt2/ena/metal/smtp/smtp.php,v 1.52 2020/01/13 06:22:23 mlemos Exp $
+ * 
+ * Fixed PHP => 5.6.7 < 7.2 TLS compatibility for HESK
  *
  */
 
@@ -1307,7 +1309,18 @@ class smtp_class
 				{
 					if($this->debug)
 						$this->OutputDebug('Starting TLS cryptograpic protocol');
-					if(!($success = @stream_socket_enable_crypto($this->connection, 1, STREAM_CRYPTO_METHOD_TLS_CLIENT)))
+
+                    // Allow the best TLS version(s) we can
+                    $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT;
+
+                    // PHP 5.6.7 dropped inclusion of TLS 1.1 and 1.2 in STREAM_CRYPTO_METHOD_TLS_CLIENT
+                    // so add them back in manually if we can
+                    if (defined('STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT')) {
+                        $crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+                        $crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
+                    }
+
+					if(!($success = @stream_socket_enable_crypto($this->connection, 1, $crypto_method)))
 						$this->error = 'could not start TLS connection encryption protocol';
 					else
 					{
@@ -1930,5 +1943,3 @@ class smtp_class
 {/metadocument}
 
 */
-
-?>

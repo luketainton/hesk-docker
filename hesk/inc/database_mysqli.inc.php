@@ -37,14 +37,7 @@ function hesk_dbSetNames()
 {
 	global $hesk_settings, $hesk_db_link;
 
-    if ($hesk_settings['db_vrsn'])
-    {
-		mysqli_set_charset($hesk_db_link, 'utf8');
-    }
-    else
-    {
-    	hesk_dbQuery("SET NAMES 'utf8'");
-    }
+    mysqli_set_charset($hesk_db_link, 'utf8');
 
 } // END hesk_dbSetNames()
 

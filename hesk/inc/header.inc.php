@@ -53,7 +53,7 @@ $onload='';
 	{
         require(HESK_PATH . 'inc/tiny_mce/tinymce.inc.php');
 		?>
-		<script type="text/javascript" src="<?php echo HESK_PATH; ?>inc/tiny_mce/5.6.2/tinymce.min.js"></script>
+		<script type="text/javascript" src="<?php echo HESK_PATH; ?>inc/tiny_mce/5.9.2/tinymce.min.js"></script>
 		<?php
 	}
 
@@ -104,7 +104,7 @@ $onload='';
 	}
 
 	// Auto reload
-	if (defined('AUTO_RELOAD') && hesk_checkPermission('can_view_tickets',0) && ! isset($_SESSION['hide']['ticket_list']) )
+	if (defined('AUTO_RELOAD') && hesk_checkPermission('can_view_tickets',0))
 	{
 		?>
 		<script type="text/javascript">

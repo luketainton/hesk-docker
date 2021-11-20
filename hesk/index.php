@@ -105,7 +105,17 @@ function print_add_ticket()
 	// Priority
 	if ( isset($_REQUEST['priority']) )
 	{
-		$_SESSION['c_priority'] = intval($_REQUEST['priority']);
+        switch ($_REQUEST['priority'])
+        {
+            case 1:
+                $_SESSION['c_priority'] = 'high';
+                break;
+            case 2:
+                $_SESSION['c_priority'] = 'medium';
+                break;
+            default:
+                $_SESSION['c_priority'] = 'low';
+        }
 	}
 
 	// Subject
@@ -424,7 +434,7 @@ function forgot_tid()
 	hesk_dbConnect();
 
     // Get tickets from the database
-	$res = hesk_dbQuery('SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` FORCE KEY (`statuses`) WHERE ' . ($hesk_settings['open_only'] ? "`status` IN ('0','1','2','4','5') AND " : '') . ' ' . hesk_dbFormatEmail($email) . ' ORDER BY `status` ASC, `lastchange` DESC ');
+	$res = hesk_dbQuery('SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` FORCE KEY (`statuses`) WHERE ' . ($hesk_settings['open_only'] ? "`status` <> '3' AND " : '') . ' ' . hesk_dbFormatEmail($email) . ' ORDER BY `status` ASC, `lastchange` DESC ');
 
 	$num = hesk_dbNumRows($res);
 	if ($num < 1)
@@ -451,7 +461,7 @@ $tid_list .= "
 $hesklang[trackID]: "	. $my_ticket['trackid'] . "
 $hesklang[subject]: "	. hesk_msgToPlain($my_ticket['subject'], 1, 0) . "
 $hesklang[status]: "	. hesk_get_status_name($my_ticket['status']) . "
-$hesk_settings[hesk_url]/ticket.php?track={$my_ticket['trackid']}{$email_param}
+$hesk_settings[hesk_url]/ticket.php?track={$my_ticket['trackid']}{$email_param} " . "
 ";
 	}
 

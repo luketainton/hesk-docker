@@ -648,7 +648,7 @@ function hesk_getEmailMessage($eml_file, $ticket, $is_admin=0, $is_ticket=1, $ju
 
 		// For customer notifications: if we allow email piping/pop 3 fetching and
 		// stripping quoted replies add an "reply above this line" tag
-		if ( ! $is_admin && ($hesk_settings['email_piping'] || $hesk_settings['pop3']) && $hesk_settings['strip_quoted'])
+		if ( ! $is_admin && ($hesk_settings['email_piping'] || $hesk_settings['pop3'] || $hesk_settings['imap']) && $hesk_settings['strip_quoted'])
 		{
 			$msg = $hesklang['EMAIL_HR'] . "\n\n" . $msg;
 		}
@@ -712,3 +712,53 @@ function hesk_generateMessageID()
 
     return '<' . $id . '.' . gmdate('YmdHis') . '@' . $host . '>';
 } // END hesk_generateMessageID()
+
+
+function hesk_PMtoMainAdmin($landmark)
+{
+    global $hesk_settings, $hesklang;
+
+    $offer_license = file_exists(HESK_PATH.'hesk_license.php') ? "" : "<h3>&raquo; Look professional</h3>\r\n\r\n<p>To not only support Hesk development but also look more professional, <a href=\"https://www.hesk.com/get/hesk3-license\">remove &quot;Powered by&quot; links</a> from your help desk.</p>\r\n\r\n";
+
+    switch ($landmark) {
+        case 100:
+            $subject = "Congratulations on your 100th ticket!";
+            $message = "</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<h2 style=\"padding-left:0px\">You are now part of the Hesk family, and we want to serve you better!</h2>\r\n\r\n<h3>&raquo; Help us improve</h3>\r\n\r\n<p>Suggest what features we should add to Hesk by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n<h3>&raquo; Stay updated</h3>\r\n\r\n<p>Hesk regularly receives improvements and bug fixes; make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow Hesk on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n{$offer_license}<h3>&raquo; Upgrade to Hesk Cloud for the ultimate experience</h3>\r\n\r\n<p>Experience the best of Hesk by moving your help desk into the Hesk Cloud:</p>\r\n<ul>\r\n<li>exclusive advanced modules,</li>\r\n<li>automated updates,</li>\r\n<li>free migration of your existing Hesk tickets and settings,</li>\r\n<li>we take care of maintenance, server setup and optimization, backups, and more!</li>\r\n</ul>\r\n\r\n<p>&nbsp;<br><a href=\"https://www.hesk.com/get/hesk3-cloud\" class=\"btn btn--blue-border\" style=\"text-decoration:none\">Click here to learn more about Hesk Cloud</a></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen Stirn<br>\r\nFounder<br>\r\n<a href=\"https://www.hesk.com\">https://www.hesk.com</a></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n</div><p>";
+            break;
+        case 1000:
+            $subject = "We're excited about your 1,000th ticket!";
+            $message = "</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<h2 style=\"padding-left:0px\">With 1,000 support tickets under the hood, you\'ve become a Hesk Power User. Congratulations!</h2>\r\n\r\n<h3>&raquo; Help us improve</h3>\r\n\r\n<p>Suggest what features we should add to Hesk by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n<h3>&raquo; Stay updated</h3>\r\n\r\n<p>Hesk regularly receives improvements and bug fixes; make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow Hesk on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n{$offer_license}<h3>&raquo; Upgrade to Hesk Cloud for the ultimate experience</h3>\r\n\r\n<p>Experience the best of Hesk by moving your help desk into the Hesk Cloud:</p>\r\n<ul>\r\n<li>exclusive advanced modules,</li>\r\n<li>automated updates,</li>\r\n<li>free migration of your existing Hesk tickets and settings,</li>\r\n<li>we take care of maintenance, server setup and optimization, backups, and more!</li>\r\n</ul>\r\n\r\n<p>&nbsp;<br><a href=\"https://www.hesk.com/get/hesk3-cloud\" class=\"btn btn--blue-border\" style=\"text-decoration:none\">Click here to learn more about Hesk Cloud</a></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen Stirn<br>\r\nFounder<br>\r\n<a href=\"https://www.hesk.com\">https://www.hesk.com</a></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n</div><p>";
+            break;
+        case 10000:
+            $subject = "Wow, you've reached 10,000 tickets!";
+            $message = "</p><div style=\"text-align:justify; padding-left: 10px; padding-right: 10px;\">\r\n\r\n<h2 style=\"padding-left:0px\">You received 10,000 support tickets, outstanding! You are officially a Hesk Hero!</h2>\r\n\r\n<h3>&raquo; Help us improve</h3>\r\n\r\n<p>Suggest what features we should add to Hesk by posting them <a href=\"https://hesk.uservoice.com/forums/69851-general\" target=\"_blank\">here</a>.</p>\r\n\r\n<h3>&raquo; Stay updated</h3>\r\n\r\n<p>Hesk regularly receives improvements and bug fixes; make sure you know about them!</p>\r\n<ul>\r\n<li>for fast notifications, <a href=\"https://twitter.com/HESKdotCOM\">follow Hesk on <b>Twitter</b></a></li>\r\n<li>for email notifications, subscribe to our low-volume zero-spam <a href=\"https://www.hesk.com/newsletter.php\">newsletter</a></li>\r\n</ul>\r\n\r\n{$offer_license}<h3>&raquo; Upgrade to Hesk Cloud for the ultimate experience</h3>\r\n\r\n<p>Experience the best of Hesk by moving your help desk into the Hesk Cloud:</p>\r\n<ul>\r\n<li>exclusive advanced modules,</li>\r\n<li>automated updates,</li>\r\n<li>free migration of your existing Hesk tickets and settings,</li>\r\n<li>we take care of maintenance, server setup and optimization, backups, and more!</li>\r\n</ul>\r\n\r\n<p>&nbsp;<br><a href=\"https://www.hesk.com/get/hesk3-cloud\" class=\"btn btn--blue-border\" style=\"text-decoration:none\">Click here to learn more about Hesk Cloud</a></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Best regards,</p>\r\n\r\n<p>Klemen Stirn<br>\r\nFounder<br>\r\n<a href=\"https://www.hesk.com\">https://www.hesk.com</a></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n</div><p>";
+            break;
+        default:
+            return false;
+    }
+
+    // Insert private message for main admin
+    hesk_dbQuery("INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."mail` (`id`, `from`, `to`, `subject`, `message`, `dt`, `read`, `deletedby`) VALUES (NULL, 9999, 1, '".hesk_dbEscape($subject)."', '{$message}', NOW(), '0', 9999)");
+    $pm_id = hesk_dbInsertID();
+
+    // Notify admin
+    $res = hesk_dbQuery("SELECT `name`,`email` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` WHERE `id`=1");
+    $row = hesk_dbFetchAssoc($res);
+
+    $pm = array(
+        'name'    => 'HESK.com',
+        'subject' => $subject,
+        'message' => 'Please log in to see the message',
+        'id'      => $pm_id,
+    );
+
+    // Format email subject and message for recipient
+    $subject = hesk_getEmailSubject('new_pm',$pm,0);
+    $message = hesk_getEmailMessage('new_pm',$pm,1,0);
+
+    // Send e-mail
+    hesk_mail($row['email'], $subject, $message);
+
+    return true;
+
+} // END hesk_PMtoMainAdmin()

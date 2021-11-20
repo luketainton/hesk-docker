@@ -25,6 +25,7 @@ hesk_dbConnect();
 hesk_isLoggedIn();
 
 define('CALENDAR',1);
+define('AUTO_RELOAD',1);
 $_SESSION['hide']['ticket_list'] = true;
 
 /* Check permissions for this feature */

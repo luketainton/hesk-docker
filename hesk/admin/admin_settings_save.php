@@ -545,7 +545,6 @@ $hesk_settings[\'db_name\']=\'' . hesk_getProperty($set, 'db_name') . '\';
 $hesk_settings[\'db_user\']=\'' . hesk_getProperty($set, 'db_user') . '\';
 $hesk_settings[\'db_pass\']=\'' . hesk_getProperty($set, 'db_pass') . '\';
 $hesk_settings[\'db_pfix\']=\'' . hesk_getProperty($set, 'db_pfix') . '\';
-$hesk_settings[\'db_vrsn\']=' . hesk_getProperty($set, 'db_vrsn') . ';
 
 
 // ==> HELP DESK
@@ -747,12 +746,12 @@ $tmp = array();
 
 if ( ! $smtp_OK)
 {
-    $tmp[] = '<span style="color:red; font-weight:bold">'.$hesklang['sme'].':</span> '.$smtp_error.'<br /><br /><a href="Javascript:void(0)" onclick="Javascript:hesk_toggleLayerDisplay(\'smtplog\')">'.$hesklang['scl'].'</a><div id="smtplog" style="display:none">&nbsp;<br /><textarea name="log" rows="10" cols="60">'.$smtp_log.'</textarea></div>';
+    $tmp[] = '<span class="text-danger">'.$hesklang['sme'].':</span> '.$smtp_error.'<br /><br /><a href="Javascript:void(0)" onclick="Javascript:hesk_toggleLayerDisplay(\'smtplog\')">'.$hesklang['scl'].'</a><div id="smtplog" style="display:none">&nbsp;<br /><textarea name="log" rows="10" cols="60">'.$smtp_log.'</textarea></div>';
 }
 
 if ( ! $pop3_OK)
 {
-    $tmp[] = '<span style="color:red; font-weight:bold">'.$hesklang['pop3e'].':</span> '.$pop3_error.'<br /><br /><a href="Javascript:void(0)" onclick="Javascript:hesk_toggleLayerDisplay(\'pop3log\')">'.$hesklang['pop3log'].'</a><div id="pop3log" style="display:none">&nbsp;<br /><textarea name="log" rows="10" cols="60">'.$pop3_log.'</textarea></div>';
+    $tmp[] = '<span class="text-danger">'.$hesklang['pop3e'].':</span> '.$pop3_error.'<br /><br /><a href="Javascript:void(0)" onclick="Javascript:hesk_toggleLayerDisplay(\'pop3log\')">'.$hesklang['pop3log'].'</a><div id="pop3log" style="display:none">&nbsp;<br /><textarea name="log" rows="10" cols="60">'.$pop3_log.'</textarea></div>';
 }
 
 // Clear the cache folder
