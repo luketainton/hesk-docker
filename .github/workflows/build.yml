@@ -18,16 +18,16 @@ jobs:
           echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
 
   build:
-    name: GitHub Package Registry
+    name: GitHub Container Registry
     runs-on: ubuntu-latest
     needs: [prepare-data]
     steps:
     - uses: actions/checkout@v2
-    - name: Login to GitHub Package Registry
+    - name: Login
       run: echo ${{ secrets.PAT }} | docker login ghcr.io -u luketainton --password-stdin
-    - name: Build image for GitHub Package Registry
+    - name: Build
       run: docker build . --file Dockerfile --tag ghcr.io/luketainton/hesk:${{ needs.prepare-data.outputs.tag }} --tag ghcr.io/luketainton/hesk:latest
-    - name: Push image to GitHub Package Registry
+    - name: Push
       run: |
         docker push ghcr.io/luketainton/hesk:latest
         docker push ghcr.io/luketainton/hesk:${{ needs.prepare-data.outputs.tag }}
