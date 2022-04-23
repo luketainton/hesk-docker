@@ -216,12 +216,12 @@ function hesk_sendOverdueTicketReminder($ticket, $users) {
     $message = hesk_getEmailMessage('overdue_ticket', $ticket, 1);
 
     $emails = array();
-    if ($ticket['user_email'] != NULL) {
+    if ($ticket['user_email'] != null) {
         $emails[] = $ticket['user_email'];
     } else {
         foreach ($users as $user) {
             $categories = explode(',', $user['categories']);
-            if ($user['isadmin'] || in_array($ticket['category'], $categories)) {
+            if ($user['notify_overdue_unassigned'] && ($user['isadmin'] || in_array($ticket['category'], $categories))) {
                 $emails[] = $user['email'];
             }
         }

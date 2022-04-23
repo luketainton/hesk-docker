@@ -30,7 +30,7 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
     <meta name="msapplication-config" content="<?php echo HESK_PATH; ?>img/favicon/browserconfig.xml" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
-    <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css" />
+    <link rel="stylesheet" media="all" href="<?php echo TEMPLATE_PATH; ?>customer/css/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.css?<?php echo $hesk_settings['hesk_version']; ?>" />
     <?php include(TEMPLATE_PATH . '../../head.txt'); ?>
 </head>
 
@@ -130,9 +130,9 @@ END LICENSE CODE
 </div>
 <?php include(TEMPLATE_PATH . '../../footer.txt'); ?>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/jquery-3.5.1.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/hesk_functions.js"></script>
+<script src="<?php echo TEMPLATE_PATH; ?>customer/js/hesk_functions.js?<?php echo $hesk_settings['hesk_version']; ?>"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/svg4everybody.min.js"></script>
 <script src="<?php echo TEMPLATE_PATH; ?>customer/js/selectize.min.js"></script>
-<script src="<?php echo TEMPLATE_PATH; ?>customer/js/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.js"></script>
+<script src="<?php echo TEMPLATE_PATH; ?>customer/js/app<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.js?<?php echo $hesk_settings['hesk_version']; ?>"></script>
 </body>
 </html>

@@ -262,6 +262,7 @@ function hesk_email2ticket($results, $protocol = 0, $set_category = 1, $set_prio
 		'lastchange'	=> hesk_date($ticket['lastchange'], true),
         'due_date'      => hesk_format_due_date($ticket['due_date']),
         'id'			=> $ticket['id'],
+        'time_worked'   => $ticket['time_worked'],
 		);
 
 		// 2. Add custom fields to the array
