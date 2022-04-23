@@ -307,6 +307,9 @@ else
                 break;
             }
 
+            // Update "Closed at"
+            $sql_status .= " , `closedat`=NOW(), `closedby`=".intval($_SESSION['id'])." ";
+
             // Lock the ticket if customers are not allowed to reopen tickets
             if ($hesk_settings['custopen'] != 1)
             {
@@ -361,6 +364,12 @@ if ( ! empty($_POST['assign_self']) && hesk_checkPermission('can_assign_self',0)
 {
 	$revision = sprintf($hesklang['thist2'],hesk_date(),addslashes($_SESSION['name']).' ('.$_SESSION['user'].')',addslashes($_SESSION['name']).' ('.$_SESSION['user'].')');
     $sql .= " , `owner`=".intval($_SESSION['id']).", `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') ";
+}
+
+// If ticket is re-opened, clear "closed at" and "closed by"
+if ($ticket['status'] == 3 && $new_status != 3)
+{
+    $sql .= ' , `closedat`=NULL, `closedby`=NULL ';
 }
 
 $sql .= " $priority_sql ";

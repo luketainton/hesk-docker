@@ -72,7 +72,7 @@ function hesk_load_custom_fields($category=0, $use_cache=1)
         $row['name:'] = in_array(substr($row['name'], -1), array(':', '?', '!', '.') ) ? $row['name'] : $row['name'] . ':';
 
 		// Decode categories
-		$row['category'] = strlen($row['category']) ? json_decode($row['category'], true) : array();
+		$row['category'] = !empty($row['category']) ? json_decode($row['category'], true) : array();
 
 		// Decode options
 		$row['value'] = json_decode($row['value'], true);

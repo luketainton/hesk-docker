@@ -229,7 +229,7 @@ $(document).ready(function() {
   $(document).click(closeAllSelect);
   $(document).on("touchend", "body", function(e) {
     if (documentClick) {
-      $(document).unbind("click");
+      //$(document).unbind("click");
       documentClick = false;
     }
     closeAllSelect(e);

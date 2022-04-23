@@ -2,7 +2,7 @@
 /*
  * mime_parser.php
  *
- * @(#) $Id: mime_parser.php,v 1.93 2020/04/22 17:32:33 mlemos Exp $
+ * @(#) $Id: mime_parser.php,v 1.96 2021/06/06 10:51:03 mlemos Exp $
  *
  */
 
@@ -30,7 +30,7 @@ define('MIME_ADDRESS_FIRST',            2);
 
 	<package>net.manuellemos.mimeparser</package>
 
-	<version>@(#) $Id: mime_parser.php,v 1.93 2020/04/22 17:32:33 mlemos Exp $</version>
+	<version>@(#) $Id: mime_parser.php,v 1.96 2021/06/06 10:51:03 mlemos Exp $</version>
 	<copyright>Copyright (C) Manuel Lemos 2006 - 2020</copyright>
 	<title>MIME parser</title>
 	<author>Manuel Lemos</author>
@@ -394,11 +394,11 @@ class mime_parser_class
 		return(1);
 	}
 
-	Function SetPHPError($error, &$php_error_message)
+	Function SetPHPError($error)
 	{
-		if(IsSet($php_error_message)
-		&& strlen($php_error_message))
-			$error .= ': '.$php_error_message;
+		$php_error = error_get_last();
+		if(IsSet($php_error))
+			$error .= ': '.$php_error['message'];
 		return($this->SetError($error));
 	}
 
@@ -540,20 +540,53 @@ class mime_parser_class
 
 	Function FindBodyLineBreak($position, &$break, &$line_break)
 	{
+		/*
+		 * Is there a carriage return in the body buffer?
+		 *
+		 */
 		if(GetType($line_break=strpos($this->body_buffer, $break="\r", $position))=='integer')
 		{
+			/*
+			 * Yes
+			 *
+			 * Is there also a line feed in the body buffer?
+			 *
+			 */
 			if(GetType($new_line_break=strpos($this->body_buffer, "\n", $position))=='integer')
 			{
+				/*
+				 * Yes
+				 *
+				 * Is the line feed before the carriage return?
+				 *
+				 */
 				if($new_line_break < $line_break)
 				{
+					/*
+					 * Yes
+					 *
+					 * Return the position of the line feed
+					 */
 					$break = "\n";
 					$line_break = $new_line_break;
 					return(1);
 				}
 			}
+			/*
+			 * Is the carriage return before the last character
+			 * and the next character is line feed?
+			 *
+			 */
 			if(($n = $line_break + 1) < strlen($this->body_buffer)
 			&& $this->body_buffer[$n]=="\n")
+			{
+				/*
+				 * Yes
+				 *
+				 * Return the position of the carriage return.
+				 */
 				$break="\r\n";
+			}
 			return(1);
 		}
 		return(GetType($line_break=strpos($this->body_buffer, $break="\n", $position))=='integer');
@@ -834,6 +867,11 @@ class mime_parser_class
 								$line_break++;
 								$this->buffer_position -= strlen($data) - $line_break;
 								$data = substr($data, 0, $line_break);
+							}
+							else
+							{
+								$this->buffer_position -= strlen($data);
+								$data = '';
 							}
 						}
 						$part=array(
@@ -1382,8 +1420,15 @@ class mime_parser_class
 						break;
 					$data = @fread($this->file, $this->message_buffer_length);
 					if(GetType($data)!='string')
-						return($this->SetPHPError('could not read the message file', $php_errormsg));
-					$end_of_data = feof($this->file);
+						return($this->SetPHPError('could not read the message file'));
+					while(!($end_of_data = feof($this->file))
+					&& substr($data, -1) === "\r")
+					{
+						$next = @fread($this->file, 1);
+						if(GetType($next)!='string')
+							return($this->SetPHPError('could not read the message file'));
+						$data .= $next;
+					}
 				}
 				else
 				{
@@ -1555,7 +1600,7 @@ class mime_parser_class
 									}
 									$path .= $filename;
 									if(!($this->body_file = fopen($path, 'wb')))
-										return($this->SetPHPError('could not create file '.$path.' to save the message body part', $php_errormsg));
+										return($this->SetPHPError('could not create file '.$path.' to save the message body part'));
 									$decoded['BodyFile'] = $path;
 									$decoded['BodyPart'] = $this->body_part_number;
 									$decoded['BodyLength'] = 0;
@@ -1564,7 +1609,7 @@ class mime_parser_class
 								if(strlen($part['Data'])
 								&& !fwrite($this->body_file, $part['Data']))
 								{
-									$this->SetPHPError('could not save the message body part to file '.$decoded['BodyFile'], $php_errormsg);
+									$this->SetPHPError('could not save the message body part to file '.$decoded['BodyFile']);
 									fclose($this->body_file);
 									@unlink($decoded['BodyFile']);
 									return(0);
@@ -1705,12 +1750,12 @@ class mime_parser_class
 		if(strlen($this->error))
 			return(0);
 		if(!($stream = @fopen($file, 'r')))
-			return($this->SetPHPError('Could not open the file '.$file, $php_errormsg));
+			return($this->SetPHPError('Could not open the file '.$file));
 		for($end = 0;!$end;)
 		{
 			if(!($data = @fread($stream, $this->message_buffer_length)))
 			{
-				$this->SetPHPError('Could not read the file '.$file, $php_errormsg);
+				$this->SetPHPError('Could not read the file '.$file);
 				fclose($stream);
 				return(0);
 			}
@@ -1909,7 +1954,7 @@ class mime_parser_class
 		if(IsSet($parameters['File']))
 		{
 			if(!($this->file = @fopen($parameters['File'], 'r')))
-				return($this->SetPHPError('could not open the message file to decode '.$parameters['File'], $php_errormsg));
+				return($this->SetPHPError('could not open the message file to decode '.$parameters['File']));
 		}
 		elseif(IsSet($parameters['Data']))
 			$this->position = 0;
@@ -2021,12 +2066,12 @@ class mime_parser_class
 		{
 			$path = $message[$prefix.'File'];
 			if(!($file = @fopen($path, 'rb')))
-				return($this->SetPHPError('could not open the message body file '.$path, $php_errormsg));
+				return($this->SetPHPError('could not open the message body file '.$path));
 			for($body = '', $end = 0;!$end;)
 			{
 				if(!($data = @fread($file, $this->message_buffer_length)))
 				{
-					$this->SetPHPError('Could not open the message body file '.$path, $php_errormsg);
+					$this->SetPHPError('Could not open the message body file '.$path);
 					fclose($stream);
 					return(0);
 				}
@@ -2673,4 +2718,3 @@ class mime_parser_class
 
 */
 
-?>

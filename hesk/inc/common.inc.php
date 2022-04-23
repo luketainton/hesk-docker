@@ -109,8 +109,9 @@ function hesk_getClientIP()
     // the first valid one found will be returned as client IP
     // Uncomment those used on your server
     $server_client_IP_variables = array(
-        // 'HTTP_CF_CONNECTING_IP', // CloudFlare
+        // 'HTTP_CF_CONNECTING_IP',
         // 'HTTP_CLIENT_IP',
+        // 'HTTP_X_REAL_IP',
         // 'HTTP_X_FORWARDED_FOR',
         // 'HTTP_X_FORWARDED',
         // 'HTTP_FORWARDED_FOR',

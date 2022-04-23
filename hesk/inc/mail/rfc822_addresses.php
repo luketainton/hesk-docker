@@ -612,7 +612,8 @@ class rfc822_addresses_class
 		{
 			if(!$this->ParseAtom($a, $local_part, 1))
 				return(0);
-			$local_part = trim($local_part);
+			if (is_string($local_part))
+                $local_part = trim($local_part);
 		}
 		if($a >= $l
 		|| strcmp($v[$a], '@'))
@@ -931,5 +932,3 @@ class rfc822_addresses_class
 {/metadocument}
 
 */
-
-?>

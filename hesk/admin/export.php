@@ -249,7 +249,7 @@ foreach ($status as $k => $v)
 $tmp = count($status);
 
 // Do we need to search by status?
-if ( $tmp < 6 )
+if ( $tmp < count($hesk_settings['statuses']) )
 {
 	// If no statuses selected, show all
 	if ($tmp == 0)

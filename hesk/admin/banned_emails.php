@@ -165,6 +165,11 @@ function ban_email()
 	$email = ($index = strpos($email, ',')) ? substr($email, 0,  $index) : $email;
 	$email = ($index = strpos($email, ';')) ? substr($email, 0,  $index) : $email;
 
+    // We don't need *@ to ban domains, remove the star if present
+    if (strpos($email, '*@') === 0) {
+        $email = ltrim($email, '*');
+    }
+
 	// Validate email address
 	$hesk_settings['multi_eml'] = 0;
 
