@@ -1,0 +1,25 @@
+---
+version: "3"
+services:
+  db:
+    image: mariadb:10.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: yes
+      MARIADB_DATABASE: hesk
+      MARIADB_USER: hesk
+      # Please change the password before deploying.
+      MARIADB_PASSWORD: hesk
+    
+  wordpress:
+    depends_on:
+      - db
+    image: ghcr.io/luketainton/hesk:latest
+    ports:
+      - "80:80"
+    restart: always
+volumes:
+  db_data: {}
+...
