@@ -22,10 +22,10 @@ jobs:
         image: hesk:test-${{ github.sha }}
         config: structure_tests.yaml
 
-    - name: Spin up
+    - name: Spin up container
       run: docker run -d -p 127.0.0.1:8080:80 --name hesk_test hesk:test-${{ github.sha }}
 
-    - name: Sleep for 10 seconds
+    - name: Wait for container to be ready
       run: sleep 10s
       shell: bash
 
