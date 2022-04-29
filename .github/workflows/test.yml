@@ -15,11 +15,26 @@ jobs:
     - name: Build container image
       run: docker build . --file Dockerfile --tag hesk:test-${{ github.sha }}
 
+    - name: Install container-structure-test
+      run: |
+        curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 -o container-structure-test
+        chmod +x container-structure-test
+
     - name: Run structure tests
-      uses: plexsystems/container-structure-test-action@v0.2.0
+      run: ./container-structure-test test --image hesk:test-${{ github.sha }} --config structure_tests.yml --output junit --test-report test-report.xml
+      # uses: plexsystems/container-structure-test-action@v0.2.0
+      # with:
+      #   image: hesk:test-${{ github.sha }}
+      #   config: structure_tests.yml
+      #   # --test-report
+
+    - name: Publish test report
+      uses: mikepenz/action-junit-report@v3.0.3
+      if: always()
       with:
-        image: hesk:test-${{ github.sha }}
-        config: structure_tests.yml
+        report_paths: 'test-report.xml'
+        commit: ${{ github.sha }}
+        fail_on_failure: true
 
     - name: Spin up container
       run: docker run -d -p 127.0.0.1:8080:80 --name hesk_test hesk:test-${{ github.sha }}

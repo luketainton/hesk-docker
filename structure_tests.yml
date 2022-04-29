@@ -16,5 +16,5 @@ fileContentTests:
 
 metadataTest:
   exposedPorts: ["80"]
-  user: "www-data"
+  # user: "www-data"
 ...
