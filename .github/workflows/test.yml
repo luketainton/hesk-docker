@@ -17,7 +17,7 @@ jobs:
 
     - name: Install container-structure-test
       run: |
-        curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 -o container-structure-test && chmod +x container-structure-test
+        curl -L https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 -o container-structure-test && chmod +x container-structure-test
 
     - name: Run structure tests
       run: ./container-structure-test test --image hesk:test-${{ github.sha }} --config structure_tests.yml --output junit --test-report test-report.xml
