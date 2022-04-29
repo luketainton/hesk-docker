@@ -19,7 +19,7 @@ jobs:
       uses: plexsystems/container-structure-test-action@v0.2.0
       with:
         image: hesk:test-${{ github.sha }}
-        config: structure_tests.yaml
+        config: structure_tests.yml
 
     - name: Spin up container
       run: docker run -d -p 127.0.0.1:8080:80 --name hesk_test hesk:test-${{ github.sha }}
