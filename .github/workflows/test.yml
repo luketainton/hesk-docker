@@ -1,4 +1,3 @@
----
 name: Test
 on:
   workflow_dispatch:
@@ -39,4 +38,3 @@ jobs:
       run: |
         docker rm -f hesk_test
         docker rmi -f hesk:test-${{ github.sha }}
-...
