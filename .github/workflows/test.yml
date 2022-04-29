@@ -1,0 +1,41 @@
+---
+name: Test
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build container image
+      run: docker build . --file Dockerfile --tag hesk:test-${{ github.sha }}
+
+    - name: Run structure tests
+      uses: plexsystems/container-structure-test-action@v0.2.0
+      with:
+        image: hesk:test-${{ github.sha }}
+        config: structure_tests.yaml
+
+    - name: Spin up
+      run: docker run -d -p 127.0.0.1:8080:80 --name hesk_test hesk:test-${{ github.sha }}
+
+    - name: Sleep for 10 seconds
+      run: sleep 10s
+      shell: bash
+
+    - name: Check if install wizard is available
+      run: curl http://127.0.0.1:8080/install/
+      continue-on-error: false
+    
+    - name: Tear down
+      if: always()
+      run: |
+      docker rm -f hesk_test
+      docker rmi -f hesk:test-${{ github.sha }}
+...
