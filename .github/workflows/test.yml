@@ -2,9 +2,8 @@ name: Test
 on:
   workflow_dispatch:
   push:
-    branches:
-      - '*'
-      - '!main'
+    branches-ignore:
+      - main
 
 jobs:
   test:
