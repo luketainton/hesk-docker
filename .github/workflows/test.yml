@@ -14,15 +14,28 @@ jobs:
 
     - name: Build container image
       run: docker build . --file Dockerfile --tag hesk:test-${{ github.sha }}
+    
+    - name: Configure 1Password Service Account
+      uses: 1password/load-secrets-action/configure@v1
+      with:
+        service-account-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+    - name: Load secrets
+      uses: 1password/load-secrets-action@v1
+      with:
+        export-env: true
+      env:
+        SONAR_TOKEN: "op://Infra/SonarCloud/credential"
 
     - name: Install container-structure-test
       run: |
-        curl -L https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 -o container-structure-test && chmod +x container-structure-test
-
+        curl -L https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 \
+        -o container-structure-test && chmod +x container-structure-test
 
     - name: Run structure tests
       run: |
-        ./container-structure-test test --image "hesk:test-${{ github.sha }}" --config "structure_tests.yml" --output "junit" --test-report "test-report.xml"
+        ./container-structure-test test --image "hesk:test-${{ github.sha }}" --config "structure_tests.yml" \
+        --output "junit" --test-report "test-report.xml"
 
     - name: Publish test report
       uses: mikepenz/action-junit-report@v3.7.7
@@ -32,6 +45,12 @@ jobs:
         commit: ${{ github.sha }}
         fail_on_failure: true
         check_name: Test Report
+    
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
 
     - name: Spin up container
       run: docker run -d -p 127.0.0.1:8080:80 --name hesk_test hesk:test-${{ github.sha }}
