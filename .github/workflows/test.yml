@@ -46,6 +46,12 @@ jobs:
         fail_on_failure: true
         check_name: Test Report
     
+    - uses: hadolint/hadolint-action@v3.1.0
+      with:
+        dockerfile: Dockerfile
+        output-file: hadolint.out
+        format: sonarqube
+
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
