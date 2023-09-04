@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [prepare-data]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Login
       run: echo ${{ secrets.PAT }} | docker login ghcr.io -u luketainton --password-stdin
     - name: Build
