@@ -38,7 +38,7 @@ jobs:
         --output "junit" --test-report "test-report.xml"
 
     - name: Publish test report
-      uses: mikepenz/action-junit-report@v4.0.0
+      uses: mikepenz/action-junit-report@v4.0.1
       if: always()
       with:
         report_paths: 'test-report.xml'
